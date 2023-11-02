@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 
 //GET the main documentation page
-router.get('/', (req, res) => {
+router.get('/documentation', (req, res) => {
     res.json({mssg: "get the documentation page"})
 })
 

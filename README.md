@@ -6,12 +6,28 @@
 - npm
 - python3
 
-#### Startup
+To install the dependencies run:
+`npm install`
+
+## Startup
+
+### Backend
+First go to the `server` subdirectory:
+`cd server`
+assuming you are in the `Arkheia` directory
 
 To start the development server
 `npm run dev`
 
-You should run the mongodb in another terminal:
-`mongod` 
-or 
-`npm run db`
+To run mongodb:
+`mongod` or `npm run db`
+
+### Frontend
+Go to the `backend` subdirectory:
+`cd backend`
+
+assuming you are in the `Arkheia` directory
+
+To start the frontend run
+`npm start`
+

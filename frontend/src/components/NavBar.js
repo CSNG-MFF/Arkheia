@@ -4,7 +4,7 @@ const NavBar = () => {
     return (
         <header>
             <div className="container">
-                <Link to="/">
+                <Link to="/simulations">
                     <h1>Simulations</h1>
                 </Link>
                 <Link to="/about">

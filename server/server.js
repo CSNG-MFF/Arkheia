@@ -3,6 +3,7 @@ require('dotenv').config()
 const express  = require('express');
 const mongoose = require('mongoose')
 
+const simulationRoutes = require('./routes/simulations')
 const aboutRoutes = require('./routes/about')
 const documentationRoutes = require('./routes/documentation')
 const simulationRunsRoutes = require('./routes/simulation_runs')
@@ -21,6 +22,8 @@ app.use((req, res, next) => {
 app.use('/about', aboutRoutes)
 
 app.use('/documentation', documentationRoutes)
+
+app.use('/simulations', simulationRoutes)
 
 app.use('/simulation_runs', simulationRunsRoutes)
 
