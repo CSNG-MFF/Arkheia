@@ -1,20 +1,36 @@
 import { Link } from 'react-router-dom'
+//reactstrap
 
-const NavBar = () => {
+import React from 'react'
+import {
+    Collapse,
+    Navbar,
+    NavbarToggler,
+    NavbarBrand,
+    Nav,
+    NavItem,
+    NavLink,
+  } from 'reactstrap';
+
+
+const NavBar = (args) => {
     return (
-        <header>
-            <div className="container">
-                <Link to="/simulations">
-                    <h1>Simulations</h1>
-                </Link>
-                <Link to="/about">
-                    <h1>About</h1>
-                </Link>
-                <Link to="/documentation">
-                    <h1>Documentation</h1>
-                </Link>
-            </div>
-        </header>
+      <div>
+        <Navbar {...args} className="flex-column">
+          <NavbarBrand href="/">Arkheia</NavbarBrand>
+          <Nav className="flex-column"navbar>
+            <NavItem>
+              <NavLink href="/simulations">Simulations</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/about">About</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/documentation">Documentation</NavLink>
+            </NavItem>
+          </Nav>
+        </Navbar>
+      </div>
     )
 }
 
