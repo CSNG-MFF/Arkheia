@@ -27,11 +27,10 @@ const NavBar = (args) => {
     return (
       <div style={{
         padding: 30,
-        paddingRight: 50
       }}>
         <Navbar color='light' light expand="md">
           <NavbarBrand href="/">Arkheia</NavbarBrand>
-          <Nav className="mr-auto" pills justified style={{ paddingRight: '' }} navbar>
+          <Nav className="mr-auto" pills justified navbar>
             <NavItem>
               <NavLink href="/simulations">Simulations</NavLink>
             </NavItem>
