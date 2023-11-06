@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import ReactMarkdown from 'react-markdown'
+import Markdown from 'react-markdown'
 
 const Installation = () => {
   const [documentation, setDocumentation ] = useState('')
 
   useEffect(() => {
-    const path = 'README.md'
+    const path = '/documentation/README.md'
     fetch(path)
       .then(response => response.text())
       .then(data => setDocumentation(data));
   }, []);
   return (
     <div className = "installation">
-      <ReactMarkdown>{documentation}</ReactMarkdown>
+      <Markdown>{documentation}</Markdown>
     </div>
   )
 }

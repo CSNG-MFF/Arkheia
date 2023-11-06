@@ -10,26 +10,24 @@ import {
     Nav,
     NavItem,
     NavLink,
-    UncontrolledDropdown,
     DropdownItem,
     DropdownMenu,
     DropdownToggle,
-    Button,
     Dropdown
   } from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-const NavBar = (args) => {
+const NavBar = () => {
     const [documentationDropDownOpen, setDocumentationDropDownOpen] = useState(false);
 
     const toggleDocumentationDropDown = () => setDocumentationDropDownOpen(!documentationDropDownOpen);
 
     return (
       <div style={{
-        padding: 30,
-      }}>
+        paddingTop: 30
+      }} className="Navbar">
         <Navbar color='light' light expand="md">
-          <NavbarBrand href="/">Arkheia</NavbarBrand>
+          <NavbarBrand style={{paddingLeft: 20}} href="/">Arkheia</NavbarBrand>
           <Nav className="mr-auto" pills justified navbar>
             <NavItem>
               <NavLink href="/simulations">Simulations</NavLink>

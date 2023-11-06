@@ -11,9 +11,8 @@ import {
 const Footer = () => {
   return (
     <footer className="footer" style={{ 
-      position: 'absolute',
-      bottom: '0',
       width: '100%', 
+      marginTop: 'auto'
       }}>
       <Navbar color='dark' dark >
         <Nav style={{ float: 'left' }}>
