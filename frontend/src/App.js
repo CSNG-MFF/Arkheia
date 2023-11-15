@@ -12,6 +12,7 @@ import Client from './pages/documentation/Client'
 import Installation from './pages/documentation/Installation'
 
 import Footer from './components/Footer/Footer'
+import ParameterSearch from './pages/ParameterSearch'
 
 function App() {
   return (
@@ -25,8 +26,12 @@ function App() {
               element={ <Home/>}
               />
             <Route 
-              path="/simulations"
+              path="/simulation_runs"
               element={ <Simulations/> }
+            />
+            <Route 
+              path="/parameter_search"
+              element={ <ParameterSearch/> }
             />
             <Route 
               path="/about"

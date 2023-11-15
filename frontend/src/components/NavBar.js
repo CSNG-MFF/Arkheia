@@ -30,7 +30,10 @@ const NavBar = () => {
           <NavbarBrand style={{paddingLeft: 20}} href="/">Arkheia</NavbarBrand>
           <Nav className="mr-auto" pills justified navbar>
             <NavItem>
-              <NavLink href="/simulations">Simulations</NavLink>
+              <NavLink href="/simulation_runs">Simulation runs</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/parameter_search">Parameter searches</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="/about">About</NavLink>
