@@ -5,6 +5,7 @@
 //reactstrap
 import React, { useState } from 'react'
 import {
+    Button,
     Navbar,
     NavbarBrand,
     Nav,
@@ -13,7 +14,8 @@ import {
     DropdownItem,
     DropdownMenu,
     DropdownToggle,
-    Dropdown
+    Dropdown,
+    Progress
   } from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -26,22 +28,35 @@ const NavBar = () => {
       <div style={{
         paddingTop: 30
       }} className="Navbar">
-        <Navbar color='light' light expand="md">
+        <Progress
+          animated
+          color="success"
+          value={1}
+        />
+        <Navbar style={{paddingRight: 20}} color='light' light expand="md">
           <NavbarBrand style={{paddingLeft: 20}} href="/">Arkheia</NavbarBrand>
           <Nav className="mr-auto" pills justified navbar>
-            <NavItem>
-              <NavLink href="/simulation_runs">Simulation runs</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/parameter_search">Parameter searches</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/about">About</NavLink>
-            </NavItem>
-            <Dropdown group isOpen={documentationDropDownOpen} toggle={toggleDocumentationDropDown}>
+            <Button color='light'>
               <NavItem>
-                <NavLink href="/documentation">Documentation</NavLink>
+                <NavLink style={{ whiteSpace: 'nowrap' }} href="/simulation_runs">Simulation runs</NavLink>
               </NavItem>
+            </Button>
+            <Button color='light'>
+              <NavItem>
+                <NavLink style={{ whiteSpace: 'nowrap' }} href="/parameter_search">Parameter searches</NavLink>
+              </NavItem>
+            </Button>
+            <Button color='light'>
+              <NavItem>
+                <NavLink href="/about">About</NavLink>
+              </NavItem>
+            </Button>
+            <Dropdown group isOpen={documentationDropDownOpen} toggle={toggleDocumentationDropDown}>
+              <Button color='light'>
+                <NavItem>
+                  <NavLink href="/documentation">Documentation</NavLink>
+                </NavItem>
+              </Button>
               <DropdownToggle caret color='light'/>
               <DropdownMenu>
                 <DropdownItem> 

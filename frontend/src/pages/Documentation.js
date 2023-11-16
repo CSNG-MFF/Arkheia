@@ -1,16 +1,64 @@
+import './../styles/documentation.css'
+
 import {
-  ButtonGroup,
-  Button
+  Button, 
+  Row,
+  Col,
+  Card,
+  CardTitle,
+  CardText,
 } from 'reactstrap'
 
 const Documentation = () => {
   return (
       <div className = "documentation">
-        <ButtonGroup>
-          <Button href='/documentation/client'>Client</Button>
-          <Button href='/documentation/api'>API</Button>
-          <Button href='/documentation/installation'>Installation</Button>
-        </ButtonGroup>
+        <Row style={{ paddingBottom: 20}}>
+          <Col>
+            <Card>
+              <CardTitle tag="h1" className='buttonCardTitle'>
+                Client
+              </CardTitle>
+              <CardText className='buttonCardText'>
+                Guide on how to use the Arkheia web application.
+              </CardText>
+              <div className="d-flex justify-content-center">
+                <Button href='/documentation/client' className='buttonButton'>
+                  Go
+                </Button>
+              </div>
+            </Card>
+          </Col>
+          <Col>
+            <Card>
+              <CardTitle tag="h1" className='buttonCardTitle'>
+                API
+              </CardTitle>
+              <CardText className='buttonCardText'>
+                The specification of the Arkheia document model.
+              </CardText>
+              <div className="d-flex justify-content-center">
+                <Button href='/documentation/api' className='buttonButton'>
+                  Go
+                </Button>
+              </div>
+            </Card>
+          </Col>
+          <Col>
+            <Card>
+              <CardTitle tag="h1" className='buttonCardTitle'>
+                Installation
+              </CardTitle>
+              <CardText className='buttonCardText'>
+                Installation and deployment guide.
+              </CardText>
+              <div className="d-flex justify-content-center">
+                <Button href='/documentation/installation' className='buttonButton'>
+                  Go
+                </Button>
+              </div>
+            </Card>
+          </Col>
+        </Row>
       </div>
   )
 }
