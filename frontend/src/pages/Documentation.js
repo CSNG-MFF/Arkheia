@@ -7,11 +7,17 @@ import {
   Card,
   CardTitle,
   CardText,
+  CardHeader
 } from 'reactstrap'
 
 const Documentation = () => {
   return (
       <div className = "documentation">
+        <Row>
+          <Col>
+            <h1 style={{ padding: 150, textAlign: 'center' }}>Arkheia Documentation</h1>
+          </Col>
+        </Row>
         <Row style={{ paddingBottom: 20}}>
           <Col>
             <Card>

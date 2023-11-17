@@ -1,5 +1,5 @@
 import React from "react";
-
+import '../../styles/footer.css'
 // reactstrap components
 import { 
   Navbar,
@@ -12,12 +12,12 @@ const Footer = () => {
   return (
     <footer className="footer" style={{ 
       width: '100%', 
-      marginTop: 'auto'
+      marginTop: 40
       }}>
-      <Navbar color='dark' dark >
+      <Navbar className='footerNavbar' color='secondary' >
         <Nav style={{ float: 'left' }}>
           <NavItem>
-            <NavLink href="http://csng.mff.cuni.cz/">
+            <NavLink className='footerLink'  href="http://csng.mff.cuni.cz/">
               CSNG
             </NavLink>
           </NavItem>

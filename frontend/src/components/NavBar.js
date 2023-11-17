@@ -28,11 +28,6 @@ const NavBar = () => {
       <div style={{
         paddingTop: 30
       }} className="Navbar">
-        <Progress
-          animated
-          color="success"
-          value={1}
-        />
         <Navbar style={{paddingRight: 20}} color='light' light expand="md">
           <NavbarBrand style={{paddingLeft: 20}} href="/">Arkheia</NavbarBrand>
           <Nav className="mr-auto" pills justified navbar>

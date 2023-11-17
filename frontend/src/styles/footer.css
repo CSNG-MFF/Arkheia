@@ -1,0 +1,11 @@
+.footerLink {
+  color: white;
+}
+
+.footerLink:hover {
+  color: rgb(0, 0, 238);
+}
+
+.footerNavbar {
+  padding: 40;
+}
