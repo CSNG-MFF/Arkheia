@@ -1,11 +1,33 @@
+import { IoTrashSharp } from "react-icons/io5";
+import { Button } from "reactstrap";
+
 const SimulationDetail = ({ simulation }) => {
-    return (
-        <div className="simulation-detail">
-            <h4>{simulation.title}</h4>
-            <p>Number: {simulation.number}</p>
-            <p>{simulation.createdAt}</p>
-        </div>
-    )
+  return ( 
+    <tr className="simulation-detail">
+      <td>
+        {simulation.title}
+      </td>
+      <td>
+        {simulation.number}
+      </td>
+      <td>
+        {new Date(simulation.createdAt).toLocaleString('en-GB')}
+      </td>
+      <td>
+        new column
+      </td>
+      <td>a</td>
+      <td>a</td>
+      <td>a</td>
+      <td>a</td>
+      <td>a</td>  
+      <td>
+        <Button>
+          <IoTrashSharp/>
+        </Button>
+      </td>
+    </tr>
+  )
 }
 
 export default SimulationDetail;
