@@ -1,4 +1,6 @@
 import { IoTrashSharp } from "react-icons/io5";
+import { IoMdDownload } from "react-icons/io";
+
 import { Button } from "reactstrap";
 
 const SimulationDetail = ({ simulation }) => {
@@ -20,7 +22,12 @@ const SimulationDetail = ({ simulation }) => {
       <td>a</td>
       <td>a</td>
       <td>a</td>
-      <td>a</td>  
+      <td>a</td>
+      <td>
+        <Button>
+          <IoMdDownload/>
+        </Button>  
+      </td>  
       <td>
         <Button>
           <IoTrashSharp/>

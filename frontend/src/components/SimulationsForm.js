@@ -1,4 +1,11 @@
 import { useState } from "react"
+import { 
+    Button,
+    Form, 
+    FormGroup, 
+    Input,
+    Label
+} from "reactstrap"
 const SimulationForm = () => {
     const [title, setTitle] = useState('')
     const [number, setNumber] = useState('')
@@ -30,22 +37,24 @@ const SimulationForm = () => {
         }
     }
     return (
-        <form className="create" onSubmit={handleSubmit}>
-            <h3>Add new simulation</h3>
-            <label>Title:</label>
-            <input 
-            type="text"
-            onChange={(e) => setTitle(e.target.value)}
-            value={title}/>
+        <Form className="create" onSubmit={handleSubmit}>
+            <FormGroup>
+                <Label>Add new simulation</Label>
+                <Label>Title:</Label>
+                <Input 
+                type="text"
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}/>
 
-            <label>Number:</label>
-            <input 
-            type="number"
-            onChange={(e) => setNumber(e.target.value)}
-            value={number}/>
-            <button>Add Simulation</button>
+                <Label>Number:</Label>
+                <Input 
+                type="number"
+                onChange={(e) => setNumber(e.target.value)}
+                value={number}/>
+            </FormGroup>
+            <Button>Add Simulation</Button>
             {error && <div className="error">{error}</div>}
-        </form>
+        </Form>
     )
 }
 

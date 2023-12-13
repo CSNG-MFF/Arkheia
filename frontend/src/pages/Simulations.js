@@ -104,6 +104,14 @@ const Simulations = () => {
             >
               Click the 'idk yet' icon to inspect the results (figures) generated during the given simulation run.
             </UncontrolledTooltip>
+            <th id="Download">
+              Download simulation run
+            </th>
+            <UncontrolledTooltip
+              target="Download"
+            >
+              Click the 'idk yet' icon to download one simulation run from the table
+            </UncontrolledTooltip>
             <th id="Delete">
               Delete simulation run
             </th>
