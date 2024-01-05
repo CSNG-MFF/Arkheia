@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 
 import SimulationDetail from "../components/SimulationDetails"
-import SimulationForm from "../components/SimulationsForm"
 
 import {
   Table,
@@ -25,6 +24,7 @@ const Simulations = () => {
 
   return (
     <div className = "Simulations">
+      
       <Table
       bordered
       hover
@@ -128,7 +128,6 @@ const Simulations = () => {
           ))}
         </tbody>
       </Table>
-      <SimulationForm/>
     </div>
   )
 }
