@@ -10,6 +10,7 @@ import Documentation from './pages/Documentation'
 import Api from './pages/documentation/Api'
 import Client from './pages/documentation/Client'
 import Installation from './pages/documentation/Installation'
+import ParametersById from './pages/ParametersById'
 
 import Footer from './components/Footer/Footer'
 import ParameterSearch from './pages/ParameterSearch'
@@ -24,7 +25,11 @@ function App() {
             <Route
               path="/"
               element={ <Home/>}
-              />
+            />
+            <Route
+              path="/:id/parameters"
+              element={ <ParametersById/>}
+            />
             <Route 
               path="/simulation_runs"
               element={ <Simulations/> }

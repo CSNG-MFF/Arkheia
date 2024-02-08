@@ -1,11 +1,14 @@
 import { IoTrashSharp } from "react-icons/io5";
 import { IoMdDownload } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
+
 
 import React, { useState, useRef } from 'react'
 
-import { Button, Alert, Popover, PopoverBody } from "reactstrap";
+import { Button, Alert, UncontrolledPopover, PopoverBody } from "reactstrap";
 
 const SimulationDetail = ({ simulation }) => {
+  const history = useNavigate();
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -13,32 +16,11 @@ const SimulationDetail = ({ simulation }) => {
     setPopoverOpen(!popoverOpen);
   };
 
-  const data = {
-      "name": "John Doe",
-      "age": 30,
-      "city": "New York",
-      "isStudent": false,
-      "hobbies": ["reading", "traveling", "coding"],
-      "address": {
-        "street": "123 Main St",
-        "zipCode": "10001",
-        "country": "USA"
-      },
-      "friends": [
-        {
-          "name": "Jane Smith",
-          "age": 28,
-          "isStudent": true
-        },
-        {
-          "name": "Bob Johnson",
-          "age": 32,
-          "isStudent": false
-        }
-      ]
-    }
-  
-  
+  const handleParamatersView = () => {
+    const id = simulation._id;
+    history(`/${id}/parameters`);
+  }
+
   const handleDelete = async () => {
     const response = await fetch('/simulation_runs/' + simulation._id, {
       method: 'DELETE'
@@ -47,12 +29,14 @@ const SimulationDetail = ({ simulation }) => {
 
     if (!response.ok) {
       console.error(json.error);
+      window.location.reload();
     }
 
     if (response.ok) {
       console.log('simulation deleted');
       setAlertDeleteVisible(true);  // Show the alert
       setTimeout(() => setAlertDeleteVisible(false), 3000);
+      setTimeout(() => window.location.reload(), 2000);
     }
   }
   return (
@@ -64,7 +48,7 @@ const SimulationDetail = ({ simulation }) => {
           </Alert>
         </td>
     </tr>
-      <tr className="simulation-detail">
+      <tr className="simulation-detail" style={{ textAlign: 'center'}}>
         <td>
           {new Date(simulation.createdAt).toLocaleString('en-GB')}
         </td>
@@ -77,18 +61,21 @@ const SimulationDetail = ({ simulation }) => {
         <td>
           {simulation.model_name}
         </td>
-        <td>
-          <Button id="popoverButton" type="button">
-            Open Popover
+        <td style={{ textAlign: 'center', padding: 0 }}>
+          <Button id="model_description_popover" type="button" style={{ width: '100%', height: '100%' }}>
+            View
           </Button>
-          <Popover placement="bottom" isOpen={popoverOpen} target="popoverButton" toggle={togglePopover}>
+          <UncontrolledPopover trigger="legacy" placement="bottom" isOpen={popoverOpen} target="model_description_popover" toggle={togglePopover}>
             <PopoverBody>
-              This is the content of my popover.
-              
+              {simulation.model_description}
             </PopoverBody>
-          </Popover>
+          </UncontrolledPopover>
         </td>
-        <td>a</td>
+        <td>
+          <Button style={{ width: '100%', height: '100%' }} onClick={handleParamatersView}>
+            View
+          </Button>
+        </td>
         <td>a</td>
         <td>a</td>
         <td>a</td>

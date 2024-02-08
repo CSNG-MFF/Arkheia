@@ -14,6 +14,14 @@ const SimulationRunSchema = new Schema({
   creation_data: {
     type: Date,
     required: true
+  },
+  model_description: {
+    type: String,
+    required: true
+  },
+  parameters: {
+    type: Schema.Types.Mixed,
+    required: true
   }
 }, { timestamps: true });
 

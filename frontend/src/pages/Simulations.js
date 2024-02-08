@@ -30,7 +30,7 @@ const Simulations = () => {
       hover
       size="sm"
       >
-        <thead>
+        <thead style={{ textAlign: 'center'}}>
           <tr>
             <th id="SubmissionDate">
               Submission date	

@@ -17,7 +17,7 @@ const Footer = () => {
       <Navbar className='footerNavbar' color='secondary' >
         <Nav style={{ float: 'left' }}>
           <NavItem>
-            <NavLink className='footerLink'  href="http://csng.mff.cuni.cz/">
+            <NavLink className='footerLink' href="http://csng.mff.cuni.cz/">
               CSNG
             </NavLink>
           </NavItem>

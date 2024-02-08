@@ -19,53 +19,67 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 const NavBar = () => {
   const inputRef = useRef(null);
+  
 
   const [alertVisible, setAlertVisible] = useState(false);
   const handleFolderUpload = async (event) => {
+    let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (file.name === "info") {
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-          const contents = e.target.result;
-          const simulation_run_name = contents.match(/'simulation_run_name': '([^']*)'/)[1];
-          const model_name = contents.match(/'model_name': '([^']*)'/)[1];
-          const creation_data_bad = contents.match(/'creation_data': '([^']*)'/)[1];
-          
-          const [datePart, timePart] = creation_data_bad.split("-");
-          const [day, month, year] = datePart.split("/");
-          const [hours, minutes, seconds] = timePart.split(":");
-          const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
-          const creation_data = date.toISOString();
+      const reader = new FileReader();
+      const filePromise = new Promise((resolve, reject) => {
+      reader.onload = async function(e) {
+        const contents = e.target.result;
+          if (file.name === "sim_info.json") {
+            const jsonData = JSON.parse(contents);
 
-          const simulation = {simulation_run_name, model_name, creation_data}
-          console.log(simulation);
+            simulation_run_name = jsonData.simulation_run_name;
+            model_name = jsonData.model_name;
+            const unformatted_creation_data = jsonData.run_date;
+            model_description = jsonData.model_description;
 
-          const response = await fetch('/simulation_runs', {
-            method: 'POST',
-            body: JSON.stringify(simulation),
-            headers: {
-              'Content-Type' : 'application/json'
-            }
-          })
-
-          const json = await response.json()
-          if (!response.ok) {
-            console.error(json.error);
+            const [datePart, timePart] = unformatted_creation_data.split("-");
+            const [day, month, year] = datePart.split("/");
+            const [hours, minutes, seconds] = timePart.split(":");
+            const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+            creation_data = date.toISOString();
           }
-
-          if (response.ok) {
-            console.log('new simulation added');
-            setAlertVisible(true);  // Show the alert
-            setTimeout(() => setAlertVisible(false), 3000);
-            //window.location.reload();
-            inputRef.current.value = "";
+          else if (file.name === "parameters.json") {
+              parametersJsonData = JSON.parse(contents);
           }
+          resolve();
         };
+        reader.onerror = reject;
+      });
+
       reader.readAsText(file);
+      await filePromise;
     }
-  }
+
+    const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
+    console.log(simulationWithParameters);
+    const response = await fetch('/simulation_runs', {
+      method: 'POST',
+      body: JSON.stringify(simulationWithParameters),
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    })
+
+    const json = await response.json()
+    if (!response.ok) {
+      console.error(json.error);
+    }
+
+    if (response.ok) {
+      console.log('new simulation added');
+      setAlertVisible(true);  // Show the alert
+      setTimeout(() => setAlertVisible(false), 3000);
+      setTimeout(() => window.location.reload(), 2000);
+      inputRef.current.value = "";
+    }
+
 };
 
   const [documentationDropDownOpen, setDocumentationDropDownOpen] = useState(false);
