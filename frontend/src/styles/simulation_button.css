@@ -1,0 +1,25 @@
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color:darkblue;
+}
+
+.icon-button:hover {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: black;
+}
+
+.icon-button:active {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: black;
+}
+
+
+.icon {
+  cursor: 'pointer';
+}

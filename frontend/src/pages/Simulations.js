@@ -70,7 +70,7 @@ const Simulations = () => {
             <UncontrolledTooltip
               target="ModelDescription"
             >
-              Click the 'idk yet' icon to inspect the description of the model that was simulated.
+              Click the eye icon to inspect the description of the model that was simulated.
             </UncontrolledTooltip>
             <th id="Parameters">
               View parameters	
@@ -78,7 +78,7 @@ const Simulations = () => {
             <UncontrolledTooltip
               target="Parameters"
             >
-              Click the 'idk yet' icon to inspect the full parametrization of the given simulation run.
+              Click the eye icon to inspect the full parametrization of the given simulation run.
             </UncontrolledTooltip>
             <th id="Stimuli">
               View stimuli
@@ -86,7 +86,7 @@ const Simulations = () => {
             <UncontrolledTooltip
               target="Stimuli"
             >
-              Click the 'idk yet' icon to inspect the stimuli that were shown during the given simulation run.
+              Click the eye icon to inspect the stimuli that were shown during the given simulation run.
             </UncontrolledTooltip>
             <th id="ExperimentalProtocols">
               View experimental protocols
@@ -94,7 +94,7 @@ const Simulations = () => {
             <UncontrolledTooltip
               target="ExperimentalProtocols"
             >
-              Click the 'idk yet' icon to inspect the experimental protocols that were performed over the model during the given simulation run.
+              Click the eye icon to inspect the experimental protocols that were performed over the model during the given simulation run.
             </UncontrolledTooltip>
             <th id="Results">
               View results
@@ -102,7 +102,7 @@ const Simulations = () => {
             <UncontrolledTooltip
               target="Results"
             >
-              Click the 'idk yet' icon to inspect the results (figures) generated during the given simulation run.
+              Click the eye icon to inspect the results (figures) generated during the given simulation run.
             </UncontrolledTooltip>
             <th id="Download">
               Download simulation run
@@ -110,7 +110,7 @@ const Simulations = () => {
             <UncontrolledTooltip
               target="Download"
             >
-              Click the 'idk yet' icon to download one simulation run from the table
+              Click the eye icon to download one simulation run from the table
             </UncontrolledTooltip>
             <th id="Delete">
               Delete simulation run
@@ -118,7 +118,7 @@ const Simulations = () => {
             <UncontrolledTooltip
               target="Delete"
             >
-              Click the 'idk yet' icon to delete one simulation run from the table
+              Click the eye icon to delete one simulation run from the table
             </UncontrolledTooltip>
           </tr>
         </thead>

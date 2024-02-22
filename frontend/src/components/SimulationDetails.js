@@ -1,11 +1,13 @@
 import { IoTrashSharp } from "react-icons/io5";
 import { IoMdDownload } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
-
+import { IoEye } from "react-icons/io5";
 
 import React, { useState, useRef } from 'react'
 
 import { Button, Alert, UncontrolledPopover, PopoverBody } from "reactstrap";
+
+import '../styles/simulation_button.css'
 
 const SimulationDetail = ({ simulation }) => {
   const history = useNavigate();
@@ -14,13 +16,28 @@ const SimulationDetail = ({ simulation }) => {
 
   const togglePopover = () => {
     setPopoverOpen(!popoverOpen);
-  };
+  }
 
   const handleParamatersView = () => {
     const id = simulation._id;
     history(`/${id}/parameters`);
   }
 
+  const handleStimuliView = () => {
+    const id = simulation._id;
+    history(`/${id}/stimuli`);
+  }
+  
+  const handleExpProtocolsView = () => {
+    const id = simulation._id;
+    history(`/${id}/experimental-protocols`);
+  }
+
+  const handleResultsView = () => {
+    const id = simulation._id;
+    history(`/${id}/results`);
+  }
+  
   const handleDelete = async () => {
     const response = await fetch('/simulation_runs/' + simulation._id, {
       method: 'DELETE'
@@ -48,7 +65,7 @@ const SimulationDetail = ({ simulation }) => {
           </Alert>
         </td>
     </tr>
-      <tr className="simulation-detail" style={{ textAlign: 'center'}}>
+      <tr>
         <td>
           {new Date(simulation.createdAt).toLocaleString('en-GB')}
         </td>
@@ -62,8 +79,8 @@ const SimulationDetail = ({ simulation }) => {
           {simulation.model_name}
         </td>
         <td style={{ textAlign: 'center', padding: 0 }}>
-          <Button id="model_description_popover" type="button" style={{ width: '100%', height: '100%' }}>
-            View
+          <Button id="model_description_popover" type="button" className="icon-button">
+            <IoEye size={28} className="icon" />
           </Button>
           <UncontrolledPopover trigger="legacy" placement="bottom" isOpen={popoverOpen} target="model_description_popover" toggle={togglePopover}>
             <PopoverBody>
@@ -71,22 +88,34 @@ const SimulationDetail = ({ simulation }) => {
             </PopoverBody>
           </UncontrolledPopover>
         </td>
-        <td>
-          <Button style={{ width: '100%', height: '100%' }} onClick={handleParamatersView}>
-            View
+        <td style={{ textAlign: 'center', padding: 0 }}>
+          <Button className="icon-button" onClick={handleParamatersView}>
+            <IoEye size={28} className="icon" />
           </Button>
         </td>
-        <td>a</td>
-        <td>a</td>
-        <td>a</td>
-        <td>
-          <Button>
-            <IoMdDownload/>
+        <td style={{ textAlign: 'center', padding: 0 }}>
+          <Button className="icon-button" onClick={handleStimuliView}>
+            <IoEye size={28} className="icon" />
+          </Button>
+        </td>
+        <td style={{ textAlign: 'center', padding: 0 }} >
+          <Button className="icon-button" onClick={handleExpProtocolsView}>
+            <IoEye size={28} className="icon" />
+          </Button>
+        </td>
+        <td style={{ textAlign: 'center', padding: 0 }} >
+          <Button className="icon-button" onClick={handleResultsView}>
+            <IoEye size={28} className="icon" />
+          </Button>
+        </td>
+        <td style={{ textAlign: 'center', padding: 0 }} >
+          <Button className="icon-button">
+            <IoMdDownload size={28} className="icon" />
           </Button>  
         </td>  
-        <td>
-          <Button onClick={handleDelete}>
-            <IoTrashSharp/>
+        <td style={{ textAlign: 'center', padding: 0 }} >
+          <Button className="icon-button" onClick={handleDelete}>
+            <IoTrashSharp size={28} className="icon" />
           </Button>
         </td>
       </tr>

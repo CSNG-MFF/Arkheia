@@ -25,6 +25,7 @@ const ParametersById = () => {
 
   return (
     <div>
+      <h2>Parameters of the simulation</h2>
       {parameters ? (
         <pre>{JSON.stringify(parameters, null, 2)}</pre>
       ) : (

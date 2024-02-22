@@ -24,6 +24,7 @@ const NavBar = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const handleFolderUpload = async (event) => {
     let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
+    const stimuli = [];
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -46,7 +47,19 @@ const NavBar = () => {
             creation_data = date.toISOString();
           }
           else if (file.name === "parameters.json") {
-              parametersJsonData = JSON.parse(contents);
+            parametersJsonData = JSON.parse(contents);
+          }
+          else if (file.name === "stimuli.json") {
+            const jsonData = JSON.parse(contents);
+            for (var stimulus of jsonData) {
+              const code_name = stimulus.code;
+              const short_description = stimulus.short_description;
+              const long_description = stimulus.long_description;
+              const parameters = stimulus.parameters;
+              const movie = stimulus.movie;
+              const whole_stimuli = { code_name, short_description, long_description, parameters, movie };
+              stimuli.push(whole_stimuli);
+            }
           }
           resolve();
         };
@@ -57,8 +70,23 @@ const NavBar = () => {
       await filePromise;
     }
 
+
     const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
-    console.log(simulationWithParameters);
+
+    for (var stimulus of stimuli) {
+      const response = await fetch('/stimuli', {
+        method: 'POST',
+        body: JSON.stringify(stimulus),
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        console.error(json.error);
+      }
+    }
+
     const response = await fetch('/simulation_runs', {
       method: 'POST',
       body: JSON.stringify(simulationWithParameters),
