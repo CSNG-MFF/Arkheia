@@ -58,67 +58,63 @@ const SimulationDetail = ({ simulation }) => {
   }
   return (
     <>
-    <tr className="simulation-detail" style={{ position: 'relative' }}>
-        <td colSpan="11">
-          <Alert style={{ position: 'absolute', width: '100%', zIndex: 1 }} color="danger" isOpen={alertDeleteVisible} toggle={() => setAlertDeleteVisible(false)}>
-            Simulation deleted!
-          </Alert>
-        </td>
+    <Alert style={{ position: 'absolute', width: '93%' }} color="danger" isOpen={alertDeleteVisible} toggle={() => setAlertDeleteVisible(false)}>
+      Simulation deleted!
+    </Alert>
+    <tr>
+      <td>
+        {new Date(simulation.createdAt).toLocaleString('en-GB')}
+      </td>
+      <td>
+        {new Date(simulation.creation_data).toLocaleString('en-GB')}
+      </td>
+      <td>
+        {simulation.simulation_run_name}
+      </td>
+      <td>
+        {simulation.model_name}
+      </td>
+      <td style={{ textAlign: 'center', padding: 0 }}>
+        <Button id="model_description_popover" type="button">
+          <IoEye size={28} className="icon" />
+        </Button>
+        <UncontrolledPopover trigger="legacy" placement="bottom" isOpen={popoverOpen} target="model_description_popover" toggle={togglePopover}>
+          <PopoverBody>
+            {simulation.model_description}
+          </PopoverBody>
+        </UncontrolledPopover>
+      </td>
+      <td style={{ textAlign: 'center', padding: 0 }}>
+        <Button id="icon-button" onClick={handleParamatersView} >
+          <IoEye size={28} className="icon"/>
+        </Button>
+      </td>
+      <td style={{ textAlign: 'center', padding: 0 }}>
+        <Button id="icon-button" onClick={handleStimuliView}>
+          <IoEye size={28} className="icon" />
+        </Button>
+      </td>
+      <td style={{ textAlign: 'center', padding: 0 }} >
+        <Button id="icon-button" onClick={handleExpProtocolsView}>
+          <IoEye size={28} className="icon" />
+        </Button>
+      </td>
+      <td style={{ textAlign: 'center', padding: 0 }} >
+        <Button id="icon-button" onClick={handleResultsView}>
+          <IoEye size={28} className="icon" />
+        </Button>
+      </td>
+      <td style={{ textAlign: 'center', padding: 0 }} >
+        <Button id="icon-button">
+          <IoMdDownload size={28} className="icon" />
+        </Button>  
+      </td>  
+      <td style={{ textAlign: 'center', padding: 0 }} >
+        <Button id="icon-button" onClick={handleDelete}>
+          <IoTrashSharp size={28} className="icon" />
+        </Button>
+      </td>
     </tr>
-      <tr>
-        <td>
-          {new Date(simulation.createdAt).toLocaleString('en-GB')}
-        </td>
-        <td>
-          {new Date(simulation.creation_data).toLocaleString('en-GB')}
-        </td>
-        <td>
-          {simulation.simulation_run_name}
-        </td>
-        <td>
-          {simulation.model_name}
-        </td>
-        <td style={{ textAlign: 'center', padding: 0 }}>
-          <Button id="model_description_popover" type="button">
-            <IoEye size={28} className="icon" />
-          </Button>
-          <UncontrolledPopover trigger="legacy" placement="bottom" isOpen={popoverOpen} target="model_description_popover" toggle={togglePopover}>
-            <PopoverBody>
-              {simulation.model_description}
-            </PopoverBody>
-          </UncontrolledPopover>
-        </td>
-        <td style={{ textAlign: 'center', padding: 0 }}>
-          <Button id="icon-button" onClick={handleParamatersView} >
-            <IoEye size={28} className="icon"/>
-          </Button>
-        </td>
-        <td style={{ textAlign: 'center', padding: 0 }}>
-          <Button id="icon-button" onClick={handleStimuliView}>
-            <IoEye size={28} className="icon" />
-          </Button>
-        </td>
-        <td style={{ textAlign: 'center', padding: 0 }} >
-          <Button id="icon-button" onClick={handleExpProtocolsView}>
-            <IoEye size={28} className="icon" />
-          </Button>
-        </td>
-        <td style={{ textAlign: 'center', padding: 0 }} >
-          <Button id="icon-button" onClick={handleResultsView}>
-            <IoEye size={28} className="icon" />
-          </Button>
-        </td>
-        <td style={{ textAlign: 'center', padding: 0 }} >
-          <Button id="icon-button">
-            <IoMdDownload size={28} className="icon" />
-          </Button>  
-        </td>  
-        <td style={{ textAlign: 'center', padding: 0 }} >
-          <Button id="icon-button" onClick={handleDelete}>
-            <IoTrashSharp size={28} className="icon" />
-          </Button>
-        </td>
-      </tr>
     </>
   )
 }
