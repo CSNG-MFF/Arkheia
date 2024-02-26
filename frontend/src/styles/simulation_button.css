@@ -1,18 +1,22 @@
-.icon-button {
+#icon-button, 
+#model_description_popover
+{
   background: none;
   border: none;
   cursor: pointer;
-  color:darkblue;
+  color:blue;
 }
 
-.icon-button:hover {
+#icon-button:hover,
+#model_description_popover:hover {
   background: none;
   border: none;
   cursor: pointer;
   color: black;
 }
 
-.icon-button:active {
+#icon-button:active, 
+#model_description_popover:active {
   background: none;
   border: none;
   cursor: pointer;
