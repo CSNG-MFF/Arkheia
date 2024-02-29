@@ -25,7 +25,7 @@ const SimulationDetail = ({ simulation }) => {
 
   const handleStimuliView = () => {
     const id = simulation._id;
-    history(`/${id}/stimuli`);
+    history(`/${id}/stimuli`, { state: simulation });
   }
   
   const handleExpProtocolsView = () => {

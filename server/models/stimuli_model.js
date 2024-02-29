@@ -25,4 +25,4 @@ const StimuliSchema = new Schema({
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('stimuli_collection', StimuliSchema);
+module.exports = mongoose.model('Stimuli', StimuliSchema);

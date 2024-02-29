@@ -3,7 +3,7 @@ const {
     createStimulus,
     getStimuli,
     deleteStimulus,
-    getStimulus
+    getStimuliForSimulation
 } = require('../controllers/stimuliController'); // Import the stimulus controller functions
 
 const router = express.Router();
@@ -14,6 +14,6 @@ router.post('/', createStimulus); // Route to create a new stimulus
 
 router.delete('/:id', deleteStimulus); // Route to delete a stimulus by ID
 
-router.get('/:id', getStimulus); // Route to get a stimulus by ID
+router.get('/:id', getStimuliForSimulation); // Route to get stimuli for the whole simulation
 
 module.exports = router;

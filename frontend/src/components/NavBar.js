@@ -73,6 +73,8 @@ const NavBar = () => {
 
     const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
 
+    const savedStimulus = [];
+
     for (var stimulus of stimuli) {
       const response = await fetch('/stimuli', {
         method: 'POST',
@@ -85,8 +87,13 @@ const NavBar = () => {
       if (!response.ok) {
         console.error(json.error);
       }
+      else {
+        savedStimulus.push(json._id);
+      }
     }
 
+    simulationWithParameters.stimuliIds = savedStimulus;
+    console.log(simulationWithParameters);
     const response = await fetch('/simulation_runs', {
       method: 'POST',
       body: JSON.stringify(simulationWithParameters),

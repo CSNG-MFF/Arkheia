@@ -1,8 +1,6 @@
-const Stimuli = require('../models/stimuli_model'); // Import the Stimuli model
 const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
-
+const Simulation = require('../models/simulation_run_model');
+const Stimuli = require('../models/stimuli_model'); // Import the Stimuli model
 
 // Get all stimuli
 const getStimuli = async (req, res) => {
@@ -48,25 +46,28 @@ const deleteStimulus = async (req, res) => {
 };
 
 // Get a stimulus by ID
-const getStimulus = async (req, res) => {
+const getStimuliForSimulation = async (req, res) => {
+  
   const { id } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'Bad format of ID' });
+  if (!mongoose.Types.ObjectId.isValid( id )) {
+    return res.status(404).json({ error: 'Bad format of simulation ID' });
   }
-
-  const stimulus = await Stimuli.findOne({ _id: id });
-
-  if (!stimulus) {
-    return res.status(400).json({ error: 'No such stimulus' });
+  try {
+    const simulation = await Simulation.findOne({ _id: id }).populate('stimuli');
+    if (!simulation) {
+      return res.status(404).json({ error: 'Simulation not found' });
+    }
+    res.status(200).json(simulation.stimuli);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
-
-  res.status(200).json(stimulus);
 };
 
 module.exports = {
   getStimuli,
   createStimulus,
   deleteStimulus,
-  getStimulus
+  getStimuliForSimulation
 };
