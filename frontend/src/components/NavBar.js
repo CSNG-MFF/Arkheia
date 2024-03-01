@@ -57,8 +57,22 @@ const NavBar = () => {
               const long_description = stimulus.long_description;
               const parameters = stimulus.parameters;
               const movie = stimulus.movie;
-              const whole_stimuli = { code_name, short_description, long_description, parameters, movie };
-              stimuli.push(whole_stimuli);
+              const movieFilePath = file.webkitRelativePath.replace(file.name, '') + movie;
+
+              // Find the movie file in the files array
+              const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
+
+              console.log(movieFile);
+              if (movieFile) {
+                console.log(movieFile);
+                const movieReader = new FileReader();
+                movieReader.onload = function(e) {
+                  const base64MovieData = e.target.result;
+                  const whole_stimuli = { code_name, short_description, long_description, parameters, movie: base64MovieData };
+                  stimuli.push(whole_stimuli);
+                };
+                movieReader.readAsDataURL(movieFile);
+              }
             }
           }
           resolve();
