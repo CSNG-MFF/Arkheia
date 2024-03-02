@@ -19,7 +19,6 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
   
   const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(Array(stimuli.length).fill(false));
   const [parameterPopoverOpen, setParameterPopoverOpen] = useState(Array(stimuli.length).fill(false));
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   const toggleLongDescriptionPopover = (index) => {
     const newPopoverState = [...longDescriptionPopoverOpen];

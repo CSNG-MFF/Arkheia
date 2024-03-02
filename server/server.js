@@ -7,6 +7,7 @@ const aboutRoutes = require('./routes/about')
 const documentationRoutes = require('./routes/documentation')
 const simulationRunsRoutes = require('./routes/simulation_runs')
 const stimuliRoutes = require('./routes/stimuli')
+const expProtocolRoutes = require('./routes/exp_protocol')
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use('/documentation', documentationRoutes)
 app.use('/simulation_runs', simulationRunsRoutes)
 
 app.use('/stimuli', stimuliRoutes);
+
+app.use('/exp_protocols', expProtocolRoutes);
 
 
 //connection to the database

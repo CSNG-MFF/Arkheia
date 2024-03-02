@@ -23,7 +23,9 @@ const SimulationRunSchema = new Schema({
     type: Schema.Types.Mixed,
     required: true
   },
-  stimuli: [{ type: Schema.Types.ObjectId, ref: 'Stimuli' }]
+  stimuli: [{ type: Schema.Types.ObjectId, ref: 'Stimuli' }],
+  exp_protocols: [{ type: Schema.Types.ObjectId, ref: 'ExpProtocols'}]
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('simulation_runs_collection', SimulationRunSchema);

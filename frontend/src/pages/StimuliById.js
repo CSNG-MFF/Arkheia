@@ -2,8 +2,7 @@ import { useEffect, useState } from "react"
 import { useLocation } from 'react-router-dom';
 
 import {
-  Table,
-  UncontrolledTooltip
+  Table
 } from 'reactstrap'
 
 import StimuliByIdsTableBody from "../components/StimuliByIdsTableBody";
@@ -29,6 +28,7 @@ const StimuliById = () => {
   }, [simulation._id]);
   return (
     <div>
+      <h1 className="text-center">Stimuli</h1>
       <Table
       bordered
       hover

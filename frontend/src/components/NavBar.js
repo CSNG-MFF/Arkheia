@@ -25,6 +25,7 @@ const NavBar = () => {
   const handleFolderUpload = async (event) => {
     let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
     const stimuli = [];
+    const expProtocols = [];
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -32,104 +33,134 @@ const NavBar = () => {
       const filePromise = new Promise((resolve, reject) => {
       reader.onload = async function(e) {
         const contents = e.target.result;
-          if (file.name === "sim_info.json") {
-            const jsonData = JSON.parse(contents);
+        if (file.name === "sim_info.json") {
+          const jsonData = JSON.parse(contents);
 
-            simulation_run_name = jsonData.simulation_run_name;
-            model_name = jsonData.model_name;
-            const unformatted_creation_data = jsonData.run_date;
-            model_description = jsonData.model_description;
+          simulation_run_name = jsonData.simulation_run_name;
+          model_name = jsonData.model_name;
+          const unformatted_creation_data = jsonData.run_date;
+          model_description = jsonData.model_description;
 
-            const [datePart, timePart] = unformatted_creation_data.split("-");
-            const [day, month, year] = datePart.split("/");
-            const [hours, minutes, seconds] = timePart.split(":");
-            const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
-            creation_data = date.toISOString();
-          }
-          else if (file.name === "parameters.json") {
-            parametersJsonData = JSON.parse(contents);
-          }
-          else if (file.name === "stimuli.json") {
-            const jsonData = JSON.parse(contents);
-            for (var stimulus of jsonData) {
-              const code_name = stimulus.code;
-              const short_description = stimulus.short_description;
-              const long_description = stimulus.long_description;
-              const parameters = stimulus.parameters;
-              const movie = stimulus.movie;
-              const movieFilePath = file.webkitRelativePath.replace(file.name, '') + movie;
+          const [datePart, timePart] = unformatted_creation_data.split("-");
+          const [day, month, year] = datePart.split("/");
+          const [hours, minutes, seconds] = timePart.split(":");
+          const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+          creation_data = date.toISOString();
+        }
+        else if (file.name === "parameters.json") {
+          parametersJsonData = JSON.parse(contents);
+        }
+        else if (file.name === "stimuli.json") {
+          const jsonData = JSON.parse(contents);
+          for (var stimulus of jsonData) {
+            const code_name = stimulus.code;
+            const short_description = stimulus.short_description;
+            const long_description = stimulus.long_description;
+            const parameters = stimulus.parameters;
+            const movie = stimulus.movie;
+            const movieFilePath = file.webkitRelativePath.replace(file.name, '') + movie;
 
-              // Find the movie file in the files array
-              const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
+            // Find the movie file in the files array
+            const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
 
-              console.log(movieFile);
-              if (movieFile) {
-                console.log(movieFile);
-                const movieReader = new FileReader();
-                movieReader.onload = function(e) {
-                  const base64MovieData = e.target.result;
-                  const whole_stimuli = { code_name, short_description, long_description, parameters, movie: base64MovieData };
-                  stimuli.push(whole_stimuli);
-                };
-                movieReader.readAsDataURL(movieFile);
-              }
+            if (movieFile) {
+              const movieReader = new FileReader();
+              movieReader.onload = function(e) {
+                const base64MovieData = e.target.result;
+                const whole_stimuli = { code_name, short_description, long_description, parameters, movie: base64MovieData };
+                stimuli.push(whole_stimuli);
+              };
+              movieReader.readAsDataURL(movieFile);
             }
           }
-          resolve();
-        };
-        reader.onerror = reject;
-      });
-
-      reader.readAsText(file);
-      await filePromise;
-    }
-
-
-    const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
-
-    const savedStimulus = [];
-
-    for (var stimulus of stimuli) {
-      const response = await fetch('/stimuli', {
-        method: 'POST',
-        body: JSON.stringify(stimulus),
-        headers: {
-          'Content-Type' : 'application/json'
         }
-      })
-      const json = await response.json()
-      if (!response.ok) {
-        console.error(json.error);
-      }
-      else {
-        savedStimulus.push(json._id);
-      }
-    }
+        else if (file.name === "experimental_protocols.json") {
+          const jsonData = JSON.parse(contents);
+          for (var exp_protocol of jsonData) {
+            const code_name = exp_protocol.class;
+            const short_description = exp_protocol.short_description;
+            const long_description = exp_protocol.long_description;
+            const parameters = exp_protocol.parameters;
+            const whole_exp_protocol = { code_name, short_description, long_description, parameters };
+            expProtocols.push(whole_exp_protocol);
+          }
+        }
+        resolve();
+      };
+      reader.onerror = reject;
+    });
 
-    simulationWithParameters.stimuliIds = savedStimulus;
-    console.log(simulationWithParameters);
-    const response = await fetch('/simulation_runs', {
+    reader.readAsText(file);
+    await filePromise;
+  }
+
+
+  const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
+
+  const savedStimulus = [];
+  const savedExpProtocols = [];
+
+  for (var stimulus of stimuli) {
+    const response = await fetch('/stimuli', {
       method: 'POST',
-      body: JSON.stringify(simulationWithParameters),
+      body: JSON.stringify(stimulus),
       headers: {
         'Content-Type' : 'application/json'
       }
     })
-
     const json = await response.json()
     if (!response.ok) {
       console.error(json.error);
     }
-
-    if (response.ok) {
-      console.log('new simulation added');
-      setAlertVisible(true);  // Show the alert
-      setTimeout(() => setAlertVisible(false), 3000);
-      setTimeout(() => window.location.reload(), 2000);
-      inputRef.current.value = "";
+    else {
+      savedStimulus.push(json._id);
     }
+  }
 
-};
+  for (var expProtocol of expProtocols) {
+    const response = await fetch('/exp_protocols', {
+      method: 'POST',
+      body: JSON.stringify(expProtocol),
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    })
+    const json = await response.json()
+    if (!response.ok) {
+      console.error(json.error);
+    }
+    else {
+      savedExpProtocols.push(json._id);
+    }
+  }
+
+  simulationWithParameters.stimuliIds = savedStimulus;
+  simulationWithParameters.expProtocolIds = savedExpProtocols;
+  
+  console.log(simulationWithParameters);
+  
+  const response = await fetch('/simulation_runs', {
+    method: 'POST',
+    body: JSON.stringify(simulationWithParameters),
+    headers: {
+      'Content-Type' : 'application/json'
+    }
+  })
+
+  const json = await response.json()
+  if (!response.ok) {
+    console.error(json.error);
+  }
+
+  if (response.ok) {
+    console.log('new simulation added');
+    setAlertVisible(true);  // Show the alert
+    setTimeout(() => setAlertVisible(false), 3000);
+    setTimeout(() => window.location.reload(), 2000);
+    inputRef.current.value = "";
+  }
+
+  };
 
   const [documentationDropDownOpen, setDocumentationDropDownOpen] = useState(false);
 

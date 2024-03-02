@@ -30,7 +30,7 @@ const SimulationDetail = ({ simulation }) => {
   
   const handleExpProtocolsView = () => {
     const id = simulation._id;
-    history(`/${id}/experimental-protocols`);
+    history(`/${id}/experimental-protocols`, { state: simulation });
   }
 
   const handleResultsView = () => {

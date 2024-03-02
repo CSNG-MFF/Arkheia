@@ -64,7 +64,6 @@ const getStimuliForSimulation = async (req, res) => {
       }
     });
     */
-    console.log(simulation.stimuli);
 
     res.status(200).json(simulation.stimuli);
   } catch (error) {
