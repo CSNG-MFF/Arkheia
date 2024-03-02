@@ -12,10 +12,11 @@ const getStimuli = async (req, res) => {
 // Create a stimulus
 const createStimulus = async (req, res) => {
   const { code_name, short_description, long_description, parameters, movie } = req.body;
-
+  const base64Data = movie.replace(/^data:image\/gif;base64,/, '');
+  const movieBuffer = Buffer.from(base64Data, 'base64');
   try {
     const stimulus = await Stimuli.create({ code_name, short_description, long_description, parameters,
-      movie: { data: movie, contentType: 'image/gif' }
+      movie: { data: movieBuffer, contentType: 'image/gif' }
     });
     stimulus.movie.data = Buffer.from(stimulus.movie.data).toString('base64');
     res.status(200).json(stimulus);
@@ -55,11 +56,15 @@ const getStimuliForSimulation = async (req, res) => {
       return res.status(404).json({ error: 'Simulation not found' });
     }
 
+
+    /*
     simulation.stimuli.forEach(stimulus => {
       if (stimulus.movie && stimulus.movie.data) {
-        stimulus.movie.data = Buffer.from(stimulus.movie.data).toString('base64');
+        stimulus.movie.data = Buffer.from(stimulus.movie.data, 'binary').toString('base64');
       }
     });
+    */
+    console.log(simulation.stimuli);
 
     res.status(200).json(simulation.stimuli);
   } catch (error) {

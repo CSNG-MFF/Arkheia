@@ -6,10 +6,21 @@ import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter
 
 import { JSONTree } from 'react-json-tree';
 
+function uint8ToBase64(uint8Array) {
+  let binary = '';
+  uint8Array.forEach(byte => {
+    binary += String.fromCharCode(byte);
+  });
+  return btoa(binary);
+}
+
+
 const StimuliByIdsTableBody = ({ stimuli }) => {
+  
   const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(Array(stimuli.length).fill(false));
   const [parameterPopoverOpen, setParameterPopoverOpen] = useState(Array(stimuli.length).fill(false));
-  
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const toggleLongDescriptionPopover = (index) => {
     const newPopoverState = [...longDescriptionPopoverOpen];
     newPopoverState[index] = !newPopoverState[index];
@@ -22,9 +33,6 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
     setParameterPopoverOpen(newPopoverState);
   }
   console.log(stimuli.movie.data);
-  console.log(stimuli.movie.data.toString('base64'));
-  console.log(stimuli.movie);
-  console.log("Szia Fanni");
 
 
   return (
@@ -78,14 +86,13 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
         </Modal>
       </td>
       <td>
-        {stimuli.movie && (
-          <img src={URL.createObjectURL(new Blob([stimuli.movie.data.data], { type: 'image/gif' }))} alt="gif" />
-        )}
+        {stimuli.movie && stimuli.movie.data ? (
+          <img
+            src={`data:${stimuli.movie.contentType};base64,${uint8ToBase64(stimuli.movie.data.data)}`}
+            alt="Stimuli"
+          />
+        ) : null}
       </td>
-
-
-
-
     </tr>
     </>
   );
