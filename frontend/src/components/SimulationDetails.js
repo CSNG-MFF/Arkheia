@@ -35,7 +35,7 @@ const SimulationDetail = ({ simulation }) => {
 
   const handleResultsView = () => {
     const id = simulation._id;
-    history(`/${id}/results`);
+    history(`/${id}/results`, { state: simulation });
   }
   
   const handleDelete = async () => {

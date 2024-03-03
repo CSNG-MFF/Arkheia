@@ -8,6 +8,8 @@ const documentationRoutes = require('./routes/documentation')
 const simulationRunsRoutes = require('./routes/simulation_runs')
 const stimuliRoutes = require('./routes/stimuli')
 const expProtocolRoutes = require('./routes/exp_protocol')
+const recordRoutes = require('./routes/records')
+const resultRoutes = require('./routes/results')
 
 const app = express();
 
@@ -29,6 +31,11 @@ app.use('/simulation_runs', simulationRunsRoutes)
 app.use('/stimuli', stimuliRoutes);
 
 app.use('/exp_protocols', expProtocolRoutes);
+
+app.use('/records', recordRoutes);
+
+app.use('/results', resultRoutes);
+
 
 
 //connection to the database

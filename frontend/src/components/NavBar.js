@@ -26,6 +26,8 @@ const NavBar = () => {
     let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
     const stimuli = [];
     const expProtocols = [];
+    const records = [];
+    const results = [];
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -85,6 +87,43 @@ const NavBar = () => {
             expProtocols.push(whole_exp_protocol);
           }
         }
+        else if (file.name === "recorders.json") {
+          const jsonData = JSON.parse(contents);
+          for (var record of jsonData) {
+            const code_name = record.code;
+            const short_description = record.short_description;
+            const long_description = record.long_description;
+            const parameters = record.parameters;
+            const variables = record.variables;
+            const source = record.source;
+            const whole_record = { code_name, short_description, long_description, parameters, variables, source };
+            records.push(whole_record);
+          }
+        }
+        else if (file.name === "results.json") {
+          const jsonData = JSON.parse(contents);
+          for (var result of jsonData) {
+            const code_name = result.code;
+            const name = result.name;
+            const parameters = result.parameters;
+            const caption = result.caption;
+            const figure = result.figure;
+            const figurePath = file.webkitRelativePath.replace(file.name, '') + figure;
+
+            // Find the figure file in the files array
+            const figureFile = Array.from(files).find(f => f.webkitRelativePath === figurePath);
+
+            if (figureFile) {
+              const figureReader = new FileReader();
+              figureReader.onload = function(e) {
+                const base64FigureData = e.target.result;
+                const whole_result = { code_name, name, parameters, caption, figure: base64FigureData };
+                results.push(whole_result);
+              };
+              figureReader.readAsDataURL(figureFile);
+            }
+          }
+        }
         resolve();
       };
       reader.onerror = reject;
@@ -99,6 +138,8 @@ const NavBar = () => {
 
   const savedStimulus = [];
   const savedExpProtocols = [];
+  const savedRecords = [];
+  const savedResults = [];
 
   for (var stimulus of stimuli) {
     const response = await fetch('/stimuli', {
@@ -134,9 +175,45 @@ const NavBar = () => {
     }
   }
 
+  for (var record of records) {
+    const response = await fetch('/records', {
+      method: 'POST',
+      body: JSON.stringify(record),
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    })
+    const json = await response.json()
+    if (!response.ok) {
+      console.error(json.error);
+    }
+    else {
+      savedRecords.push(json._id);
+    }
+  }
+
+  for (var result of results) {
+    const response = await fetch('/results', {
+      method: 'POST',
+      body: JSON.stringify(result),
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    })
+    const json = await response.json()
+    if (!response.ok) {
+      console.error(json.error);
+    }
+    else {
+      savedResults.push(json._id);
+    }
+  }
+
   simulationWithParameters.stimuliIds = savedStimulus;
   simulationWithParameters.expProtocolIds = savedExpProtocols;
-  
+  simulationWithParameters.recordIds = savedRecords;
+  simulationWithParameters.resultIds = savedResults;
+
   console.log(simulationWithParameters);
   
   const response = await fetch('/simulation_runs', {
@@ -156,7 +233,7 @@ const NavBar = () => {
     console.log('new simulation added');
     setAlertVisible(true);  // Show the alert
     setTimeout(() => setAlertVisible(false), 3000);
-    setTimeout(() => window.location.reload(), 2000);
+    //setTimeout(() => window.location.reload(), 2000);
     inputRef.current.value = "";
   }
 

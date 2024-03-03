@@ -24,7 +24,9 @@ const SimulationRunSchema = new Schema({
     required: true
   },
   stimuli: [{ type: Schema.Types.ObjectId, ref: 'Stimuli' }],
-  exp_protocols: [{ type: Schema.Types.ObjectId, ref: 'ExpProtocols'}]
+  exp_protocols: [{ type: Schema.Types.ObjectId, ref: 'ExpProtocols'}],
+  records: [{ type: Schema.Types.ObjectId, ref: 'Records'}],
+  results: [{ type: Schema.Types.ObjectId, ref: 'Results'}]
 
 }, { timestamps: true });
 

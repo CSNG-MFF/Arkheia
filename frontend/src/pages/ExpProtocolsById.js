@@ -6,11 +6,14 @@ import {
 } from 'reactstrap'
 
 import ExpProtocolByIdsTableBody from "../components/ExpProtocolByIdsTableBody";
+import RecordByIdsTableBody from "../components/RecordByIdsTableBody";
 
 const ExpProtocolsById = () => {
   const location = useLocation();
   const simulation = location.state;
   const [expProtocol, setExpProtocol] = useState([]);
+  const [record, setRecord] = useState([]);
+
   useEffect(() => {
     // Fetch stimuli for the simulation
     const fetchExpProtocols = async () => {
@@ -25,6 +28,22 @@ const ExpProtocolsById = () => {
       }
     };
     fetchExpProtocols();
+  }, [simulation._id]);
+
+  useEffect(() => {
+    // Fetch stimuli for the simulation
+    const fetchRecords = async () => {
+      try {
+        const response = await fetch(`/records/` + simulation._id);
+        const record = await response.json();
+        if (response.ok) {
+          setRecord(record);
+        }
+      } catch (error) {
+        console.error('Error fetching experimental protocols:', error);
+      }
+    };
+    fetchRecords();
   }, [simulation._id]);
   return (
     <div>
@@ -53,6 +72,40 @@ const ExpProtocolsById = () => {
         <tbody>   
           {expProtocol.map(expProtocol => (
             <ExpProtocolByIdsTableBody key={expProtocol._id} expProtocol={expProtocol} />
+          ))}
+        </tbody>
+      </Table>
+      <h1 className="text-center">Records</h1>
+      <Table
+      bordered
+      hover
+      size="sm"
+      >
+        <thead style={{ textAlign: 'center'}}>
+          <tr>
+            <th>
+              Source code name
+            </th>
+            <th>
+              Target population
+            </th>
+            <th>
+              Recorded variables	
+            </th>
+            <th>
+              Short description
+            </th>
+            <th>
+              Long description
+            </th>
+            <th>
+              Parameters
+            </th>
+          </tr>
+        </thead>
+        <tbody>   
+          {record.map(record => (
+            <RecordByIdsTableBody key={record._id} record={record} />
           ))}
         </tbody>
       </Table>

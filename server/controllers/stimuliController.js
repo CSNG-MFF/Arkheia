@@ -55,16 +55,7 @@ const getStimuliForSimulation = async (req, res) => {
     if (!simulation) {
       return res.status(404).json({ error: 'Simulation not found' });
     }
-
-
-    /*
-    simulation.stimuli.forEach(stimulus => {
-      if (stimulus.movie && stimulus.movie.data) {
-        stimulus.movie.data = Buffer.from(stimulus.movie.data, 'binary').toString('base64');
-      }
-    });
-    */
-
+    
     res.status(200).json(simulation.stimuli);
   } catch (error) {
     console.error('Error:', error);
