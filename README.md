@@ -4,29 +4,33 @@
 
 - mongodb
 - npm
-- python3
-
-To install the dependencies run:
-`npm install`
 
 ## Startup
 
 ### Backend
-First go to the `server` subdirectory:
+First go to the `server` subdirectory using the following command:
 `cd server`
-assuming you are in the `Arkheia` directory
+
+Assuming you are in the `Arkheia` directory
+
+To install the dependencies run:
+`npm install`
+
+Then to run mongodb:
+`mongod` or `npm run db`
 
 To start the development server
 `npm run dev`
 
-To run mongodb:
-`mongod` or `npm run db`
 
 ### Frontend
 Go to the `backend` subdirectory:
 `cd backend`
 
-assuming you are in the `Arkheia` directory
+Assuming you are in the `Arkheia` directory
+
+To install the dependencies run:
+`npm install`
 
 To start the frontend run
 `npm start`
