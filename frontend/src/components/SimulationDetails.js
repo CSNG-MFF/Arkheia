@@ -37,7 +37,30 @@ const SimulationDetail = ({ simulation }) => {
     const id = simulation._id;
     history(`/${id}/results`, { state: simulation });
   }
-  
+  const handleDownload = async () => {
+    try {
+      const simulationsJson = JSON.stringify(simulation, null, 2);
+      // Create a Blob containing the JSON data
+      const blob = new Blob([simulationsJson], { type: 'application/json' });
+
+      // Create a download link
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'simulations.json';
+
+      // Trigger the download
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const handleDelete = async () => {
 
     const response = await fetch('/simulation_runs/' + simulation._id, {
@@ -103,7 +126,7 @@ const SimulationDetail = ({ simulation }) => {
   }
   return (
     <>
-    <Alert style={{ position: 'absolute', width: '93%' }} color="danger" isOpen={alertDeleteVisible} toggle={() => setAlertDeleteVisible(false)}>
+    <Alert style={{ position: 'absolute', width: '100%' }} color="danger" isOpen={alertDeleteVisible} toggle={() => setAlertDeleteVisible(false)}>
       Simulation deleted!
     </Alert>
     <tr>
@@ -150,7 +173,7 @@ const SimulationDetail = ({ simulation }) => {
         </Button>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }} >
-        <Button className="icon-button">
+        <Button className="icon-button" onClick={handleDownload}>
           <IoMdDownload size={28} className="icon" />
         </Button>  
       </td>  
