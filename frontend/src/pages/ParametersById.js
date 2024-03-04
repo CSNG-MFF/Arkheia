@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+ 
 import { JSONTree } from 'react-json-tree';
-
-import { useParams } from 'react-router-dom';
 
 const theme = {
   scheme: 'monokai',
@@ -25,37 +25,18 @@ const theme = {
 };
 
 const ParametersById = () => {
-  const { id } = useParams();
-  const [parameters, setParameters] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/simulation_runs/${id}`)
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        console.log(data);
-        setParameters(data.parameters); 
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
+  const location = useLocation();
+  const simulation = location.state;
   return (
     <div>
       <h1 style={{ textAlign: 'center'}}>Parameters of the simulation</h1>
-      {parameters ? (
+      {simulation.parameters ? (
         <JSONTree 
         hideRoot={true}
         labelRenderer={([key]) => <strong>{key}</strong>}
         invertTheme={true}
         theme={theme}
-        data={parameters} />
+        data={simulation.parameters} />
       ) : (
         <p>Loading...</p>
       )}

@@ -15,6 +15,7 @@ import ParametersById from './pages/ParametersById'
 import StimuliById from './pages/StimuliById'
 import ExpProtocolsById from './pages/ExpProtocolsById'
 import ResultsById from './pages/ResultsById'
+import LoneSimulation from './pages/LoneSimulation'
 
 import Footer from './components/Footer/Footer'
 import ParameterSearch from './pages/ParameterSearch'
@@ -45,6 +46,10 @@ function App() {
             <Route
               path="/:id/results"
               element={ <ResultsById/>}
+            />
+            <Route
+              path="/:id/simulation"
+              element={ <LoneSimulation/>}
             />
             <Route 
               path="/simulation_runs"

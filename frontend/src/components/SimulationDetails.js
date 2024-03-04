@@ -14,13 +14,18 @@ const SimulationDetail = ({ simulation }) => {
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
+  const handleAloneView = () => {
+    const id = simulation._id;
+    history(`/${id}/simulation`, { state: simulation });
+  }
+
   const togglePopover = () => {
     setPopoverOpen(!popoverOpen);
   }
 
   const handleParamatersView = () => {
     const id = simulation._id;
-    history(`/${id}/parameters`);
+    history(`/${id}/parameters`, { state: simulation });
   }
 
   const handleStimuliView = () => {
@@ -130,6 +135,11 @@ const SimulationDetail = ({ simulation }) => {
       Simulation deleted!
     </Alert>
     <tr>
+      <td style={{ textAlign: 'center', padding: 0 }}>
+        <Button className="icon-button" onClick={handleAloneView} >
+          <IoEye size={28} className="icon"/>
+        </Button>
+      </td>
       <td>
         {new Date(simulation.createdAt).toLocaleString('en-GB')}
       </td>

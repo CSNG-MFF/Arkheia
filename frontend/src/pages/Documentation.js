@@ -28,7 +28,7 @@ const Documentation = () => {
                 Guide on how to use the Arkheia web application.
               </CardText>
               <div className="d-flex justify-content-center">
-                <Button href='/documentation/client' className='buttonButton'>
+                <Button href='/documentation/client' className='buttonButton' color='primary'>
                   Go
                 </Button>
               </div>
@@ -43,7 +43,7 @@ const Documentation = () => {
                 The specification of the Arkheia document model.
               </CardText>
               <div className="d-flex justify-content-center">
-                <Button href='/documentation/api' className='buttonButton'>
+                <Button href='/documentation/api' className='buttonButton' color='primary'>
                   Go
                 </Button>
               </div>
@@ -58,7 +58,7 @@ const Documentation = () => {
                 Installation and deployment guide.
               </CardText>
               <div className="d-flex justify-content-center">
-                <Button href='/documentation/installation' className='buttonButton'>
+                <Button href='/documentation/installation' className='buttonButton' color='primary'>
                   Go
                 </Button>
               </div>

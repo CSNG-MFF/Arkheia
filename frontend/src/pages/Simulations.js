@@ -32,6 +32,14 @@ const Simulations = () => {
       >
         <thead style={{ textAlign: 'center'}}>
           <tr>
+            <th id="ViewAlone">
+              View simulation alone
+            </th>
+            <UncontrolledTooltip
+              target="ViewAlone"
+            >
+              View the simulation alone, with all of its information
+            </UncontrolledTooltip>
             <th id="SubmissionDate">
               Submission date	
             </th>

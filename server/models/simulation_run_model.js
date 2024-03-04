@@ -30,4 +30,4 @@ const SimulationRunSchema = new Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model('simulation_runs_collection', SimulationRunSchema);
+module.exports = mongoose.model('Simulations', SimulationRunSchema);
