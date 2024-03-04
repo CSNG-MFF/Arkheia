@@ -6,21 +6,19 @@ import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter
 
 import { JSONTree } from 'react-json-tree';
 
+import '../styles/simulation_button.css'
+
 const RecordByIdsTableBody = ({ record }) => {
   
-  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(Array(record.length).fill(false));
-  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(Array(record.length).fill(false));
+  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(false);
+  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(false);
 
-  const toggleLongDescriptionPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setLongDescriptionPopoverOpen(newPopoverState);
+  const toggleLongDescriptionPopover = () => {
+    setLongDescriptionPopoverOpen(!longDescriptionPopoverOpen);
   };
 
-  const toggleParameterPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setParameterPopoverOpen(newPopoverState);
+  const toggleParameterPopover = () => {
+    setParameterPopoverOpen(!parameterPopoverOpen);
   }
 
 
@@ -53,42 +51,51 @@ const RecordByIdsTableBody = ({ record }) => {
       <td>
         {record.short_description}
       </td>
-      <td>
+      <td style={{ textAlign: 'center'}}>
         <Button
+          className="icon-button"
           id={`model_description_popover_${record._id}`} // Unique id for each popover
           type="button"
-          onClick={() => toggleLongDescriptionPopover(record._id)} // Pass index to togglePopover function
+          onClick={toggleLongDescriptionPopover}
         >
           <IoEye size={28} className="icon" />
         </Button>
         <UncontrolledPopover
           trigger="legacy"
           placement="bottom"
-          isOpen={longDescriptionPopoverOpen[record._id]} // Use popover state based on index
+          isOpen={longDescriptionPopoverOpen}
           target={`model_description_popover_${record._id}`} // Target each popover with the unique id
-          toggle={() => toggleLongDescriptionPopover(record._id)} // Pass index to togglePopover function
+          toggle={toggleLongDescriptionPopover}
         >
           <PopoverBody>
             {record.long_description}
           </PopoverBody>
         </UncontrolledPopover>
       </td>
-      <td>
+      <td style={{ textAlign: 'center'}}>
         <Button
+          className="icon-button"
+          id={`parameter_${record._id}`}
           type="button"
-          onClick={() => toggleParameterPopover(record._id)} // Pass index to togglePopover function
+          onClick={toggleParameterPopover} 
         >
           <IoEye size={28} className="icon" />
         </Button>
         <Modal
-          isOpen={parameterPopoverOpen[record._id]} // Use popover state based on index
-          toggle={() => toggleParameterPopover(record._id)} // Pass index to togglePopover function
+          isOpen={parameterPopoverOpen}
+          toggle={toggleParameterPopover}
+          target={`parameter_${record._id}`}
         >
           <ModalBody>
-            <JSONTree data={record.parameters} />
+            <JSONTree 
+              hideRoot={true}
+              labelRenderer={([key]) => <strong>{key}</strong>}
+              invertTheme={true}
+              data={record.parameters} 
+            />
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => toggleParameterPopover(record._id)}>
+            <Button color="primary" onClick={toggleParameterPopover}>
               Close
             </Button>
           </ModalFooter>

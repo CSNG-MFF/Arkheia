@@ -6,21 +6,19 @@ import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter
 
 import { JSONTree } from 'react-json-tree';
 
+import '../styles/simulation_button.css'
+
 const ExpProtocolByIdsTableBody = ({ expProtocol }) => {
   
-  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(Array(expProtocol.length).fill(false));
-  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(Array(expProtocol.length).fill(false));
+  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(false);
+  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(false);
 
-  const toggleLongDescriptionPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setLongDescriptionPopoverOpen(newPopoverState);
+  const toggleLongDescriptionPopover = () => {
+    setLongDescriptionPopoverOpen(!longDescriptionPopoverOpen);
   };
 
-  const toggleParameterPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setParameterPopoverOpen(newPopoverState);
+  const toggleParameterPopover = () => {
+    setParameterPopoverOpen(!parameterPopoverOpen);
   }
 
 
@@ -33,42 +31,51 @@ const ExpProtocolByIdsTableBody = ({ expProtocol }) => {
       <td>
         {expProtocol.short_description}
       </td>
-      <td>
+      <td style={{ textAlign: 'center'}}>
         <Button
+          className="icon-button"
           id={`model_description_popover_${expProtocol._id}`} // Unique id for each popover
           type="button"
-          onClick={() => toggleLongDescriptionPopover(expProtocol._id)} // Pass index to togglePopover function
+          onClick={toggleLongDescriptionPopover}
         >
           <IoEye size={28} className="icon" />
         </Button>
         <UncontrolledPopover
           trigger="legacy"
           placement="bottom"
-          isOpen={longDescriptionPopoverOpen[expProtocol._id]} // Use popover state based on index
+          isOpen={longDescriptionPopoverOpen}
           target={`model_description_popover_${expProtocol._id}`} // Target each popover with the unique id
-          toggle={() => toggleLongDescriptionPopover(expProtocol._id)} // Pass index to togglePopover function
+          toggle={toggleLongDescriptionPopover}
         >
           <PopoverBody>
             {expProtocol.long_description}
           </PopoverBody>
         </UncontrolledPopover>
       </td>
-      <td>
+      <td style={{ textAlign: 'center'}}>
         <Button
+          className="icon-button"
+          id={`parameter_${expProtocol._id}`}
           type="button"
-          onClick={() => toggleParameterPopover(expProtocol._id)} // Pass index to togglePopover function
+          onClick={toggleParameterPopover} 
         >
           <IoEye size={28} className="icon" />
         </Button>
         <Modal
-          isOpen={parameterPopoverOpen[expProtocol._id]} // Use popover state based on index
-          toggle={() => toggleParameterPopover(expProtocol._id)} // Pass index to togglePopover function
+          isOpen={parameterPopoverOpen}
+          toggle={toggleParameterPopover}
+          target={`parameter_${expProtocol._id}`}
         >
           <ModalBody>
-            <JSONTree data={expProtocol.parameters} />
+            <JSONTree 
+              hideRoot={true}
+              labelRenderer={([key]) => <strong>{key}</strong>}
+              invertTheme={true}
+              data={expProtocol.parameters} 
+            />
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => toggleParameterPopover(expProtocol._id)}>
+            <Button color="primary" onClick={toggleParameterPopover}>
               Close
             </Button>
           </ModalFooter>

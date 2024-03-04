@@ -5,7 +5,7 @@ import { IoEye } from "react-icons/io5";
 
 import React, { useState, useRef } from 'react'
 
-import { Button, Alert, UncontrolledPopover, PopoverBody } from "reactstrap";
+import { Button, Alert, Popover, PopoverBody } from "reactstrap";
 
 import '../styles/simulation_button.css'
 
@@ -75,42 +75,42 @@ const SimulationDetail = ({ simulation }) => {
         {simulation.model_name}
       </td>
       <td style={{ textAlign: 'center', padding: 0 }}>
-        <Button id="model_description_popover" type="button">
+        <Button id={`model_description_popover_${simulation._id}`} className="icon-button" type="button" onClick={togglePopover}>
           <IoEye size={28} className="icon" />
         </Button>
-        <UncontrolledPopover trigger="legacy" placement="bottom" isOpen={popoverOpen} target="model_description_popover" toggle={togglePopover}>
+        <Popover trigger="legacy" placement="bottom" isOpen={popoverOpen} target={`model_description_popover_${simulation._id}`} toggle={togglePopover}>
           <PopoverBody>
             {simulation.model_description}
           </PopoverBody>
-        </UncontrolledPopover>
+        </Popover>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }}>
-        <Button id="icon-button" onClick={handleParamatersView} >
+        <Button className="icon-button" onClick={handleParamatersView} >
           <IoEye size={28} className="icon"/>
         </Button>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }}>
-        <Button id="icon-button" onClick={handleStimuliView}>
+        <Button className="icon-button" onClick={handleStimuliView}>
           <IoEye size={28} className="icon" />
         </Button>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }} >
-        <Button id="icon-button" onClick={handleExpProtocolsView}>
+        <Button className="icon-button" onClick={handleExpProtocolsView}>
           <IoEye size={28} className="icon" />
         </Button>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }} >
-        <Button id="icon-button" onClick={handleResultsView}>
+        <Button className="icon-button" onClick={handleResultsView}>
           <IoEye size={28} className="icon" />
         </Button>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }} >
-        <Button id="icon-button">
+        <Button className="icon-button">
           <IoMdDownload size={28} className="icon" />
         </Button>  
       </td>  
       <td style={{ textAlign: 'center', padding: 0 }} >
-        <Button id="icon-button" onClick={handleDelete}>
+        <Button className="icon-button" onClick={handleDelete}>
           <IoTrashSharp size={28} className="icon" />
         </Button>
       </td>

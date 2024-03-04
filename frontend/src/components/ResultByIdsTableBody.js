@@ -2,9 +2,11 @@ import { IoEye } from "react-icons/io5";
 
 import React, { useState, useRef } from 'react'
 
-import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Popover, PopoverBody, Modal, ModalBody, ModalFooter } from "reactstrap";
 
 import { JSONTree } from 'react-json-tree';
+
+import '../styles/simulation_button.css'
 
 function uint8ToBase64(uint8Array) {
   let binary = '';
@@ -17,26 +19,20 @@ function uint8ToBase64(uint8Array) {
 
 const ResultByIdsTableBody = ({ result }) => {
   
-  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(Array(result.length).fill(false));
-  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(Array(result.length).fill(false));
-  const [viewPopoverOpen, setViewPopoverOpen] = useState(Array(result.length).fill(false));
+  const [parameterModalOpen, setParameterModalOpen] = useState(false);
+  const [captionPopoverOpen, setCaptionPopoverOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   
-  const toggleLongDescriptionPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setLongDescriptionPopoverOpen(newPopoverState);
+  const toggleParameterModalOpen = () => {
+    setParameterModalOpen(!parameterModalOpen);
   };
 
-  const toggleParameterPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setParameterPopoverOpen(newPopoverState);
+  const toggleCaptionPopoverOpen = () => {
+    setCaptionPopoverOpen(!captionPopoverOpen);
   }
 
-  const toggleViewPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setViewPopoverOpen(newPopoverState);
+  const toggleViewModal = () => {
+    setViewModalOpen(!viewModalOpen);
   }
 
 
@@ -49,57 +45,70 @@ const ResultByIdsTableBody = ({ result }) => {
       <td>
         {result.name}
       </td>
-      <td>
+      <td style={{ textAlign: 'center'}}>
         <Button
-          id={`model_description_popover_${result._id}`} // Unique id for each popover
+          className="icon-button"
+          id={`modal_${result._id}`} // Unique id for each modal
           type="button"
-          onClick={() => toggleLongDescriptionPopover(result._id)} // Pass index to togglePopover function
-        >
-          <IoEye size={28} className="icon" />
-        </Button>
-        <UncontrolledPopover
-          trigger="legacy"
-          placement="bottom"
-          isOpen={longDescriptionPopoverOpen[result._id]} // Use popover state based on index
-          target={`model_description_popover_${result._id}`} // Target each popover with the unique id
-          toggle={() => toggleLongDescriptionPopover(result._id)} // Pass index to togglePopover function
-        >
-          <PopoverBody>
-            {result.parameters}
-          </PopoverBody>
-        </UncontrolledPopover>
-      </td>
-      <td>
-        <Button
-          type="button"
-          onClick={() => toggleParameterPopover(result._id)} // Pass index to togglePopover function
+          onClick={toggleParameterModalOpen}
         >
           <IoEye size={28} className="icon" />
         </Button>
         <Modal
-          isOpen={parameterPopoverOpen[result._id]} // Use popover state based on index
-          toggle={() => toggleParameterPopover(result._id)} // Pass index to togglePopover function
+          isOpen={parameterModalOpen} // Use popover state based on index
+          target={`modal_${result._id}`} // Target each popover with the unique id
+          toggle={toggleParameterModalOpen} 
         >
           <ModalBody>
-            <JSONTree data={result.caption} />
+            <JSONTree
+              hideRoot={true}
+              labelRenderer={([key]) => <strong>{key}</strong>}
+              invertTheme={true} 
+              data={result.parameters} 
+            />
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => toggleParameterPopover(result._id)}>
+            <Button color="primary" onClick={toggleParameterModalOpen}>
               Close
             </Button>
           </ModalFooter>
         </Modal>
       </td>
-      <td>
-      <Button
+      <td style={{ textAlign: 'center'}}>
+        <Button
+          className="icon-button"
+          id={`caption_${result._id}`}
           type="button"
-          onClick={() => toggleViewPopover(result._id)} // Pass index to togglePopover function
+          onClick={toggleCaptionPopoverOpen} 
+        >
+          <IoEye size={28} className="icon" />
+        </Button>
+        <Popover
+          trigger="legacy"
+          placement="bottom"
+          target={`caption_${result._id}`}
+          isOpen={captionPopoverOpen}
+          toggle={toggleCaptionPopoverOpen}
+        >
+          <PopoverBody>
+            {result.caption}
+          </PopoverBody>
+        </Popover>
+      </td>
+      <td style={{ textAlign: 'center'}}>
+        <Button
+          className="icon-button"
+          id={`view_${result._id}`}
+          type="button"
+          onClick={toggleViewModal}
         >
           <IoEye size={28} className="icon" />
         </Button>
         <Modal
-          isOpen={viewPopoverOpen[result._id]} // Use popover state based on index
-          toggle={() => toggleViewPopover(result._id)} // Pass index to togglePopover function
+          target={`view_${result._id}`}
+          isOpen={viewModalOpen}
+          toggle={toggleViewModal}
+          style={{ maxWidth: '90%', maxHeight: '90%', height: 'auto' }}
         >
           <ModalBody>
               {result.figure && result.figure.data ? (
@@ -111,7 +120,7 @@ const ResultByIdsTableBody = ({ result }) => {
             ) : null}
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={() => toggleViewPopover(result._id)}>
+            <Button color="primary" onClick={toggleViewModal}>
               Close
             </Button>
           </ModalFooter>

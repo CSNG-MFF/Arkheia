@@ -1,10 +1,12 @@
 import { IoEye } from "react-icons/io5";
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 
-import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Popover, PopoverBody, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import { JSONTree } from 'react-json-tree';
+
+import '../styles/simulation_button.css'
 
 function uint8ToBase64(uint8Array) {
   let binary = '';
@@ -14,25 +16,18 @@ function uint8ToBase64(uint8Array) {
   return btoa(binary);
 }
 
-
 const StimuliByIdsTableBody = ({ stimuli }) => {
-  
-  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(Array(stimuli.length).fill(false));
-  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(Array(stimuli.length).fill(false));
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [parameterModalOpen, setParameterModalOpen] = useState(false);
 
-  const toggleLongDescriptionPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setLongDescriptionPopoverOpen(newPopoverState);
-  };
 
-  const toggleParameterPopover = (index) => {
-    const newPopoverState = [...longDescriptionPopoverOpen];
-    newPopoverState[index] = !newPopoverState[index];
-    setParameterPopoverOpen(newPopoverState);
+  const togglePopover = () => {
+    setPopoverOpen(!popoverOpen);
   }
-  console.log(stimuli.movie.data);
 
+  const toggleParameterModalOpen = () => {
+    setParameterModalOpen(!parameterModalOpen);
+  }
 
   return (
     <>
@@ -43,42 +38,54 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
       <td>
         {stimuli.short_description}
       </td>
-      <td>
+      <td style={{ textAlign: 'center'}}>
         <Button
-          id={`model_description_popover_${stimuli._id}`} // Unique id for each popover
+          className="icon-button"
+          id={`popover_${stimuli._id}`} // Unique id for each popover
           type="button"
-          onClick={() => toggleLongDescriptionPopover(stimuli._id)} // Pass index to togglePopover function
+          onClick={togglePopover}
         >
-          <IoEye size={28} className="icon" />
+          <IoEye size={28} className="icon"/>
         </Button>
-        <UncontrolledPopover
+        <Popover
           trigger="legacy"
           placement="bottom"
-          isOpen={longDescriptionPopoverOpen[stimuli._id]} // Use popover state based on index
-          target={`model_description_popover_${stimuli._id}`} // Target each popover with the unique id
-          toggle={() => toggleLongDescriptionPopover(stimuli._id)} // Pass index to togglePopover function
+          isOpen={popoverOpen}
+          target={`popover_${stimuli._id}`} // Target each popover with the unique id
+          toggle={togglePopover}
         >
           <PopoverBody>
             {stimuli.long_description}
           </PopoverBody>
-        </UncontrolledPopover>
+        </Popover>
       </td>
-      <td>
+      <td style={{ textAlign: 'center'}}>
         <Button
+          className="icon-button"
+          id={`modal_${stimuli._id}`}
           type="button"
-          onClick={() => toggleParameterPopover(stimuli._id)} // Pass index to togglePopover function
+          onClick={toggleParameterModalOpen}
         >
           <IoEye size={28} className="icon" />
         </Button>
-        <Modal
-          isOpen={parameterPopoverOpen[stimuli._id]} // Use popover state based on index
-          toggle={() => toggleParameterPopover(stimuli._id)} // Pass index to togglePopover function
+        <Modal 
+          isOpen={parameterModalOpen}
+          target={`modal_${stimuli._id}`}
+          toggle={toggleParameterModalOpen}
         >
-          <ModalBody>
-            <JSONTree data={stimuli.parameters} />
+          <ModalHeader style={{ backgroundColor: 'rgb(0, 43, 54)', textAlign: 'center' }}>
+            <h1 style={{ textAlign: 'center', color: 'white'}}> Parameters </h1>
+          </ModalHeader>
+          <ModalBody style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
+            <JSONTree 
+              data={stimuli.parameters} 
+              hideRoot={true}
+              labelRenderer={([key]) => <strong>{key}</strong>}
+              invertTheme={true}
+            />
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={() => toggleParameterPopover(stimuli._id)}>
+          <ModalFooter style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
+            <Button color="warning" onClick={toggleParameterModalOpen}>
               Close
             </Button>
           </ModalFooter>

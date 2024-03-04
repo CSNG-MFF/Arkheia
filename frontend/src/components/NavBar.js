@@ -233,7 +233,7 @@ const NavBar = () => {
     console.log('new simulation added');
     setAlertVisible(true);  // Show the alert
     setTimeout(() => setAlertVisible(false), 3000);
-    //setTimeout(() => window.location.reload(), 2000);
+    setTimeout(() => window.location.reload(), 2000);
     inputRef.current.value = "";
   }
 

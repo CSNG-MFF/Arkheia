@@ -1,26 +1,26 @@
-#icon-button, 
-#model_description_popover
-{
-  background: none;
-  border: none;
-  cursor: pointer;
-  color:blue;
+.icon-button {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color:blue !important;
 }
 
-#icon-button:hover,
-#model_description_popover:hover {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: black;
+.icon-button:hover {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: black !important;
 }
 
-#icon-button:active, 
-#model_description_popover:active {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: black;
+.icon-button:active {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: black !important;
+}
+
+.custom-modal {
+  background-color: rgb(0, 43, 54);
 }
 
 
