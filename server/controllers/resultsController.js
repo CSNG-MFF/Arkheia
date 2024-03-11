@@ -12,9 +12,10 @@ const getResults = async (req, res) => {
 // Create a result
 const createResult = async (req, res) => {
   const { code_name, name, parameters, caption, figure } = req.body;
-  const base64Data = figure.replace(/^data:image\/png;base64,/, '');
-  const figureBuffer = Buffer.from(base64Data, 'base64');
+  
   try {
+    const base64Data = figure.replace(/^data:image\/png;base64,/, '');
+    const figureBuffer = Buffer.from(base64Data, 'base64');
     const result = await Result.create({ code_name, name, parameters, caption,
       figure: { data: figureBuffer, contentType: 'image/png' }
     });

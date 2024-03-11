@@ -12,9 +12,10 @@ const getStimuli = async (req, res) => {
 // Create a stimulus
 const createStimulus = async (req, res) => {
   const { code_name, short_description, long_description, parameters, movie } = req.body;
-  const base64Data = movie.replace(/^data:image\/gif;base64,/, '');
-  const movieBuffer = Buffer.from(base64Data, 'base64');
+  
   try {
+    const base64Data = movie.replace(/^data:image\/gif;base64,/, ''); //COMENT TODO
+    const movieBuffer = Buffer.from(base64Data, 'base64');
     const stimulus = await Stimuli.create({ code_name, short_description, long_description, parameters,
       movie: { data: movieBuffer, contentType: 'image/gif' }
     });

@@ -19,9 +19,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 const NavBar = () => {
   const inputRef = useRef(null);
-  
+  const parameterSearchInputRef = useRef(null);
 
   const [alertVisible, setAlertVisible] = useState(false);
+
+  const handleParameterSearchUpload = async (event) => {
+    
+  };
+
   const handleFolderUpload = async (event) => {
     let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
     const stimuli = [];
@@ -273,11 +278,29 @@ const NavBar = () => {
                 </NavItem>
               </Button>
             </ButtonGroup>
-            <Button color='light'>
-              <NavItem>
-                <NavLink style={{ whiteSpace: 'nowrap' }} href="/parameter_search">Parameter searches</NavLink>
-              </NavItem>
-            </Button>
+            <ButtonGroup>
+              <Button color='light'>
+                <NavItem>
+                  <NavLink style={{ whiteSpace: 'nowrap' }} href="/parameter_search">Parameter searches</NavLink>
+                </NavItem>
+              </Button>
+              <Button color="light">
+                <NavItem>
+                  <NavLink style={{ whiteSpace: 'nowrap' }}>
+                  <input
+                    type="file"
+                    webkitdirectory="true"
+                    style={{ display: 'none' }}
+                    ref={parameterSearchInputRef} 
+                    onChange={handleParameterSearchUpload} 
+                  />
+                    <IoAddOutline size={30} style={{ cursor: 'pointer' }} onClick={() => {
+                      parameterSearchInputRef.current.click();
+                    }}/>
+                  </NavLink>
+                </NavItem>
+              </Button>
+            </ButtonGroup>
             <Button color='light'>
               <NavItem>
                 <NavLink href="/about">About</NavLink>
