@@ -54,7 +54,7 @@ npm start
 ```
 
 ## Testing
-Make sure the backend server is not running!
+Make sure the backend server is not running and that the database is still running!
 Assuming you are in the root directory, to run the tests:
 ```bash
 npm run test
