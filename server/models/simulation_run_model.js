@@ -3,6 +3,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const SimulationRunSchema = new Schema({
+  from_parameter_search: {
+    type: Boolean,
+    required: true
+  },
   simulation_run_name: {
     type: String,
     required: true

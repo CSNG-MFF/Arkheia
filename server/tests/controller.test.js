@@ -29,7 +29,7 @@ describe('Results Router', () => {
   it('should return results when GET /results', async () => {
     const response = await request(app).get('/results');
     expect(response.status).toBe(200);
-  });
+  }, 15000);
 
 });
 

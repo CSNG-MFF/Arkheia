@@ -7,14 +7,14 @@ const Result = require('../models/results_model');
 
 // Get all simulations
 const getSimulations = async (req, res) => {
-  const simulations = await Simulation.find({}).sort({createdAt: -1})
+  const simulations = await Simulation.find({ from_parameter_search: false }).sort({ createdAt: -1 });
 
   res.status(200).json(simulations)
 };
 
 // Create simulation with file upload
 const createSimulation = async (req, res) => {
-  const {simulation_run_name, model_name, creation_data, model_description, parameters, stimuliIds, expProtocolIds, recordIds, resultIds } = req.body
+  const {simulation_run_name, model_name, creation_data, model_description, parameters, stimuliIds, expProtocolIds, recordIds, resultIds, from_parameter_search } = req.body
     //add to db
     try {
       const stimuli = await Stimuli.find({ _id: { $in: stimuliIds } });
@@ -22,6 +22,7 @@ const createSimulation = async (req, res) => {
       const records = await Record.find({ _id: { $in: recordIds } });
       const results = await Result.find({ _id: { $in: resultIds } });
       const simulation = await Simulation.create({
+        from_parameter_search,
         simulation_run_name, 
         model_name, 
         creation_data, 

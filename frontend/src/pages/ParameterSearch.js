@@ -1,9 +1,26 @@
+import { useEffect, useState } from "react"
+
+import ParameterSearchDetail from "../components/ParameterSearchDetail"
+
 import {
   Table,
   UncontrolledTooltip
 } from 'reactstrap'
 
 const ParameterSearch = () => {
+  const [parameterSearch, setParameterSearches] = useState(null)
+    
+  useEffect(() => {
+    const fetchParameterSearches = async () => {
+      const response = await fetch('/parameter_searches')
+      const json = await response.json()
+      if (response.ok) {
+        setParameterSearches(json)
+      }
+    }
+
+    fetchParameterSearches()
+  }, [])
   return (
       <div className = "ParameterSearch">
       <Table
@@ -72,7 +89,9 @@ const ParameterSearch = () => {
           </tr>
         </thead>
         <tbody>
-          hm
+          {parameterSearch && parameterSearch.map((parameter_search) => (
+            <ParameterSearchDetail key={parameter_search._id} parameter_search={parameter_search} />
+          ))}
         </tbody>
       </Table>
       </div>

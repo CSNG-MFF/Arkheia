@@ -55,6 +55,10 @@ function App() {
               path="/simulation_runs"
               element={ <Simulations/> }
             />
+            <Route
+              path="/simulation_runs/:id"
+              element={ <Simulations/> }
+            />
             <Route 
               path="/parameter_search"
               element={ <ParameterSearch/> }

@@ -24,224 +24,302 @@ const NavBar = () => {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const handleParameterSearchUpload = async (event) => {
-    
+    const files = event.target.files;
+    const folders = {};
+
+    let model_name = "";
+    let run_date = "";
+    let name = "";
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      const filePromise = new Promise((resolve, reject) => {
+        reader.onload = async function(e) {
+          const contents = e.target.result;
+          if (file.name === "sim_info.json" && (model_name == "" || run_date == "" || name == "")) {
+            const jsonData = JSON.parse(contents);
+            model_name = jsonData.model_name;
+            name = jsonData.simulation_run_name;
+            const [datePart, timePart] = jsonData.run_date.split("-");
+            const [day, month, year] = datePart.split("/");
+            const [hours, minutes, seconds] = timePart.split(":");
+            const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+            run_date = date.toISOString();
+          }
+          resolve();
+        };
+        reader.onerror = reject;
+      });
+      reader.readAsText(file);
+      await filePromise;
+
+      console.log(model_name, name, run_date);
+      const filePath = file.webkitRelativePath;
+      const pathParts = filePath.split('/');
+
+      // If the file is in a subfolder, add the file to the folder's list
+      if (pathParts.length > 2) {
+        const folderName = pathParts[1];
+        if (!folders[folderName]) {
+          folders[folderName] = [];
+        }
+        folders[folderName].push(file);
+      }
+    }
+
+    let simulationIds = [];
+    // Call processFiles for each folder
+    for (const folderName in folders) {
+      const folderFiles = folders[folderName];
+      const result_simulation_id = await processFiles(folderFiles, true);
+      console.log("Processed", folderName, result_simulation_id);
+      simulationIds.push(result_simulation_id);
+    }
+    const ParameterSearches = {model_name, name, run_date, simulationIds};
+    console.log(ParameterSearches);
+    const response = await fetch('/parameter_searches', {
+      method: 'POST',
+      body: JSON.stringify(ParameterSearches),
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    })
+  
+    const json = await response.json()
+    if (!response.ok) {
+      console.error(json.error);
+    }
+  
+    if (response.ok) {
+      console.log('new parameterSearch added');
+    }
+
+    parameterSearchInputRef.current.value = "";
   };
 
-  const handleFolderUpload = async (event) => {
+  const processFiles = async (files, parameter_search_bool) => {
     let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
     const stimuli = [];
     const expProtocols = [];
     const records = [];
     const results = [];
-    const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
       const filePromise = new Promise((resolve, reject) => {
-      reader.onload = async function(e) {
-        const contents = e.target.result;
-        if (file.name === "sim_info.json") {
-          const jsonData = JSON.parse(contents);
-
-          simulation_run_name = jsonData.simulation_run_name;
-          model_name = jsonData.model_name;
-          const unformatted_creation_data = jsonData.run_date;
-          model_description = jsonData.model_description;
-
-          const [datePart, timePart] = unformatted_creation_data.split("-");
-          const [day, month, year] = datePart.split("/");
-          const [hours, minutes, seconds] = timePart.split(":");
-          const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
-          creation_data = date.toISOString();
-        }
-        else if (file.name === "parameters.json") {
-          parametersJsonData = JSON.parse(contents);
-        }
-        else if (file.name === "stimuli.json") {
-          const jsonData = JSON.parse(contents);
-          for (var stimulus of jsonData) {
-            const code_name = stimulus.code;
-            const short_description = stimulus.short_description;
-            const long_description = stimulus.long_description;
-            const parameters = stimulus.parameters;
-            const movie = stimulus.movie;
-            const movieFilePath = file.webkitRelativePath.replace(file.name, '') + movie;
-
-            // Find the movie file in the files array
-            const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
-
-            if (movieFile) {
-              const movieReader = new FileReader();
-              movieReader.onload = function(e) {
-                const base64MovieData = e.target.result;
-                const whole_stimuli = { code_name, short_description, long_description, parameters, movie: base64MovieData };
-                stimuli.push(whole_stimuli);
-              };
-              movieReader.readAsDataURL(movieFile);
-            }
-          }
-        }
-        else if (file.name === "experimental_protocols.json") {
-          const jsonData = JSON.parse(contents);
-          for (var exp_protocol of jsonData) {
-            const code_name = exp_protocol.class;
-            const short_description = exp_protocol.short_description;
-            const long_description = exp_protocol.long_description;
-            const parameters = exp_protocol.parameters;
-            const whole_exp_protocol = { code_name, short_description, long_description, parameters };
-            expProtocols.push(whole_exp_protocol);
-          }
-        }
-        else if (file.name === "recorders.json") {
-          const jsonData = JSON.parse(contents);
-          for (var record of jsonData) {
-            const code_name = record.code;
-            const short_description = record.short_description;
-            const long_description = record.long_description;
-            const parameters = record.parameters;
-            const variables = record.variables;
-            const source = record.source;
-            const whole_record = { code_name, short_description, long_description, parameters, variables, source };
-            records.push(whole_record);
-          }
-        }
-        else if (file.name === "results.json") {
-          const jsonData = JSON.parse(contents);
-          for (var result of jsonData) {
-            const code_name = result.code;
-            const name = result.name;
-            const parameters = result.parameters;
-            const caption = result.caption;
-            const figure = result.figure;
-            const figurePath = file.webkitRelativePath.replace(file.name, '') + figure;
-
-            // Find the figure file in the files array
-            const figureFile = Array.from(files).find(f => f.webkitRelativePath === figurePath);
-
-            if (figureFile) {
-              const figureReader = new FileReader();
-              figureReader.onload = function(e) {
-                const base64FigureData = e.target.result;
-                const whole_result = { code_name, name, parameters, caption, figure: base64FigureData };
-                results.push(whole_result);
-              };
-              figureReader.readAsDataURL(figureFile);
-            }
-          }
-        }
-        resolve();
-      };
-      reader.onerror = reject;
-    });
-
-    reader.readAsText(file);
-    await filePromise;
-  }
-
-
-  const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
-
-  const savedStimulus = [];
-  const savedExpProtocols = [];
-  const savedRecords = [];
-  const savedResults = [];
-
-  for (var stimulus of stimuli) {
-    const response = await fetch('/stimuli', {
-      method: 'POST',
-      body: JSON.stringify(stimulus),
-      headers: {
-        'Content-Type' : 'application/json'
-      }
-    })
-    const json = await response.json()
-    if (!response.ok) {
-      console.error(json.error);
-    }
-    else {
-      savedStimulus.push(json._id);
-    }
-  }
-
-  for (var expProtocol of expProtocols) {
-    const response = await fetch('/exp_protocols', {
-      method: 'POST',
-      body: JSON.stringify(expProtocol),
-      headers: {
-        'Content-Type' : 'application/json'
-      }
-    })
-    const json = await response.json()
-    if (!response.ok) {
-      console.error(json.error);
-    }
-    else {
-      savedExpProtocols.push(json._id);
-    }
-  }
-
-  for (var record of records) {
-    const response = await fetch('/records', {
-      method: 'POST',
-      body: JSON.stringify(record),
-      headers: {
-        'Content-Type' : 'application/json'
-      }
-    })
-    const json = await response.json()
-    if (!response.ok) {
-      console.error(json.error);
-    }
-    else {
-      savedRecords.push(json._id);
-    }
-  }
-
-  for (var result of results) {
-    const response = await fetch('/results', {
-      method: 'POST',
-      body: JSON.stringify(result),
-      headers: {
-        'Content-Type' : 'application/json'
-      }
-    })
-    const json = await response.json()
-    if (!response.ok) {
-      console.error(json.error);
-    }
-    else {
-      savedResults.push(json._id);
-    }
-  }
-
-  simulationWithParameters.stimuliIds = savedStimulus;
-  simulationWithParameters.expProtocolIds = savedExpProtocols;
-  simulationWithParameters.recordIds = savedRecords;
-  simulationWithParameters.resultIds = savedResults;
-
-  console.log(simulationWithParameters);
+        reader.onload = async function(e) {
+          const contents = e.target.result;
+          if (file.name === "sim_info.json") {
+            const jsonData = JSON.parse(contents);
   
-  const response = await fetch('/simulation_runs', {
-    method: 'POST',
-    body: JSON.stringify(simulationWithParameters),
-    headers: {
-      'Content-Type' : 'application/json'
+            simulation_run_name = jsonData.simulation_run_name;
+            model_name = jsonData.model_name;
+            const unformatted_creation_data = jsonData.run_date;
+            model_description = jsonData.model_description;
+  
+            const [datePart, timePart] = unformatted_creation_data.split("-");
+            const [day, month, year] = datePart.split("/");
+            const [hours, minutes, seconds] = timePart.split(":");
+            const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+            creation_data = date.toISOString();
+          }
+          else if (file.name === "parameters.json") {
+            parametersJsonData = JSON.parse(contents);
+          }
+          else if (file.name === "stimuli.json") {
+            const jsonData = JSON.parse(contents);
+            for (var stimulus of jsonData) {
+              const code_name = stimulus.code;
+              const short_description = stimulus.short_description;
+              const long_description = stimulus.long_description;
+              const parameters = stimulus.parameters;
+              const movie = stimulus.movie;
+              const movieFilePath = file.webkitRelativePath.replace(file.name, '') + movie;
+
+              // Find the movie file in the files array
+              const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
+
+              if (movieFile) {
+                const movieReader = new FileReader();
+                movieReader.onload = function(e) {
+                  const base64MovieData = e.target.result;
+                  const whole_stimuli = { code_name, short_description, long_description, parameters, movie: base64MovieData };
+                  stimuli.push(whole_stimuli);
+                };
+                movieReader.readAsDataURL(movieFile);
+              }
+            }
+          }
+          else if (file.name === "experimental_protocols.json") {
+            const jsonData = JSON.parse(contents);
+            for (var exp_protocol of jsonData) {
+              const code_name = exp_protocol.class;
+              const short_description = exp_protocol.short_description;
+              const long_description = exp_protocol.long_description;
+              const parameters = exp_protocol.parameters;
+              const whole_exp_protocol = { code_name, short_description, long_description, parameters };
+              expProtocols.push(whole_exp_protocol);
+            }
+          }
+          else if (file.name === "recorders.json") {
+            const jsonData = JSON.parse(contents);
+            for (var record of jsonData) {
+              const code_name = record.code;
+              const short_description = record.short_description;
+              const long_description = record.long_description;
+              const parameters = record.parameters;
+              const variables = record.variables;
+              const source = record.source;
+              const whole_record = { code_name, short_description, long_description, parameters, variables, source };
+              records.push(whole_record);
+            }
+          }
+          else if (file.name === "results.json") {
+            const jsonData = JSON.parse(contents);
+            for (var result of jsonData) {
+              const code_name = result.code;
+              const name = result.name;
+              const parameters = result.parameters;
+              const caption = result.caption;
+              const figure = result.figure;
+              const figurePath = file.webkitRelativePath.replace(file.name, '') + figure;
+  
+              // Find the figure file in the files array
+              const figureFile = Array.from(files).find(f => f.webkitRelativePath === figurePath);
+  
+              if (figureFile) {
+                const figureReader = new FileReader();
+                figureReader.onload = function(e) {
+                  const base64FigureData = e.target.result;
+                  const whole_result = { code_name, name, parameters, caption, figure: base64FigureData };
+                  results.push(whole_result);
+                };
+                figureReader.readAsDataURL(figureFile);
+              }
+            }
+          }
+          resolve();
+        };
+        reader.onerror = reject;
+      });
+  
+      reader.readAsText(file);
+      await filePromise;
     }
-  })
-
-  const json = await response.json()
-  if (!response.ok) {
-    console.error(json.error);
+  
+  
+    const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
+  
+    const savedStimulus = [];
+    const savedExpProtocols = [];
+    const savedRecords = [];
+    const savedResults = [];
+  
+    for (var stimulus of stimuli) {
+      const response = await fetch('/stimuli', {
+        method: 'POST',
+        body: JSON.stringify(stimulus),
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        console.error(json.error);
+      }
+      else {
+        savedStimulus.push(json._id);
+      }
+    }
+  
+    for (var expProtocol of expProtocols) {
+      const response = await fetch('/exp_protocols', {
+        method: 'POST',
+        body: JSON.stringify(expProtocol),
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        console.error(json.error);
+      }
+      else {
+        savedExpProtocols.push(json._id);
+      }
+    }
+  
+    for (var record of records) {
+      const response = await fetch('/records', {
+        method: 'POST',
+        body: JSON.stringify(record),
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        console.error(json.error);
+      }
+      else {
+        savedRecords.push(json._id);
+      }
+    }
+  
+    for (var result of results) {
+      const response = await fetch('/results', {
+        method: 'POST',
+        body: JSON.stringify(result),
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      })
+      const json = await response.json()
+      if (!response.ok) {
+        console.error(json.error);
+      }
+      else {
+        savedResults.push(json._id);
+      }
+    }
+  
+    simulationWithParameters.stimuliIds = savedStimulus;
+    simulationWithParameters.expProtocolIds = savedExpProtocols;
+    simulationWithParameters.recordIds = savedRecords;
+    simulationWithParameters.resultIds = savedResults;
+    simulationWithParameters.from_parameter_search = parameter_search_bool;
+  
+    console.log(simulationWithParameters);
+    
+    const response = await fetch('/simulation_runs', {
+      method: 'POST',
+      body: JSON.stringify(simulationWithParameters),
+      headers: {
+        'Content-Type' : 'application/json'
+      }
+    })
+  
+    const json = await response.json()
+    if (!response.ok) {
+      console.error(json.error);
+    }
+  
+    if (response.ok) {
+      console.log('new simulation added');
+      if (!parameter_search_bool) {
+        setAlertVisible(true);  // Show the alert
+        setTimeout(() => setAlertVisible(false), 3000);
+        setTimeout(() => window.location.reload(), 2000);
+        inputRef.current.value = "";
+      }
+    }
+    return json._id;
   }
 
-  if (response.ok) {
-    console.log('new simulation added');
-    setAlertVisible(true);  // Show the alert
-    setTimeout(() => setAlertVisible(false), 3000);
-    setTimeout(() => window.location.reload(), 2000);
-    inputRef.current.value = "";
-  }
-
+  const handleFolderUpload = async (event) => {
+    const files = event.target.files;
+    await processFiles(files, false);
   };
 
   const [documentationDropDownOpen, setDocumentationDropDownOpen] = useState(false);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 
 import SimulationDetail from "../components/SimulationDetails"
 
@@ -8,15 +9,28 @@ import {
 } from 'reactstrap'
 
 const Simulations = () => {
-  const [simulations, setSimulations] = useState(null)
+  const location = useLocation();
+  const parameter_search = location.state;
+  const [simulations, setSimulations] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
     
   useEffect(() => {
     const fetchSimulations = async () => {
-      const response = await fetch('/simulation_runs')
-      const json = await response.json()
-      if (response.ok) {
-        setSimulations(json)
-      }
+      if (parameter_search && parameter_search._id) {
+        console.log("here");
+        const response = await fetch(`/parameter_searches/${parameter_search._id}/simulations`);
+        const json = await response.json();
+        if (response.ok) {
+          setSimulations(json);
+        }
+      } else {
+        const response = await fetch('/simulation_runs')
+        const json = await response.json()
+        if (response.ok) {
+          setSimulations(json)
+        }
+      } 
     }
 
     fetchSimulations()

@@ -16,7 +16,6 @@ const ParameterSearchSchema = new Schema({
     required: true
   },
   simulations: [{ type: Schema.Types.ObjectId, ref: 'Simulations'}]
-  //adding the pngs for individual runs, needs specification
 }, { timestamps: true });
 
-module.exports = mongoose.model('ParameterSearches', ParameterSearchSchema);
+module.exports = mongoose.model('ParameterSearch', ParameterSearchSchema);
