@@ -78,7 +78,7 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
           </ModalHeader>
           <ModalBody style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
             <JSONTree 
-              data={stimuli.parameters} 
+              data={JSON.parse(stimuli.parameters)} 
               hideRoot={true}
               labelRenderer={([key]) => <strong>{key}</strong>}
               invertTheme={true}
