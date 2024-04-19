@@ -20,6 +20,8 @@ import LoneSimulation from './pages/LoneSimulation'
 import Footer from './components/Footer/Footer'
 import ParameterSearch from './pages/ParameterSearch'
 
+import InspectResults from './pages/InspectResults'
+
 function App() {
   return (
     <div className="App">
@@ -62,6 +64,10 @@ function App() {
             <Route 
               path="/parameter_search"
               element={ <ParameterSearch/> }
+            />
+            <Route
+              path="/inspect_results/:id"
+              element={ <InspectResults/> }
             />
             <Route 
               path="/about"

@@ -18,7 +18,6 @@ const Simulations = () => {
   useEffect(() => {
     const fetchSimulations = async () => {
       if (parameter_search && parameter_search._id) {
-        console.log("here");
         const response = await fetch(`/parameter_searches/${parameter_search._id}/simulations`);
         const json = await response.json();
         if (response.ok) {

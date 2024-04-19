@@ -8,14 +8,6 @@ import { JSONTree } from 'react-json-tree';
 
 import '../styles/simulation_button.css'
 
-function uint8ToBase64(uint8Array) {
-  let binary = '';
-  uint8Array.forEach(byte => {
-    binary += String.fromCharCode(byte);
-  });
-  return btoa(binary);
-}
-
 const StimuliByIdsTableBody = ({ stimuli }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [parameterModalOpen, setParameterModalOpen] = useState(false);

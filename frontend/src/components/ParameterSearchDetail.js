@@ -18,7 +18,8 @@ const ParameterSearchDetail = ({ parameter_search }) => {
   }
 
   const handleInspectResults = () => {
-    //TODO
+    const id = parameter_search._id;
+    history(`/inspect_results/${id}`, { state: parameter_search });
   }
   const handleDelete = async () => {
 
