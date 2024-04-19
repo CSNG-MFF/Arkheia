@@ -92,12 +92,10 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
         </Modal>
       </td>
       <td>
-        {stimuli.movie && stimuli.movie.data ? (
           <img
-            src={`data:${stimuli.movie.contentType};base64,${uint8ToBase64(stimuli.movie.data.data)}`}
+            src={`/stimuli/${stimuli._id}/image`} 
             alt="Stimuli"
           />
-        ) : null}
       </td>
     </tr>
     </>

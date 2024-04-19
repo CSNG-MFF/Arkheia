@@ -4,16 +4,16 @@ const {
   createResult,
   deleteResult,
   getResultsForSimulation
-} = require('../controllers/resultsController'); // Import the stimulus controller functions
+} = require('../controllers/resultsController'); // Import the result controller functions
 
 const router = express.Router();
 
-router.get('/', getResults); // Route to get all stimuli
+router.get('/', getResults); // Route to get all results
 
-router.post('/', createResult); // Route to create a new stimulus
+router.post('/', createResult); // Route to create a new result
 
-router.delete('/:id', deleteResult); // Route to delete a stimulus by ID
+router.delete('/:id', deleteResult); // Route to delete a result by ID
 
-router.get('/:id', getResultsForSimulation); // Route to get stimuli for the whole simulation
+router.get('/:id', getResultsForSimulation); // Route to get results for the whole simulation
 
 module.exports = router;

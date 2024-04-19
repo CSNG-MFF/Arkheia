@@ -20,8 +20,8 @@ const StimuliSchema = new Schema({
     required: true
   }, 
   movie: {
-    data: Buffer, // Store GIF data as Buffer
-    contentType: String // Content type of the GIF
+    fileId: mongoose.Types.ObjectId,
+    contentType: String
   }
 }, { timestamps: true })
 

@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const Simulation = require('../models/simulation_run_model');
 const Stimuli = require('../models/stimuli_model'); // Import the Stimuli model
+const fs = require('fs');
+const { createReadStream } = require('fs');
+const { GridFSBucket } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 // Get all stimuli
 const getStimuli = async (req, res) => {
@@ -11,17 +15,47 @@ const getStimuli = async (req, res) => {
 
 // Create a stimulus
 const createStimulus = async (req, res) => {
-  const { code_name, short_description, long_description, parameters, movie } = req.body;
-  
+  const { code_name, short_description, long_description, parameters } = req.body;
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'Image is required' });
+  }
+
   try {
-    const base64Data = movie.replace(/^data:image\/gif;base64,/, ''); //COMENT TODO
-    const movieBuffer = Buffer.from(base64Data, 'base64');
-    const stimulus = await Stimuli.create({ code_name, short_description, long_description, parameters,
-      movie: { data: movieBuffer, contentType: 'image/gif' }
-    });
-    stimulus.movie.data = Buffer.from(stimulus.movie.data).toString('base64');
-    res.status(200).json(stimulus);
-  } catch (error) {
+    const client = new MongoClient(process.env.MONGODB_URI);
+    await client.connect();
+
+    const db = client.db(); // Get the database instance
+    const bucket = new GridFSBucket(db);
+
+    const uploadStream = bucket.openUploadStream(req.file.originalname);
+
+    const readStream = createReadStream(req.file.path);
+    
+    readStream.pipe(uploadStream)
+      .on('error', (error) => {
+        // Handle upload error
+        console.error('Error uploading file:', error);
+        res.status(500).json({ error: 'Error uploading file to GridFS' });
+      })
+      .on('finish', async () => {
+        // Remove the temporary file
+        fs.unlinkSync(req.file.path);
+
+        const result = await Stimuli.create({
+          code_name,
+          short_description,
+          long_description,
+          parameters,
+          movie: { 
+            fileId: uploadStream.id.toString(),
+            contentType: req.file.mimetype
+          }
+        });
+
+        res.status(200).json(result);
+      });
+  } catch (error) { 
     res.status(400).json({ error: error.message });
   }
 };

@@ -19,10 +19,10 @@ const ResultSchema = new Schema({
     type: String,
     required: true
   },
-  figure: {
-    data: Buffer, // Store image data as Buffer
-    contentType: String // Content type of the GIF
-  }
+  figure: { 
+    fileId: mongoose.Types.ObjectId,
+    contentType: String
+}
 }, { timestamps: true })
 
 module.exports = mongoose.model('Results', ResultSchema);

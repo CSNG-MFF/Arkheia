@@ -1,5 +1,6 @@
 import { IoAddOutline } from "react-icons/io5";
 import React, { useState, useRef } from 'react'
+
 import {
     Button,
     Alert,
@@ -104,6 +105,7 @@ const NavBar = () => {
     const expProtocols = [];
     const records = [];
     const results = [];
+    const savedResults = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
@@ -136,18 +138,17 @@ const NavBar = () => {
               const parameters = stimulus.parameters;
               const movie = stimulus.movie;
               const movieFilePath = file.webkitRelativePath.replace(file.name, '') + movie;
-
+              const stimuli_data = new FormData();
+              stimuli_data.append("code_name", code_name);
+              stimuli_data.append("short_description", short_description);
+              stimuli_data.append("long_description", long_description);
+              stimuli_data.append("parameters", JSON.stringify(parameters));
               // Find the movie file in the files array
               const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
 
               if (movieFile) {
-                const movieReader = new FileReader();
-                movieReader.onload = function(e) {
-                  const base64MovieData = e.target.result;
-                  const whole_stimuli = { code_name, short_description, long_description, parameters, movie: base64MovieData };
-                  stimuli.push(whole_stimuli);
-                };
-                movieReader.readAsDataURL(movieFile);
+                stimuli_data.append("movie", movieFile);
+                stimuli.push(stimuli_data);
               }
             }
           }
@@ -184,18 +185,17 @@ const NavBar = () => {
               const caption = result.caption;
               const figure = result.figure;
               const figurePath = file.webkitRelativePath.replace(file.name, '') + figure;
-  
+              const data = new FormData();
+              data.append("code_name", code_name);
+              data.append("name", name);
+              data.append("parameters", JSON.stringify(parameters));
+              data.append("caption", caption);
+
               // Find the figure file in the files array
               const figureFile = Array.from(files).find(f => f.webkitRelativePath === figurePath);
-  
               if (figureFile) {
-                const figureReader = new FileReader();
-                figureReader.onload = function(e) {
-                  const base64FigureData = e.target.result;
-                  const whole_result = { code_name, name, parameters, caption, figure: base64FigureData };
-                  results.push(whole_result);
-                };
-                figureReader.readAsDataURL(figureFile);
+                data.append("figure", figureFile);
+                results.push(data);
               }
             }
           }
@@ -208,21 +208,16 @@ const NavBar = () => {
       await filePromise;
     }
   
-  
     const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
   
     const savedStimulus = [];
     const savedExpProtocols = [];
     const savedRecords = [];
-    const savedResults = [];
   
     for (var stimulus of stimuli) {
       const response = await fetch('/stimuli', {
         method: 'POST',
-        body: JSON.stringify(stimulus),
-        headers: {
-          'Content-Type' : 'application/json'
-        }
+        body: stimulus
       })
       const json = await response.json()
       if (!response.ok) {
@@ -266,14 +261,11 @@ const NavBar = () => {
         savedRecords.push(json._id);
       }
     }
-  
+
     for (var result of results) {
       const response = await fetch('/results', {
         method: 'POST',
-        body: JSON.stringify(result),
-        headers: {
-          'Content-Type' : 'application/json'
-        }
+        body: result
       })
       const json = await response.json()
       if (!response.ok) {
@@ -310,12 +302,12 @@ const NavBar = () => {
       if (!parameter_search_bool) {
         setAlertVisible(true);  // Show the alert
         setTimeout(() => setAlertVisible(false), 3000);
-        setTimeout(() => window.location.reload(), 2000);
+        //setTimeout(() => window.location.reload(), 2000);
         inputRef.current.value = "";
       }
     }
     return json._id;
-  }
+  };
 
   const handleFolderUpload = async (event) => {
     const files = event.target.files;

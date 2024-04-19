@@ -8,17 +8,8 @@ import { JSONTree } from 'react-json-tree';
 
 import '../styles/simulation_button.css'
 
-function uint8ToBase64(uint8Array) {
-  let binary = '';
-  uint8Array.forEach(byte => {
-    binary += String.fromCharCode(byte);
-  });
-  return btoa(binary);
-}
-
 
 const ResultByIdsTableBody = ({ result }) => {
-  
   const [parameterModalOpen, setParameterModalOpen] = useState(false);
   const [captionPopoverOpen, setCaptionPopoverOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -64,7 +55,7 @@ const ResultByIdsTableBody = ({ result }) => {
               hideRoot={true}
               labelRenderer={([key]) => <strong>{key}</strong>}
               invertTheme={true} 
-              data={result.parameters} 
+              data={JSON.parse(result.parameters)}
             />
           </ModalBody>
           <ModalFooter>
@@ -111,13 +102,11 @@ const ResultByIdsTableBody = ({ result }) => {
           style={{ maxWidth: '90%', maxHeight: '90%', height: 'auto' }}
         >
           <ModalBody>
-              {result.figure && result.figure.data ? (
               <img
-                src={`data:${result.figure.contentType};base64,${uint8ToBase64(result.figure.data.data)}`}
-                alt="Result Figure"
-                style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
+                  src={`/results/${result._id}/image`} 
+                  alt="Result Figure"
+                  style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
               />
-            ) : null}
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={toggleViewModal}>
