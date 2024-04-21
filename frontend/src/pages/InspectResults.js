@@ -1,7 +1,8 @@
 import { useLocation } from 'react-router-dom'
 import React, { useEffect, useState } from "react"
+import _ from 'lodash'; // Import lodash
 
-import { Container, Button, Row, Col, Form, FormGroup, Label, Input, Table } from 'reactstrap'; // Import Reactstrap components
+import { Container, Button, Form, FormGroup, Label, Input, Table } from 'reactstrap'; // Import Reactstrap components
 
 const InspectResults = () => {
   
@@ -24,11 +25,13 @@ const InspectResults = () => {
   const [selectedResultName, setSelectedResultName] = useState(''); // For tracking the selected result name
 
 
-  const [selectedKeys, setSelectedKeys] = useState({});
 
+  const [selectedValues, setSelectedValues] = useState({});
+  
+  const [notSelectedValuesCombinations, setNotSelectedValuesCombinations] = useState({});
 
   useEffect(() => {
-    if (!simulations.length && !isLoadingSimulations && !results.length && !isLoadingResults) { // Check if simulations are empty and not already loading
+    if (!simulations.length && !isLoadingSimulations && !results.length && !isLoadingResults) { 
       setIsLoadingSimulations(true);
       setIsLoadingResults(true);
 
@@ -82,7 +85,7 @@ const InspectResults = () => {
 
   useEffect(() => {
     if (parameterDifferences) {
-      setSelectedKeys(
+      setSelectedValues(
         Object.keys(parameterDifferences).reduce((acc, key) => {
           acc[key] = parameterDifferences[key].slice(); // start with all values selected
           return acc;
@@ -92,35 +95,41 @@ const InspectResults = () => {
       if (firstKey) {
         setSelectedKey(firstKey);
       }
-      const otherKeys = Object.keys(parameterDifferences).filter(key => key !== selectedKey);
-
-      // Generate all combinations of other key values
-      let combinations = otherKeys.flatMap(key => 
-        parameterDifferences[key].map(value => ({ [key]: value }))
-      );
-
-      // Generate the table
-      let table = {};
-      if (parameterDifferences[selectedKey]) {
-        parameterDifferences[selectedKey].forEach(xValue => {
-          table[xValue] = {};
-          combinations.forEach(combination => {
-            // Find a simulation that matches the combination and xValue
-            const matchingSimulation = simulations.find(simulation => 
-              Object.entries(combination).every(([key, value]) => 
-                simulation.parameters.sheets[key] === value
-              ) && simulation.parameters.sheets[selectedKey] === xValue
-            );
-            // If a matching simulation is found, add its name to the table
-            if (matchingSimulation) {
-              table[xValue][JSON.stringify(combination)] = matchingSimulation.simulation_run_name;
-            }
-          });
-        });
-      }     
-      console.log("table: ", table);
     }
   }, [parameterDifferences]);
+
+  useEffect(() => {
+    if (selectedValues && selectedKey) {
+      const keys = Object.keys(selectedValues).filter(key => key !== selectedKey);
+      const combinations = [];
+  
+      const generateCombinations = (index, currentCombination) => {
+        if (index === keys.length) {
+          combinations.push({ ...currentCombination });
+          return;
+        }
+  
+        selectedValues[keys[index]].forEach(value => {
+          currentCombination[keys[index]] = value;
+          generateCombinations(index + 1, currentCombination);
+          delete currentCombination[keys[index]];
+        });
+      };
+  
+      generateCombinations(0, {});
+      console.log(combinations);
+      setNotSelectedValuesCombinations(combinations);
+    }
+  }, [selectedValues, selectedKey]);
+
+  useEffect(() => {
+    if (availableResultNames.length > 0) {
+      const firstResult = availableResultNames[0];
+      setSelectedResultName(firstResult.name);
+      const matchingResults = results.filter((result) => result.name === firstResult.name);
+      setSelectedResults([...matchingResults]);
+    }
+  }, [availableResultNames]);
 
   const handleResultChange = (event) => {
     setSelectedResults([]);
@@ -134,7 +143,7 @@ const InspectResults = () => {
     setImageScale(parseFloat(event.target.value).toFixed(2)); // Limit to 2 decimal places
   };
   const toggleSelection = (key, value) => {
-    setSelectedKeys(prevState => {
+    setSelectedValues(prevState => {
       // Create a deep copy of prevState to avoid directly mutating state
       const newSelectedKeys = JSON.parse(JSON.stringify(prevState));
   
@@ -150,7 +159,6 @@ const InspectResults = () => {
       } else if (newSelectedKeys[key].length > 1) {
         newSelectedKeys[key].splice(index, 1); // deselect if not the last one
       }
-  
       return newSelectedKeys;
     });
   };
@@ -172,7 +180,6 @@ const InspectResults = () => {
                   value={selectedResultName}
                   onChange={handleResultChange}
                 >
-                  <option value="">Select a Result</option>
                   {availableResultNames.map((result) => (
                     <option key={result._id} value={result.name}>
                       {result.name}
@@ -191,7 +198,7 @@ const InspectResults = () => {
                 step="0.01"  // Smaller step for smoother transitions
                 value={imageScale}
                 onChange={handleScaleChange}
-                style={{ width: '300px' }} // Or adjust to your desired width
+                style={{ width: '300px' }}
               />
             </div>
             {parameterDifferences && Object.keys(parameterDifferences).length > 0 && (
@@ -203,12 +210,11 @@ const InspectResults = () => {
                       color={key === selectedKey ? 'primary' : 'secondary'}
                       onClick={() => setSelectedKey(key)}
                     >
-                      {console.log(selectedKey)}
                       {key}
                     </Button>
                     {parameterDifferences[key].map((value, index) => {
-                      const isSelected = selectedKeys[key] && selectedKeys[key].includes(value);
-                      const isLastSelected = isSelected && selectedKeys[key].length === 1;
+                      const isSelected = selectedValues[key] && selectedValues[key].includes(value);
+                      const isLastSelected = isSelected && selectedValues[key].length === 1;
 
                       return (
                         <Button 
@@ -218,7 +224,6 @@ const InspectResults = () => {
                           onClick={() => !isLastSelected && toggleSelection(key, value)}
                           disabled={isLastSelected}
                         >
-                          {console.log(selectedKeys)}
                           {value}
                         </Button>
                       );
@@ -228,24 +233,63 @@ const InspectResults = () => {
                 ))}
               </div>
             )}
-            
-            {selectedResults && selectedResults.length > 0 && (
-              <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                {selectedResults.map((result) => (
-                  <img
-                    key={result._id} // Important: Unique key for each image
-                    src={`/results/${result._id}/image`}
-                    alt="Result Figure"
-                    style={{
-                      maxWidth: '100%',
-                      height: 'auto',
-                      transform: `scale(${imageScale})`,
-                      marginRight: '10px'
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+
+            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+              <Container>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key, index) => (
+                        <th key={index}>
+                          {Object.entries(notSelectedValuesCombinations[key]).map(([subKey, subValue]) => (
+                            <React.Fragment key={subKey}>
+                              {subKey}: {subValue}
+                              <br />
+                            </React.Fragment>
+                          ))}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedValues && selectedValues[selectedKey] && selectedValues[selectedKey].map((value, index) => (
+                      <tr key={index}>
+                        <th scope="row">{selectedKey}: {value}</th>
+                        {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key) => (
+                          <td key={key}>
+                          {(() => {
+                            const allKeysValues = Object.entries(notSelectedValuesCombinations[key]).concat([[selectedKey, value]]);
+                            const simulationMatch = simulations.find(simulation =>
+                              allKeysValues.every(([key, val]) => _.get(simulation.parameters, key) === val)
+                            );
+
+                            if (simulationMatch) {
+                              return results
+                                .filter(result => result.name === selectedResultName)
+                                .map(result => (
+                                  <img
+                                    key={result._id}
+                                    src={`/results/${result._id}/image`}
+                                    alt="Result Figure"
+                                    style={{
+                                      maxWidth: '100%',
+                                      height: 'auto',
+                                      transform: `scale(${imageScale})`,
+                                      marginRight: '10px'
+                                    }}
+                                  />
+                                ));
+                            }
+                          })()}
+                        </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Container>
+            </div>
           </div>
         )}
         </div>
