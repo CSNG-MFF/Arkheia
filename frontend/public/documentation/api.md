@@ -70,7 +70,6 @@ Parameter search is represented as a collection of simulation runs with systemat
             submission_date        : string           # '%d/%m/%Y-%H:%M:%S' formatted string representing the time of submission to Arkheia.
             name                   : string           # Name given to this parameter search.
             simulation_runs        : list             # List of JSON datastructures of the same format as the description of individual simulation run.
-            parameter_combinations : list             # List of tuples with name of the parameter as the first element and the list of values as the second.
     }
 
 The _simulation_runs_ entry should contain a list of JSON data-structures, each corresponding to one simulation run with same format as the JSON data-structure describing individual simulation run described in previous section. Finally the _parameter_combinations_ entry should contain a list of tuples, with each tuple holding a name of the parameter that was varied, and a list of parameter values that were explored (note that currently Arkheia supports only grid parameter searches).

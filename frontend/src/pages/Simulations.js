@@ -153,7 +153,7 @@ const Simulations = () => {
                 onChange={(e) => setModelNameSearch(e.target.value)}
               />
             </th>
-            <th colSpan={7}></th>
+            <th colSpan={6}></th>
           </tr>
         </thead>
         <tbody>

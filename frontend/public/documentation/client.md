@@ -2,11 +2,10 @@
 
 Arkheia offers users a convenient way of organizing, exploring and publishing their neural simulation specifications and results via a dedicated web application.
 In this section of the documentation we will explain to the user the web-based GUI frontend.
-To find out how to install and deploy Arkheia please refer to the [Installation & Deployment](./install.html) section of the documentation.
+To find out how to install and deploy Arkheia please refer to the [Installation & Deployment](/documentation/installation) section of the documentation.
 The Arkheia follows the common client-server architecture. To learn how to communicate with the server, and extend Arkheia to be compatible with your
 favorite simulation work-flow, please refer to the [API](/documentation/api) part of the documentation. Furthermore, if you want to learn more about the motivations behind
-Arkheia design, or gain inspiration for various possible use-cases, read the [Arkheia manuscript](placeholder?). Should you use Arkheia in your scientific project
-resulting in publication, please cite this paper.
+Arkheia design, or gain inspiration for various possible use-cases, read the [Arkheia manuscript](????). Should you use Arkheia in your scientific project resulting in publication, please cite this paper.
 
 ## Landing page
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle, CardHeader } from 'reactstrap';
-import { FaUniversity, FaBrain, FaChartArea, FaAtom } from 'react-icons/fa';
+import { FaUniversity, FaAtom } from 'react-icons/fa';
 
 const About = () => {
   return (
@@ -9,26 +9,20 @@ const About = () => {
         <Col md="8">
           <Card>
             <CardHeader className="text-center py-3">
-              <h2>Unveiling the Mysteries of the Mind with Arkheia</h2>
+              <h2>Arkheia</h2>
             </CardHeader>
             <CardBody>
               <CardTitle tag="h4" className="text-center mb-4">
-                Explore the Frontiers of Computational Neuroscience
+                Cooperation with the Computational Systems Neuroscience Group (CSNG)
               </CardTitle>
               <p className="text-justify">
-                <FaAtom className="mr-2" /> Embark on a journey through the intricate labyrinths of the brain with <strong>Arkheia</strong>, 
-                this web-based repository designed for the visualization of complex neural simulations. 
+                <FaAtom className="mr-2" /> <strong>Arkheia</strong>
+                is a  web-based repository designed for the visualization of complex neural simulations. 
                 Developed at the <strong>MFF UK</strong>, Arkheia leverages 
-                the <strong>Mozaik framework</strong> to bring computational neuroscience to your fingertips.
-              </p>
-              <p className="text-justify">
-                <FaBrain className="mr-2" /> Whether you're a seasoned researcher or an avid enthusiast, Arkheia offers an intuitive platform to delve into the vast ocean of data, uncovering patterns and insights that propel the frontiers of knowledge.
-              </p>
-              <p className="text-justify">
-                <FaChartArea className="mr-2" /> Visualize the unseen. Explore simulation results with unparalleled clarity and ease, navigating through the complexities of neural networks as they come alive on your screen.
+                the <strong>Mozaik framework</strong> to save the simulations and parameter searches generated. 
               </p>
               <p className="text-center mt-4">
-                <FaUniversity className="mr-2" /> Proudly developed at <strong>MFF UK</strong> — Where innovation meets excellence.
+                <FaUniversity className="mr-2" /> Developed at <strong>MFF UK</strong>
               </p>
             </CardBody>
           </Card>
