@@ -23,7 +23,7 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
 
   return (
     <>
-    <tr>
+    <tr style={{ textAlign: 'center', verticalAlign: 'middle'}}>
       <td>
         {stimuli.code_name}
       </td>

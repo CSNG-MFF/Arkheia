@@ -100,7 +100,7 @@ const ParameterSearchDetail = ({ parameter_search }) => {
     <Alert style={{ position: 'absolute', width: '100%' }} color="danger" isOpen={alertDeleteVisible} toggle={() => setAlertDeleteVisible(false)}>
       Parameter Search deleted!
     </Alert>
-    <tr>
+    <tr style={{ textAlign: 'center', verticalAlign: 'middle'}}>
       <td>
         {new Date(parameter_search.createdAt).toLocaleString('en-GB')}
       </td>

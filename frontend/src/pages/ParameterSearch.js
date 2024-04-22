@@ -76,10 +76,10 @@ const ParameterSearch = () => {
             <UncontrolledTooltip
               target="Inspect"
             >
-              Click the eye icon to perform parameter dependent interactive inspection of the paramter search results
+              Click the eye icon to perform parameter dependent interactive inspection of the parameter search results
             </UncontrolledTooltip>
             <th id="Delete">
-              Delete simulation run
+              Delete parameter search
             </th>
             <UncontrolledTooltip
               target="Delete"

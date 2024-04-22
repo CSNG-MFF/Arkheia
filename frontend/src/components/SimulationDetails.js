@@ -134,7 +134,7 @@ const SimulationDetail = ({ simulation }) => {
     <Alert style={{ position: 'absolute', width: '100%' }} color="danger" isOpen={alertDeleteVisible} toggle={() => setAlertDeleteVisible(false)}>
       Simulation deleted!
     </Alert>
-    <tr>
+    <tr style={{ textAlign: 'center', verticalAlign: 'middle'}}>
       <td style={{ textAlign: 'center', padding: 0 }}>
         <Button className="icon-button" onClick={handleAloneView} >
           <IoEye size={28} className="icon"/>

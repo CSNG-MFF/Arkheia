@@ -193,7 +193,7 @@ const InspectResults = () => {
                 type="range"
                 id="scaleSlider"
                 min="0.1"
-                max="3"  
+                max="1"  
                 step="0.01"  // Smaller step for smoother transitions
                 value={imageScale}
                 onChange={handleScaleChange}
@@ -235,12 +235,12 @@ const InspectResults = () => {
 
             <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
               <Container>
-                <Table bordered>
+                <Table bordered hover responsive>
                   <thead>
                     <tr>
                       <th></th>
                       {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key, index) => (
-                        <th key={index}>
+                        <th key={index} style={{ textAlign: 'center'}}>
                           {Object.entries(notSelectedValuesCombinations[key]).map(([subKey, subValue]) => (
                             <React.Fragment key={subKey}>
                               {subKey}: {String(subValue)}
@@ -254,7 +254,9 @@ const InspectResults = () => {
                   <tbody>
                     {selectedValues && selectedValues[selectedKey] && selectedValues[selectedKey].map((value, index) => (
                       <tr key={index}>
-                        <th scope="row">{String(value)}</th>
+                        <th scope="row" style={{ textAlign: 'center', verticalAlign: 'middle'}}>
+                          {String(value)}
+                        </th>
                         {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key) => (
                           <td key={key}>
                           {(() => {

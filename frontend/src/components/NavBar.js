@@ -1,5 +1,5 @@
 import { IoAddOutline } from "react-icons/io5";
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import {
     Button,
@@ -27,9 +27,27 @@ const NavBar = () => {
   const [parameterSearchAlertVisible, setParameterSearchAlertVisible] = useState(false);
 
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploadActive, setIsUploadActive] = useState(false);
+  
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (isUploadActive) {
+        event.preventDefault();
+        event.returnValue = ''; 
+        return '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isUploadActive]);
 
   const handleParameterSearchUpload = async (event) => {
+    setIsUploadActive(true);
     const files = event.target.files;
     const folders = {};
 
@@ -111,11 +129,14 @@ const NavBar = () => {
     }
 
     parameterSearchInputRef.current.value = "";
+    setIsUploadActive(false);
   };
 
   const processFiles = async (files, parameter_search_bool) => {
     let processedFiles = 0;
-    setUploadProgress(1);
+    if (!parameter_search_bool) {
+      setUploadProgress(1);
+    }
     let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
     const stimuli = [];
     const expProtocols = [];
@@ -234,8 +255,10 @@ const NavBar = () => {
     const totalFiles = stimuli.length + expProtocols.length + records.length + results.length;
 
     for (var stimulus of stimuli) {
-      processedFiles++;
-      setUploadProgress((processedFiles / totalFiles) * 100);
+      if (!parameter_search_bool) {
+        processedFiles++;
+        setUploadProgress((processedFiles / totalFiles) * 100);
+      }
       const response = await fetch('/stimuli', {
         method: 'POST',
         body: stimulus
@@ -250,8 +273,10 @@ const NavBar = () => {
     }
   
     for (var expProtocol of expProtocols) {
-      processedFiles++;
-      setUploadProgress((processedFiles / totalFiles) * 100);
+      if (!parameter_search_bool) {
+        processedFiles++;
+        setUploadProgress((processedFiles / totalFiles) * 100);
+      }
       const response = await fetch('/exp_protocols', {
         method: 'POST',
         body: JSON.stringify(expProtocol),
@@ -269,8 +294,10 @@ const NavBar = () => {
     }
   
     for (var record of records) {
-      processedFiles++;
-      setUploadProgress((processedFiles / totalFiles) * 100);
+      if (!parameter_search_bool) {
+        processedFiles++;
+        setUploadProgress((processedFiles / totalFiles) * 100);
+      }
       const response = await fetch('/records', {
         method: 'POST',
         body: JSON.stringify(record),
@@ -288,8 +315,10 @@ const NavBar = () => {
     }
 
     for (var result of results) {
-      processedFiles++;
-      setUploadProgress((processedFiles / totalFiles) * 100);
+      if (!parameter_search_bool) {
+        processedFiles++;
+        setUploadProgress((processedFiles / totalFiles) * 100);
+      }
       const response = await fetch('/results', {
         method: 'POST',
         body: result
@@ -317,7 +346,9 @@ const NavBar = () => {
         'Content-Type' : 'application/json'
       }
     })
-    setUploadProgress(100);
+    if (!parameter_search_bool) {
+      setUploadProgress(100);
+    }
     const json = await response.json()
     if (!response.ok) {
       console.error(json.error);
@@ -336,8 +367,14 @@ const NavBar = () => {
   };
 
   const handleFolderUpload = async (event) => {
+    setIsUploadActive(true); // Start tracking upload state
     const files = event.target.files;
-    await processFiles(files, false);
+
+    try {
+      await processFiles(files, false);
+    } finally {
+      setIsUploadActive(false); // Update upload state
+    }
   };
 
   const [documentationDropDownOpen, setDocumentationDropDownOpen] = useState(false);

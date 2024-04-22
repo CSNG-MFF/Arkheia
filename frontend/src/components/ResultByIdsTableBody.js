@@ -29,7 +29,7 @@ const ResultByIdsTableBody = ({ result }) => {
 
   return (
     <>
-    <tr>
+    <tr style={{ textAlign: 'center', verticalAlign: 'middle'}}>
       <td>
         {result.code_name}
       </td>
@@ -93,7 +93,11 @@ const ResultByIdsTableBody = ({ result }) => {
           type="button"
           onClick={toggleViewModal}
         >
-          <IoEye size={28} className="icon" />
+          <img
+            src={`/results/${result._id}/image`} 
+            alt="Result Figure"
+            style={{ maxWidth: '70%', maxHeight: '50%', height: 'auto' }}
+          />
         </Button>
         <Modal
           target={`view_${result._id}`}
@@ -103,9 +107,9 @@ const ResultByIdsTableBody = ({ result }) => {
         >
           <ModalBody>
               <img
-                  src={`/results/${result._id}/image`} 
-                  alt="Result Figure"
-                  style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
+                src={`/results/${result._id}/image`} 
+                alt="Result Figure"
+                style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
               />
           </ModalBody>
           <ModalFooter>

@@ -24,14 +24,14 @@ const RecordByIdsTableBody = ({ record }) => {
 
   return (
     <>
-    <tr>
+    <tr style={{ textAlign: 'center', verticalAlign: 'middle'}}>
       <td>
         {record.code_name}
       </td>
       <td>
         {record.source}
       </td>
-      <td>
+      <td style={{ textAlign: 'start'}}>
         {Array.isArray(record.variables) ? (
             <List>
               {record.variables.map((variable, index) => (
