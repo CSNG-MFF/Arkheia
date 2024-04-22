@@ -183,11 +183,6 @@ const SimulationDetail = ({ simulation }) => {
         </Button>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }} >
-        <Button className="icon-button" onClick={handleDownload}>
-          <IoMdDownload size={28} className="icon" />
-        </Button>  
-      </td>  
-      <td style={{ textAlign: 'center', padding: 0 }} >
         <Button className="icon-button" onClick={handleDelete}>
           <IoTrashSharp size={28} className="icon" />
         </Button>

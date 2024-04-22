@@ -8,8 +8,10 @@ import {
 } from 'reactstrap'
 
 const ParameterSearch = () => {
-  const [parameterSearch, setParameterSearches] = useState(null)
+  const [parameterSearch, setParameterSearches] = useState(null);
     
+  const [runNameSearch, setRunNameSearch] = useState('');
+  const [modelNameSearch, setModelNameSearch] = useState('');
   useEffect(() => {
     const fetchParameterSearches = async () => {
       const response = await fetch('/parameter_searches')
@@ -87,10 +89,33 @@ const ParameterSearch = () => {
               Click the trash icon to delete one parameter search from the table
             </UncontrolledTooltip>
           </tr>
+          <tr>
+            <th colSpan={2}></th> {/* Empty for 'View Alone' */}
+            <th>
+              <input
+                type="text"
+                placeholder="Search Run Name"
+                value={runNameSearch}
+                onChange={(e) => setRunNameSearch(e.target.value)}
+              />
+            </th>
+            <th>
+              <input 
+                type="text"
+                placeholder="Search Model Name"
+                value={modelNameSearch}
+                onChange={(e) => setModelNameSearch(e.target.value)}
+              />
+            </th>
+            <th colSpan={3}></th>
+          </tr>
         </thead>
         <tbody>
-          {parameterSearch && parameterSearch.map((parameter_search) => (
-            <ParameterSearchDetail key={parameter_search._id} parameter_search={parameter_search} />
+          {parameterSearch  && parameterSearch .filter((parameter_search) => (
+            parameter_search.name.toLowerCase().includes(runNameSearch.toLowerCase()) &&
+            parameter_search.model_name.toLowerCase().includes(modelNameSearch.toLowerCase())
+          )).map((parameter_search) => (
+            <ParameterSearchDetail  key={parameter_search._id} parameter_search={parameter_search} />
           ))}
         </tbody>
       </Table>

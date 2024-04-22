@@ -13,6 +13,8 @@ const Simulations = () => {
   const parameter_search = location.state;
   const [simulations, setSimulations] = useState(null);
 
+  const [runNameSearch, setRunNameSearch] = useState('');
+  const [modelNameSearch, setModelNameSearch] = useState('');
     
   useEffect(() => {
     const fetchSimulations = async () => {
@@ -124,14 +126,6 @@ const Simulations = () => {
             >
               Click the eye icon to inspect the results (figures) generated during the given simulation run.
             </UncontrolledTooltip>
-            <th id="Download">
-              Download simulation run
-            </th>
-            <UncontrolledTooltip
-              target="Download"
-            >
-              Click the eye icon to download one simulation run from the table
-            </UncontrolledTooltip>
             <th id="Delete">
               Delete simulation run
             </th>
@@ -141,11 +135,34 @@ const Simulations = () => {
               Click the eye icon to delete one simulation run from the table
             </UncontrolledTooltip>
           </tr>
+          <tr>
+            <th colSpan={3}></th> {/* Empty for 'View Alone' */}
+            <th>
+              <input
+                type="text"
+                placeholder="Search Run Name"
+                value={runNameSearch}
+                onChange={(e) => setRunNameSearch(e.target.value)}
+              />
+            </th>
+            <th>
+              <input 
+                type="text"
+                placeholder="Search Model Name"
+                value={modelNameSearch}
+                onChange={(e) => setModelNameSearch(e.target.value)}
+              />
+            </th>
+            <th colSpan={7}></th>
+          </tr>
         </thead>
         <tbody>
-          {simulations && simulations.map((simulation) => (
-            <SimulationDetail key={simulation._id} simulation={simulation} />
-          ))}
+          {simulations && simulations.filter((simulation) => (
+             simulation.simulation_run_name.toLowerCase().includes(runNameSearch.toLowerCase()) &&
+             simulation.model_name.toLowerCase().includes(modelNameSearch.toLowerCase())
+           )).map((simulation) => (
+              <SimulationDetail key={simulation._id} simulation={simulation} />
+           ))}
         </tbody>
       </Table>
     </div>
