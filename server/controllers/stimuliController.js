@@ -68,13 +68,29 @@ const deleteStimulus = async (req, res) => {
     return res.status(404).json({ error: 'Bad format of ID' });
   }
 
-  const stimulus = await Stimuli.findOneAndDelete({ _id: id });
+  const stimulus = await Stimuli.findOne({ _id: id });
 
   if (!stimulus) {
     return res.status(400).json({ error: 'No such stimulus' });
   }
 
-  res.status(200).json(stimulus);
+  try {
+    const client = new MongoClient(process.env.MONGODB_URI);
+    await client.connect();
+
+    const db = client.db(); // Get the database instance
+    const bucket = new GridFSBucket(db);
+
+    // Delete the file from GridFS
+    await bucket.delete(new mongoose.Types.ObjectId(stimulus.movie.fileId));
+
+    // Delete the result from the database
+    await Stimuli.deleteOne({ _id: id });
+
+    res.status(200).json(stimulus);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // Get a stimulus by ID

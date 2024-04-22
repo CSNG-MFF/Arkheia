@@ -67,13 +67,29 @@ const deleteResult = async (req, res) => {
     return res.status(404).json({ error: 'Bad format of ID' });
   }
 
-  const result = await Result.findOneAndDelete({ _id: id });
+  const result = await Result.findOne({ _id: id });
 
   if (!result) {
     return res.status(400).json({ error: 'No such result' });
   }
 
-  res.status(200).json(result);
+  try {
+    const client = new MongoClient(process.env.MONGODB_URI);
+    await client.connect();
+
+    const db = client.db(); // Get the database instance
+    const bucket = new GridFSBucket(db);
+
+    // Delete the file from GridFS
+    await bucket.delete(new mongoose.Types.ObjectId(result.figure.fileId));
+
+    // Delete the result from the database
+    await Result.deleteOne({ _id: id });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // Get a result by ID

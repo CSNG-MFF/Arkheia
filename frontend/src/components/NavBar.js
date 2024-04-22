@@ -23,6 +23,7 @@ const NavBar = () => {
   const parameterSearchInputRef = useRef(null);
 
   const [alertVisible, setAlertVisible] = useState(false);
+  const [parameterSearchAlertVisible, setParameterSearchAlertVisible] = useState(false);
 
   const handleParameterSearchUpload = async (event) => {
     const files = event.target.files;
@@ -94,6 +95,10 @@ const NavBar = () => {
   
     if (response.ok) {
       console.log('new parameterSearch added');
+      setParameterSearchAlertVisible(true);  // Show the alert
+      setTimeout(() => setParameterSearchAlertVisible(false), 3000);
+      setTimeout(() => window.location.reload(), 2000);
+      inputRef.current.value = "";
     }
 
     parameterSearchInputRef.current.value = "";
@@ -282,7 +287,6 @@ const NavBar = () => {
     simulationWithParameters.resultIds = savedResults;
     simulationWithParameters.from_parameter_search = parameter_search_bool;
   
-    console.log(simulationWithParameters);
     
     const response = await fetch('/simulation_runs', {
       method: 'POST',
@@ -302,7 +306,7 @@ const NavBar = () => {
       if (!parameter_search_bool) {
         setAlertVisible(true);  // Show the alert
         setTimeout(() => setAlertVisible(false), 3000);
-        //setTimeout(() => window.location.reload(), 2000);
+        setTimeout(() => window.location.reload(), 2000);
         inputRef.current.value = "";
       }
     }
@@ -405,6 +409,9 @@ const NavBar = () => {
         </Navbar>
         <Alert style={{ paddingLeft: 20, paddingRight: 20 }} color="success" isOpen={alertVisible} toggle={() => setAlertVisible(false)}>
           Simulation added successfully!
+        </Alert>
+        <Alert style={{ paddingLeft: 20, paddingRight: 20 }} color="success" isOpen={parameterSearchAlertVisible} toggle={() => setParameterSearchAlertVisible(false)}>
+          Parameter search added successfully!
         </Alert>
       </div>
     )

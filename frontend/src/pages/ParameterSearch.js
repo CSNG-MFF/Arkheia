@@ -84,7 +84,7 @@ const ParameterSearch = () => {
             <UncontrolledTooltip
               target="Delete"
             >
-              Click the trash icon to delete one simulation run from the table
+              Click the trash icon to delete one parameter search from the table
             </UncontrolledTooltip>
           </tr>
         </thead>

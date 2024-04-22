@@ -12,7 +12,6 @@ const Simulations = () => {
   const location = useLocation();
   const parameter_search = location.state;
   const [simulations, setSimulations] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
 
     
   useEffect(() => {
