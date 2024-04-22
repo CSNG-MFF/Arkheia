@@ -63,7 +63,6 @@ const InspectResults = () => {
             for (const simulation of json) {
               addVariations(simulation.parameters, 'parameters', parameterVariations);
             }
-
             // Convert all sets to arrays for easier usage later on
             for (const key in parameterVariations) {
               parameterVariations[key] = Array.from(parameterVariations[key]);
@@ -71,7 +70,6 @@ const InspectResults = () => {
                 delete parameterVariations[key];
               }
             }
-
             setParameterDifferences(parameterVariations);
             } catch (error) {
               console.error('Error fetching results (general):', error);
@@ -100,6 +98,7 @@ const InspectResults = () => {
 
   useEffect(() => {
     if (selectedValues && selectedKey) {
+      console.log(selectedValues);
       const keys = Object.keys(selectedValues).filter(key => key !== selectedKey);
       const combinations = [];
   
@@ -210,7 +209,7 @@ const InspectResults = () => {
                       color={key === selectedKey ? 'primary' : 'secondary'}
                       onClick={() => setSelectedKey(key)}
                     >
-                      {key}
+                      {String(key)}
                     </Button>
                     {parameterDifferences[key].map((value, index) => {
                       const isSelected = selectedValues[key] && selectedValues[key].includes(value);
@@ -224,7 +223,7 @@ const InspectResults = () => {
                           onClick={() => !isLastSelected && toggleSelection(key, value)}
                           disabled={isLastSelected}
                         >
-                          {value}
+                          {String(value)}
                         </Button>
                       );
                     })}
@@ -236,7 +235,7 @@ const InspectResults = () => {
 
             <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
               <Container>
-                <Table>
+                <Table bordered>
                   <thead>
                     <tr>
                       <th></th>
@@ -244,7 +243,7 @@ const InspectResults = () => {
                         <th key={index}>
                           {Object.entries(notSelectedValuesCombinations[key]).map(([subKey, subValue]) => (
                             <React.Fragment key={subKey}>
-                              {subKey}: {subValue}
+                              {subKey}: {String(subValue)}
                               <br />
                             </React.Fragment>
                           ))}
@@ -255,7 +254,7 @@ const InspectResults = () => {
                   <tbody>
                     {selectedValues && selectedValues[selectedKey] && selectedValues[selectedKey].map((value, index) => (
                       <tr key={index}>
-                        <th scope="row">{selectedKey}: {value}</th>
+                        <th scope="row">{String(value)}</th>
                         {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key) => (
                           <td key={key}>
                           {(() => {
@@ -284,7 +283,7 @@ const InspectResults = () => {
                                 );
                               }
                             }
-                            return 'False';
+                            return '';
                           })()}
                         </td>
                         ))}
