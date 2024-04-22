@@ -61,7 +61,7 @@ const InspectResults = () => {
               const parameterVariations = {};
 
             for (const simulation of json) {
-              addVariations(simulation.parameters.sheets, 'sheets', parameterVariations);
+              addVariations(simulation.parameters, 'parameters', parameterVariations);
             }
 
             // Convert all sets to arrays for easier usage later on
@@ -259,33 +259,33 @@ const InspectResults = () => {
                         {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key) => (
                           <td key={key}>
                           {(() => {
-  const allKeysValues = Object.entries(notSelectedValuesCombinations[key]).concat([[selectedKey, value]]);
-  const simulationMatch = simulations.find(simulation =>
-    allKeysValues.every(([key, val]) => _.get(simulation.parameters, key) === val)
-  );
+                            const allKeysValues = Object.entries(notSelectedValuesCombinations[key]).concat([[selectedKey, value]]);
+                            const simulationMatch = simulations.find(simulation =>
+                              allKeysValues.every(([key, val]) => _.get(simulation, key) === val)
+                            );
 
-  if (simulationMatch) {
-    const result = results.find(result => 
-      result.name === selectedResultName && simulationMatch.results.includes(result._id)
-    );
-    if (result) {
-      return (
-        <img
-          key={result._id} // Important: Unique key for each image
-          src={`/results/${result._id}/image`}
-          alt="Result Figure"
-          style={{
-            maxWidth: '100%',
-            height: 'auto',
-            transform: `scale(${imageScale})`,
-            marginRight: '10px'
-          }}
-        />
-      );
-    }
-  }
-  return 'False';
-})()}
+                            if (simulationMatch) {
+                              const result = results.find(result => 
+                                result.name === selectedResultName && simulationMatch.results.includes(result._id)
+                              );
+                              if (result) {
+                                return (
+                                  <img
+                                    key={result._id} // Important: Unique key for each image
+                                    src={`/results/${result._id}/image`}
+                                    alt="Result Figure"
+                                    style={{
+                                      maxWidth: '100%',
+                                      height: 'auto',
+                                      transform: `scale(${imageScale})`,
+                                      marginRight: '10px'
+                                    }}
+                                  />
+                                );
+                              }
+                            }
+                            return 'False';
+                          })()}
                         </td>
                         ))}
                       </tr>
