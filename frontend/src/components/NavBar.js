@@ -13,7 +13,8 @@ import {
     DropdownMenu,
     DropdownToggle,
     Dropdown,
-    ButtonGroup
+    ButtonGroup,
+    Progress
   } from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -25,6 +26,9 @@ const NavBar = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [parameterSearchAlertVisible, setParameterSearchAlertVisible] = useState(false);
 
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+
   const handleParameterSearchUpload = async (event) => {
     const files = event.target.files;
     const folders = {};
@@ -32,7 +36,7 @@ const NavBar = () => {
     let model_name = "";
     let run_date = "";
     let name = "";
-
+    setUploadProgress(1);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
@@ -71,10 +75,14 @@ const NavBar = () => {
     }
 
     let simulationIds = [];
+    const totalFiles = Object.keys(folders).length;
+    let processedFiles = 0;
     // Call processFiles for each folder
     for (const folderName in folders) {
       const folderFiles = folders[folderName];
       const result_simulation_id = await processFiles(folderFiles, true);
+      processedFiles++;
+      setUploadProgress((processedFiles / totalFiles) * 100);
       console.log("Processed", folderName, result_simulation_id);
       simulationIds.push(result_simulation_id);
     }
@@ -87,7 +95,8 @@ const NavBar = () => {
         'Content-Type' : 'application/json'
       }
     })
-  
+    setUploadProgress(100);
+
     const json = await response.json()
     if (!response.ok) {
       console.error(json.error);
@@ -105,6 +114,8 @@ const NavBar = () => {
   };
 
   const processFiles = async (files, parameter_search_bool) => {
+    let processedFiles = 0;
+    setUploadProgress(1);
     let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
     const stimuli = [];
     const expProtocols = [];
@@ -218,8 +229,13 @@ const NavBar = () => {
     const savedStimulus = [];
     const savedExpProtocols = [];
     const savedRecords = [];
-  
+    
+
+    const totalFiles = stimuli.length + expProtocols.length + records.length + results.length;
+
     for (var stimulus of stimuli) {
+      processedFiles++;
+      setUploadProgress((processedFiles / totalFiles) * 100);
       const response = await fetch('/stimuli', {
         method: 'POST',
         body: stimulus
@@ -234,6 +250,8 @@ const NavBar = () => {
     }
   
     for (var expProtocol of expProtocols) {
+      processedFiles++;
+      setUploadProgress((processedFiles / totalFiles) * 100);
       const response = await fetch('/exp_protocols', {
         method: 'POST',
         body: JSON.stringify(expProtocol),
@@ -251,6 +269,8 @@ const NavBar = () => {
     }
   
     for (var record of records) {
+      processedFiles++;
+      setUploadProgress((processedFiles / totalFiles) * 100);
       const response = await fetch('/records', {
         method: 'POST',
         body: JSON.stringify(record),
@@ -268,6 +288,8 @@ const NavBar = () => {
     }
 
     for (var result of results) {
+      processedFiles++;
+      setUploadProgress((processedFiles / totalFiles) * 100);
       const response = await fetch('/results', {
         method: 'POST',
         body: result
@@ -295,7 +317,7 @@ const NavBar = () => {
         'Content-Type' : 'application/json'
       }
     })
-  
+    setUploadProgress(100);
     const json = await response.json()
     if (!response.ok) {
       console.error(json.error);
@@ -326,6 +348,7 @@ const NavBar = () => {
       <div style={{
         paddingTop: 5
       }} className="Navbar">
+        {uploadProgress > 0 && <Progress value={uploadProgress} />}
         <Navbar style={{paddingRight: 20}} color='light' light expand="md">
           <NavbarBrand style={{paddingLeft: 20}} href="/">Arkheia</NavbarBrand>
           <Nav className="mr-auto" pills justified navbar>  
