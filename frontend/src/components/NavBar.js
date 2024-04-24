@@ -54,6 +54,7 @@ const NavBar = () => {
     let model_name = "";
     let run_date = "";
     let name = "";
+    let parameter_combinations = {};
     setUploadProgress(1);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -71,6 +72,19 @@ const NavBar = () => {
             const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
             run_date = date.toISOString();
           }
+          else if (file.name == "parameter_combinations.json") {
+            const jsonData = JSON.parse(contents);
+            jsonData.forEach(item => {
+              for (let key in item) {
+                if (!parameter_combinations[key]) {
+                  parameter_combinations[key] = [];
+                }
+                if (!parameter_combinations[key].includes(item[key])) {
+                  parameter_combinations[key].push(item[key]);
+                }
+              }
+            });
+          } 
           resolve();
         };
         reader.onerror = reject;
@@ -104,7 +118,7 @@ const NavBar = () => {
       console.log("Processed", folderName, result_simulation_id);
       simulationIds.push(result_simulation_id);
     }
-    const ParameterSearches = {model_name, name, run_date, simulationIds};
+    const ParameterSearches = {model_name, name, run_date, simulationIds, parameter_combinations};
     console.log(ParameterSearches);
     const response = await fetch('/parameter_searches', {
       method: 'POST',

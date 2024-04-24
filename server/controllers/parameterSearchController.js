@@ -11,7 +11,7 @@ const getParameterSearches = async (req, res) => {
 
 // Create parameter search with file upload
 const createParameterSearch = async (req, res) => {
-  const {name, model_name, run_date, simulationIds } = req.body
+  const {name, model_name, run_date, simulationIds, parameter_combinations } = req.body
     //add to db
     try {
       const simulations = await Simulation.find({ _id: { $in: simulationIds }});
@@ -19,7 +19,8 @@ const createParameterSearch = async (req, res) => {
         name,
         model_name, 
         run_date, 
-        simulations: simulations.map(simulation => simulation._id)
+        simulations: simulations.map(simulation => simulation._id),
+        parameter_combinations
       })
       res.status(200).json(parameter_search)
     } catch (error) {
@@ -71,11 +72,26 @@ const getParameterSearchSimulations = async (req, res) => {
     
     const simulations = await Simulation.find({ _id: { $in: parameterSearch.simulations } });
     
-    console.log(simulations);
     res.json(simulations);
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server Error');
+  }
+}
+
+const getParameterSearchResults = async (req, res) => {
+  try {
+    const parameterSearch = await ParameterSearch.findById(req.params.id).populate('simulations');
+    if (!parameterSearch) {
+      return res.status(404).json({ message: 'ParameterSearch not found' });
+    }
+
+    const simulations = await Simulation.find({ '_id': { $in: parameterSearch.simulations } }).populate('results');
+    const results = simulations.map(simulation => simulation.results);
+
+    return res.status(200).json(results);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 }
 
@@ -86,5 +102,6 @@ module.exports = {
   createParameterSearch,
   deleteParameterSearch,
   getParameterSearch,
-  getParameterSearchSimulations
+  getParameterSearchSimulations,
+  getParameterSearchResults
 };

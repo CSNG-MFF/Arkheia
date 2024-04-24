@@ -15,7 +15,10 @@ const ParameterSearchSchema = new Schema({
     type: String,
     required: true
   },
-  simulations: [{ type: Schema.Types.ObjectId, ref: 'Simulations'}]
+  simulations: [{ type: Schema.Types.ObjectId, ref: 'Simulations'}],
+  parameter_combinations: {
+    type: Object
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('ParameterSearch', ParameterSearchSchema);

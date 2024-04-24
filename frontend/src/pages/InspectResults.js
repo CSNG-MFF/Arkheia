@@ -44,33 +44,44 @@ const InspectResults = () => {
             setIsLoadingSimulations(false);
             try {
               const allResults = []; // Array to store results from all simulations
-          
-              for (const simulation of json) {
-                const response = await fetch(`/results/${simulation._id}`);
-                const resultsData = await response.json();
-                setAvailableResultNames(resultsData);
-                if (response.ok) {
-                  allResults.push(...resultsData); // Add results for this simulation
-                } else {
-                  console.error(`Error fetching results for simulation ${simulation._id}:`, response.statusText);
+              let availableNames = new Set();
+              const response = await fetch(`/parameter_searches/${parameter_search._id}/results`);
+              const resultsData = await response.json();
+              if (response.ok) {
+                for (const results of resultsData) {
+                  for (const result of results) {
+                    if (result.name) {
+                      availableNames.add(result.name); // Add result name to the set
+                    }
+                    allResults.push(result); // Add results for this simulation
+                  }
                 }
+              } else {
+                console.error(`Error fetching results for parameter search ${parameter_search._id}:`, response.statusText);
               }
+              console.log(availableNames);
+              
+              setAvailableResultNames([...availableNames]);
               setResults(allResults);
               setIsLoadingResults(false);
-    
-              const parameterVariations = {};
+              
+              let parameterVariations = {};
 
-            for (const simulation of json) {
-              addVariations(simulation.parameters, 'parameters', parameterVariations);
-            }
-            // Convert all sets to arrays for easier usage later on
-            for (const key in parameterVariations) {
-              parameterVariations[key] = Array.from(parameterVariations[key]);
-              if (parameterVariations[key].length <= 1) {
-                delete parameterVariations[key];
+              if (parameter_search.parameter_combinations) {
+                parameterVariations = parameter_search.parameter_combinations;
               }
-            }
-            setParameterDifferences(parameterVariations);
+              else {
+                for (const simulation of json) {
+                  addVariations(simulation.parameters, 'parameters', parameterVariations);
+                }
+              }
+              for (const key in parameterVariations) {
+                parameterVariations[key] = Array.from(parameterVariations[key]);
+                if (parameterVariations[key].length <= 1) {
+                  delete parameterVariations[key];
+                }
+              }
+              setParameterDifferences(parameterVariations);
             } catch (error) {
               console.error('Error fetching results (general):', error);
             }
@@ -98,7 +109,6 @@ const InspectResults = () => {
 
   useEffect(() => {
     if (selectedValues && selectedKey) {
-      console.log(selectedValues);
       const keys = Object.keys(selectedValues).filter(key => key !== selectedKey);
       const combinations = [];
   
@@ -116,7 +126,6 @@ const InspectResults = () => {
       };
   
       generateCombinations(0, {});
-      console.log(combinations);
       setNotSelectedValuesCombinations(combinations);
     }
   }, [selectedValues, selectedKey]);
@@ -124,7 +133,7 @@ const InspectResults = () => {
   useEffect(() => {
     if (availableResultNames.length > 0) {
       const firstResult = availableResultNames[0];
-      setSelectedResultName(firstResult.name);
+      setSelectedResultName(firstResult);
       const matchingResults = results.filter((result) => result.name === firstResult.name);
       setSelectedResults([...matchingResults]);
     }
@@ -163,7 +172,7 @@ const InspectResults = () => {
   };
 
   return (
-    <Container> {(isLoadingSimulations || isLoadingResults) ? (
+    <Container> {(isLoadingSimulations) ? (
         <div>Loading...</div>
       ) : ( 
         <div>
@@ -179,9 +188,9 @@ const InspectResults = () => {
                   value={selectedResultName}
                   onChange={handleResultChange}
                 >
-                  {availableResultNames.map((result) => (
-                    <option key={result._id} value={result.name}>
-                      {result.name}
+                  {availableResultNames.map((resultName) => (
+                    <option key={resultName} value={resultName}>
+                      {resultName}
                     </option>
                   ))}
                 </Input>
@@ -262,7 +271,7 @@ const InspectResults = () => {
                           {(() => {
                             const allKeysValues = Object.entries(notSelectedValuesCombinations[key]).concat([[selectedKey, value]]);
                             const simulationMatch = simulations.find(simulation =>
-                              allKeysValues.every(([key, val]) => _.get(simulation, key) === val)
+                              allKeysValues.every(([key, val]) => _.get(simulation.parameters, key) === val)
                             );
 
                             if (simulationMatch) {
@@ -307,6 +316,7 @@ const InspectResults = () => {
 
 export default InspectResults
 
+// ONLY USED WHEN PARAMETER COMBINATIONS ARE NOT DEFINED
 function addVariations(obj, path, parameterVariations) {
   for (const key in obj) {
     if (typeof obj[key] === 'object' && obj[key] !== null) {
