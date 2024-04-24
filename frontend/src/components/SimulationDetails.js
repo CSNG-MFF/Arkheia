@@ -78,52 +78,7 @@ const SimulationDetail = ({ simulation }) => {
       window.location.reload();
     }
 
-    for (const stimulusId of simulation.stimuli) {
-      const deleteResponse = await fetch('/stimuli/' + stimulusId, {
-        method: 'DELETE'
-      });
-      const deleteJson = await deleteResponse.json();
-      
-      if (!deleteResponse.ok) {
-        throw new Error(deleteJson.error);
-      }
-    }
-
-    for (const expProtocolId of simulation.exp_protocols) {
-      const deleteResponse = await fetch('/exp_protocols/' + expProtocolId, {
-        method: 'DELETE'
-      });
-      const deleteJson = await deleteResponse.json();
-      
-      if (!deleteResponse.ok) {
-        throw new Error(deleteJson.error);
-      }
-    }
-
-    for (const recordId of simulation.records) {
-      const deleteResponse = await fetch('/records/' + recordId, {
-        method: 'DELETE'
-      });
-      const deleteJson = await deleteResponse.json();
-      
-      if (!deleteResponse.ok) {
-        throw new Error(deleteJson.error);
-      }
-    }
-
-    for (const resultId of simulation.results) {
-      const deleteResponse = await fetch('/results/' + resultId, {
-        method: 'DELETE'
-      });
-      const deleteJson = await deleteResponse.json();
-      
-      if (!deleteResponse.ok) {
-        throw new Error(deleteJson.error);
-      }
-    }
-
     if (response.ok) {
-      console.log('simulation deleted');
       setAlertDeleteVisible(true);  // Show the alert
       setTimeout(() => setAlertDeleteVisible(false), 3000);
       setTimeout(() => window.location.reload(), 2000);

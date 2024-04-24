@@ -72,7 +72,7 @@ const InspectResults = () => {
               }
               else {
                 for (const simulation of json) {
-                  addVariations(simulation.parameters, 'parameters', parameterVariations);
+                  addVariations(simulation.parameters, '', parameterVariations);
                 }
               }
               for (const key in parameterVariations) {

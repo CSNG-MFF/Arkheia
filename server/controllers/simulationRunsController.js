@@ -41,20 +41,30 @@ const createSimulation = async (req, res) => {
 
 //delete a simulation
 const deleteSimulation = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   
   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({error: 'Bad format of ID'})
+    return res.status(404).json({error: 'Bad format of ID'});
   }
 
-  const simulation = await Simulation.findOneAndDelete({ _id : id})
+  const simulation = await Simulation.findOne({ _id : id });
 
   if (!simulation) {
-      return res.status(400).json({error: 'No such simulation'})
+    return res.status(400).json({error: 'No such simulation'});
   }
 
-  res.status(200).json(simulation)
-}
+  // Assuming that Stimuli, ExpProtocols, Records, and Results are mongoose models
+  await Stimuli.deleteMany({ '_id': { $in: simulation.stimuli } });
+  await ExpProtocol.deleteMany({ '_id': { $in: simulation.exp_protocols } });
+  await Record.deleteMany({ '_id': { $in: simulation.records } });
+  await Result.deleteMany({ '_id': { $in: simulation.results } });
+
+  // Finally, delete the simulation itself
+  await Simulation.deleteOne({ '_id': simulation._id });
+
+  res.status(200).json({ message: 'Simulation and all associated data deleted successfully' });
+};
+
 
 const getSimulation = async (req, res) => {
   const { id } = req.params
