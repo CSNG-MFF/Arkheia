@@ -206,7 +206,7 @@ const InspectResults = () => {
                 step="0.01"  // Smaller step for smoother transitions
                 value={imageScale}
                 onChange={handleScaleChange}
-                style={{ width: '300px' }}
+                style={{ width: '500px' }}
               />
             </div>
             {parameterDifferences && Object.keys(parameterDifferences).length > 0 && (
@@ -242,14 +242,14 @@ const InspectResults = () => {
               </div>
             )}
 
-            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-              <Container>
-                <Table bordered hover responsive>
+            <div style={{ paddingLeft: '0', paddingRight: '0', width: '100%', height: '100%', overflow: 'auto' }}>
+              <Container fluid>
+                <Table bordered hover responsive style={{ paddingLeft: '0', paddingRight: '0', width: '100%'}}>
                   <thead>
-                    <tr>
+                    <tr style={{ position: 'sticky', left: 0, backgroundColor: 'white' }}>
                       <th></th>
                       {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key, index) => (
-                        <th key={index} style={{ textAlign: 'center'}}>
+                        <th key={index} style={{ textAlign: 'center', fontSize: `${imageScale * 1}em`, whiteSpace: 'nowrap', overflow: 'visible', maxWidth: `${imageScale * 100}%`}}>
                           {Object.entries(notSelectedValuesCombinations[key]).map(([subKey, subValue]) => (
                             <React.Fragment key={subKey}>
                               {subKey}: {String(subValue)}
@@ -285,10 +285,8 @@ const InspectResults = () => {
                                     src={`/results/${result._id}/image`}
                                     alt="Result Figure"
                                     style={{
-                                      maxWidth: '100%',
+                                      maxWidth: `${imageScale * 100}%`, // Set image scale
                                       height: 'auto',
-                                      transform: `scale(${imageScale})`,
-                                      marginRight: '10px'
                                     }}
                                   />
                                 );

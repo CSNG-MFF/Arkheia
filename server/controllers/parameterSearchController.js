@@ -32,6 +32,25 @@ const createParameterSearch = async (req, res) => {
     }
 };
 
+//update a parameter search
+const updateParameterSearch = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'Bad format of ID' });
+  }
+
+  const parameter_search = await ParameterSearch.findByIdAndUpdate(id, {
+    ...req.body // Fields to update from request body
+  }, { new: true }); // Option to return the updated document
+
+  if (!parameter_search) {
+    return res.status(400).json({ error: 'No such parameter search' });
+  }
+
+  res.status(200).json(parameter_search);
+}
+
 //delete a a parameter search
 const deleteParameterSearch = async (req, res) => {
   const { id } = req.params;
@@ -48,7 +67,7 @@ const deleteParameterSearch = async (req, res) => {
 
   // Delete all simulations and their associated data
   for (const simulation of parameter_search.simulations) {
-    
+
     // Assuming that Stimuli, ExpProtocols, Records, and Results are mongoose models
     await Stimuli.deleteMany({ '_id': { $in: simulation.stimuli } });
     await ExpProtocol.deleteMany({ '_id': { $in: simulation.exp_protocols } });
@@ -124,5 +143,6 @@ module.exports = {
   deleteParameterSearch,
   getParameterSearch,
   getParameterSearchSimulations,
-  getParameterSearchResults
+  getParameterSearchResults,
+  updateParameterSearch
 };

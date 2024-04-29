@@ -5,7 +5,8 @@ const {
   deleteParameterSearch,
   getParameterSearch,
   getParameterSearchSimulations,
-  getParameterSearchResults
+  getParameterSearchResults,
+  updateParameterSearch
 } = require('../controllers/parameterSearchController')
  
 const router = express.Router()
@@ -21,5 +22,7 @@ router.get('/:id', getParameterSearch)
 router.get('/:id/simulations', getParameterSearchSimulations)
 
 router.get('/:id/results', getParameterSearchResults)
+
+router.get('/:id', updateParameterSearch)
 
 module.exports = router

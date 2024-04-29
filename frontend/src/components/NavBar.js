@@ -92,7 +92,6 @@ const NavBar = () => {
       reader.readAsText(file);
       await filePromise;
 
-      console.log(model_name, name, run_date);
       const filePath = file.webkitRelativePath;
       const pathParts = filePath.split('/');
 

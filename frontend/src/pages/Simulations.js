@@ -136,24 +136,25 @@ const Simulations = () => {
             </UncontrolledTooltip>
           </tr>
           <tr>
-            <th colSpan={3}></th> {/* Empty for 'View Alone' */}
-            <th>
-              <input
-                type="text"
-                placeholder="Search Run Name"
-                value={runNameSearch}
-                onChange={(e) => setRunNameSearch(e.target.value)}
-              />
-            </th>
-            <th>
-              <input 
-                type="text"
-                placeholder="Search Model Name"
-                value={modelNameSearch}
-                onChange={(e) => setModelNameSearch(e.target.value)}
-              />
-            </th>
-            <th colSpan={6}></th>
+            <>
+              <th colSpan={3}></th> {/* Empty for 'View Alone' */}
+              <th>
+                <input
+                  type="text"
+                  placeholder="Search Run Name"
+                  value={runNameSearch}
+                  onChange={(e) => setRunNameSearch(e.target.value)}
+                />
+              </th>
+              <th>
+                <input 
+                  type="text"
+                  placeholder="Search Model Name"
+                  value={modelNameSearch}
+                  onChange={(e) => setModelNameSearch(e.target.value)}
+                />
+              </th>
+            </>
           </tr>
         </thead>
         <tbody>

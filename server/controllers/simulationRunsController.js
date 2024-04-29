@@ -12,6 +12,24 @@ const getSimulations = async (req, res) => {
   res.status(200).json(simulations)
 };
 
+const updateSimulation = async (req, res) => {
+  const { id } = req.params;
+  console.log(req.body);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'Bad format of ID' });
+  }
+
+  const simulation = await Simulation.findByIdAndUpdate(id, {
+    ...req.body // Fields to update from request body
+  }, { new: true }); // Option to return the updated document
+
+  if (!simulation) {
+    return res.status(400).json({ error: 'No such simulation' });
+  }
+
+  res.status(200).json(simulation);
+};
+
 // Create simulation with file upload
 const createSimulation = async (req, res) => {
   const {simulation_run_name, model_name, creation_data, model_description, parameters, stimuliIds, expProtocolIds, recordIds, resultIds, from_parameter_search } = req.body
@@ -88,5 +106,6 @@ module.exports = {
   getSimulations,
   createSimulation,
   deleteSimulation,
-  getSimulation
+  getSimulation,
+  updateSimulation
 };

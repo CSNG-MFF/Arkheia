@@ -1,5 +1,4 @@
 import { IoTrashSharp } from "react-icons/io5";
-import { IoMdDownload } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { IoEye } from "react-icons/io5";
 
@@ -13,6 +12,8 @@ const SimulationDetail = ({ simulation }) => {
   const history = useNavigate();
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [editingName, setEditingName] = useState(false);
+  const [newName, setNewName] = useState(simulation.simulation_run_name);
 
   const handleAloneView = () => {
     const id = simulation._id;
@@ -42,6 +43,8 @@ const SimulationDetail = ({ simulation }) => {
     const id = simulation._id;
     history(`/${id}/results`, { state: simulation });
   }
+
+  // Currently not used
   const handleDownload = async () => {
     try {
       const simulationsJson = JSON.stringify(simulation, null, 2);
@@ -84,6 +87,25 @@ const SimulationDetail = ({ simulation }) => {
       setTimeout(() => window.location.reload(), 2000);
     }
   }
+
+  const handleNameChange = async () => {
+    try {
+      const response = await fetch(`/simulation_runs/${simulation._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ simulation_run_name: newName })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update simulation name');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
     <Alert style={{ position: 'absolute', width: '100%' }} color="danger" isOpen={alertDeleteVisible} toggle={() => setAlertDeleteVisible(false)}>
@@ -102,8 +124,18 @@ const SimulationDetail = ({ simulation }) => {
         {new Date(simulation.creation_data).toLocaleString('en-GB')}
       </td>
       <td>
-        {simulation.simulation_run_name}
-      </td>
+          {editingName ? (
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onBlur={handleNameChange}
+              autoFocus
+            />
+          ) : (
+            <span onClick={() => setEditingName(true)}>{simulation.simulation_run_name}</span>
+          )}
+        </td>
       <td>
         {simulation.model_name}
       </td>
