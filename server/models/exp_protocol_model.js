@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+// The schema for the experimental protocols
 const ExpProtocolSchema = new Schema({
   code_name: {
     type: String,

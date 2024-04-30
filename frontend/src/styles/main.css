@@ -6,8 +6,13 @@ html {
 */
 
 .pages {
-  padding-left: 1cm;
-  padding-right: 1cm;
+  padding-left: 0.5cm;
+  padding-right: 0.5cm;
+}
+
+.pages .no-padding {
+  padding-left: 0 !important;
+  padding-right: 0 !important; 
 }
 
 .Navbar {

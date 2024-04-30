@@ -8,12 +8,12 @@ const {
 
 const router = express.Router();
 
-router.get('/', getExpProtocols); // Route to get all stimuli
+router.get('/', getExpProtocols); // Route to get all experimental protocols
 
-router.post('/', createExpProtocol); // Route to create a new stimulus
+router.post('/', createExpProtocol); // Route to create a new experimental protocol
 
-router.delete('/:id', deleteExpProtocol); // Route to delete a stimulus by ID
+router.delete('/:id', deleteExpProtocol); // Route to delete an experimental protocol by ID
 
-router.get('/:id', getExpProtocolForSimulation); // Route to get stimuli for the whole simulation
+router.get('/:id', getExpProtocolForSimulation); // Route to get the experimental protocols for the whole simulation
 
 module.exports = router;

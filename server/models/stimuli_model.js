@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+// The schema for the stimuli
 const StimuliSchema = new Schema({
   code_name: {
     type: String,

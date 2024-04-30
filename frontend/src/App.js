@@ -27,7 +27,6 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Navbar />
-        <div className = "pages">
           <Routes>
             <Route
               path="/"
@@ -44,10 +43,6 @@ function App() {
             <Route
               path="/:id/experimental-protocols"
               element={ <ExpProtocolsById/>}
-            />
-            <Route
-              path="/:id/results"
-              element={ <ResultsById/>}
             />
             <Route
               path="/:id/simulation"
@@ -93,8 +88,11 @@ function App() {
               path="*"
               element={ <NotFound/> }
             />
+            <Route
+              path="/:id/results"
+              element={ <ResultsById/>}
+            />
           </Routes>
-        </div>
         <Footer/>
       </BrowserRouter>
     </div>

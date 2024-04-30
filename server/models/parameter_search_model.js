@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+// The schema for the parameter searches
 const ParameterSearchSchema = new Schema({  
   run_date: {
     type: Date,

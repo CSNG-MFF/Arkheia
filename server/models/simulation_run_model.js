@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+// The schema for the simulations
 const SimulationRunSchema = new Schema({
   from_parameter_search: {
     type: Boolean,

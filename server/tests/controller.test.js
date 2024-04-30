@@ -1,12 +1,26 @@
 const request = require('supertest');
 const app = require('../server'); // Assuming your server setup is in a file named server.js
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
+require("dotenv").config();
+
+beforeEach(async () => {
+  await mongoose.connect(process.env.MONGODB_TEST_URI);
+});
 
 // Run after all tests have finished
-afterAll(async () => {
-  // Close the MongoDB connection
-  await mongoose.disconnect();
+afterEach(async () => {
+  await mongoose.connection.close();
+});
+
+
+describe('Parameter search Router', () => {
+  it('should return parameter searches when GET /parameter_searches', async () => {
+    const response = await request(app).get('/parameter_searches');
+    expect(response.status).toBe(200);
+  });
+
 });
 
 describe('Simulations Router', () => {
@@ -29,7 +43,7 @@ describe('Results Router', () => {
   it('should return results when GET /results', async () => {
     const response = await request(app).get('/results');
     expect(response.status).toBe(200);
-  }, 15000);
+  });
 
 });
 

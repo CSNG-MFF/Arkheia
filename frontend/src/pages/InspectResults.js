@@ -2,14 +2,18 @@ import { useLocation } from 'react-router-dom'
 import React, { useEffect, useState } from "react"
 import _ from 'lodash'; // Import lodash
 
-import { Container, Button, Form, FormGroup, Label, Input, Table } from 'reactstrap'; // Import Reactstrap components
+import { Container, Button, Form, FormGroup, Label, Input, Table, Modal, ModalBody, ModalFooter } from 'reactstrap'; // Import Reactstrap components
+
+import '../styles/inspect_results.css'
 
 const InspectResults = () => {
   
   const location = useLocation();
   const parameter_search = location.state;
   
-  const [imageScale, setImageScale] = useState(1);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+
+  const [imageScale, setImageScale] = useState(0.5);
 
   const [selectedKey, setSelectedKey] = useState(null);
 
@@ -29,6 +33,10 @@ const InspectResults = () => {
   const [selectedValues, setSelectedValues] = useState({});
   
   const [notSelectedValuesCombinations, setNotSelectedValuesCombinations] = useState({});
+
+  const toggleViewModal = () => {
+    setViewModalOpen(!viewModalOpen);
+  }
 
   useEffect(() => {
     if (!simulations.length && !isLoadingSimulations && !results.length && !isLoadingResults) { 
@@ -148,7 +156,16 @@ const InspectResults = () => {
   };
 
   const handleScaleChange = (event) => {
-    setImageScale(parseFloat(event.target.value).toFixed(2)); // Limit to 2 decimal places
+    setImageScale(parseFloat(event.target.value).toFixed(2));
+    const scale = event.target.value;
+    const images = document.querySelectorAll('img');
+    const headers = document.querySelectorAll('thead tr th');
+    images.forEach(img => {
+      img.style.width = `${scale * 800}px`;
+    });
+    headers.forEach(header => {
+      header.style.fontSize = `${scale * 1}em`;
+    })
   };
   const toggleSelection = (key, value) => {
     setSelectedValues(prevState => {
@@ -172,14 +189,14 @@ const InspectResults = () => {
   };
 
   return (
-    <Container> {(isLoadingSimulations) ? (
-        <div>Loading...</div>
+    <div> {(isLoadingSimulations) ? (
+        <div> <h1>Loading... </h1></div>
       ) : ( 
         <div>
         { results.length > 0 && (
           <div>
-            <h2>Select Result</h2>
-            <Form>
+            <h2 style={{ padding: '25px'}}>Select Result</h2>
+            <Form style={{ paddingLeft: '25px'}}>
               <FormGroup>
                 <Label for="resultSelect">Result</Label>
                 <Input
@@ -196,21 +213,21 @@ const InspectResults = () => {
                 </Input>
               </FormGroup>
             </Form>
-            <div>
-              <label htmlFor="scaleSlider">Image Scale</label>
-              <input
+            <div style={{ paddingLeft: '25px'}}>
+              <label htmlFor="scaleSlider" style={{paddingRight: '25px'}}>Image Scale</label>
+              <input 
                 type="range"
                 id="scaleSlider"
-                min="0.1"
-                max="1"  
+                min="0.35"
+                max="1.5"  
                 step="0.01"  // Smaller step for smoother transitions
                 value={imageScale}
                 onChange={handleScaleChange}
-                style={{ width: '500px' }}
+                style={{ width: '500px'}}
               />
             </div>
             {parameterDifferences && Object.keys(parameterDifferences).length > 0 && (
-              <div>
+              <div style={{ paddingLeft: '25px'}}>
                 {Object.keys(parameterDifferences).map((key) => (
                   <div key={key} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                     <Button
@@ -242,14 +259,14 @@ const InspectResults = () => {
               </div>
             )}
 
-            <div style={{ paddingLeft: '0', paddingRight: '0', width: '100%', height: '100%', overflow: 'auto' }}>
-              <Container fluid>
-                <Table bordered hover responsive style={{ paddingLeft: '0', paddingRight: '0', width: '100%'}}>
+            <div className='no-padding'>
+              <Container fluid style={{ padding: 0 }}>
+                <Table bordered hover className="fixed-header" >
                   <thead>
                     <tr style={{ position: 'sticky', left: 0, backgroundColor: 'white' }}>
                       <th></th>
                       {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key, index) => (
-                        <th key={index} style={{ textAlign: 'center', fontSize: `${imageScale * 1}em`, whiteSpace: 'nowrap', overflow: 'visible', maxWidth: `${imageScale * 100}%`}}>
+                        <th key={index} style={{ textAlign: 'center', fontSize: `${imageScale * 1}em`}}>
                           {Object.entries(notSelectedValuesCombinations[key]).map(([subKey, subValue]) => (
                             <React.Fragment key={subKey}>
                               {subKey}: {String(subValue)}
@@ -280,15 +297,41 @@ const InspectResults = () => {
                               );
                               if (result) {
                                 return (
-                                  <img
-                                    key={result._id} // Important: Unique key for each image
-                                    src={`/results/${result._id}/image`}
-                                    alt="Result Figure"
-                                    style={{
-                                      maxWidth: `${imageScale * 100}%`, // Set image scale
-                                      height: 'auto',
-                                    }}
-                                  />
+                                  <div>
+                                    <Button
+                                      className="icon-button" 
+                                      id={`view_${result._id}`}
+                                      type="button"
+                                      onClick={toggleViewModal}
+                                    >
+
+                                      <img
+                                        key={result._id}
+                                        src={`/results/${result._id}/image`}
+                                        alt="Result Figure"
+                                        style={{ width: `${imageScale * 800}px`}}
+                                      />
+                                    </Button>
+                                    <Modal
+                                      target={`view_${result._id}`}
+                                      isOpen={viewModalOpen}
+                                      toggle={toggleViewModal}
+                                      style={{ maxWidth: '90%', maxHeight: '90%', height: 'auto' }}
+                                      >
+                                    <ModalBody>
+                                      <img
+                                        src={`/results/${result._id}/image`} 
+                                        alt="Result Figure"
+                                        style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
+                                        />
+                                    </ModalBody>
+                                    <ModalFooter>
+                                      <Button color="primary" onClick={toggleViewModal}>
+                                        Close
+                                      </Button>
+                                    </ModalFooter>
+                                  </Modal>
+                                </div>
                                 );
                               }
                             }
@@ -306,7 +349,7 @@ const InspectResults = () => {
         )}
         </div>
       )}
-    </Container>
+    </div>
   );
 };
 

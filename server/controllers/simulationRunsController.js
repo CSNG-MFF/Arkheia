@@ -12,6 +12,7 @@ const getSimulations = async (req, res) => {
   res.status(200).json(simulations)
 };
 
+// Update a simulation
 const updateSimulation = async (req, res) => {
   const { id } = req.params;
   console.log(req.body);
@@ -20,7 +21,7 @@ const updateSimulation = async (req, res) => {
   }
 
   const simulation = await Simulation.findByIdAndUpdate(id, {
-    ...req.body // Fields to update from request body
+    ...req.body
   }, { new: true }); // Option to return the updated document
 
   if (!simulation) {
@@ -33,7 +34,7 @@ const updateSimulation = async (req, res) => {
 // Create simulation with file upload
 const createSimulation = async (req, res) => {
   const {simulation_run_name, model_name, creation_data, model_description, parameters, stimuliIds, expProtocolIds, recordIds, resultIds, from_parameter_search } = req.body
-    //add to db
+    // Add to database
     try {
       const stimuli = await Stimuli.find({ _id: { $in: stimuliIds } });
       const exp_protocols = await ExpProtocol.find({ _id: { $in: expProtocolIds } });
@@ -57,7 +58,7 @@ const createSimulation = async (req, res) => {
     }
 };
 
-//delete a simulation
+// Delete a simulation
 const deleteSimulation = async (req, res) => {
   const { id } = req.params;
   
@@ -83,7 +84,7 @@ const deleteSimulation = async (req, res) => {
   res.status(200).json({ message: 'Simulation and all associated data deleted successfully' });
 };
 
-
+// Get a simulation by ID
 const getSimulation = async (req, res) => {
   const { id } = req.params
   

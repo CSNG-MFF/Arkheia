@@ -30,15 +30,15 @@ const mockRes = () => {
   return res;
 };
 
-beforeAll(async () => {
-  // Connect to the test database
+beforeEach(async () => {
   await mongoose.connect(process.env.MONGODB_TEST_URI);
 });
 
-afterAll(async () => {
-  // Disconnect from the test database
+// Run after all tests have finished
+afterEach(async () => {
   await mongoose.connection.close();
 });
+
 
 //Stimuli tests
 describe('POST stimulus without errors', () => {

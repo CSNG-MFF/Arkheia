@@ -20,6 +20,6 @@ router.delete('/:id', deleteStimulus); // Route to delete a stimulus by ID
 
 router.get('/:id', getStimuliForSimulation); // Route to get stimuli for the whole simulation
 
-router.get('/:id/image', getMovieForStimulus);
+router.get('/:id/image', getMovieForStimulus); // Route to get the movie of the stimulus
 
 module.exports = router;

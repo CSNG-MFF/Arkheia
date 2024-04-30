@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+// The schema for the results
 const ResultSchema = new Schema({
   code_name: {
     type: String,

@@ -13,6 +13,7 @@ const getResults = async (req, res) => {
   res.status(200).json(result);
 };
 
+// Create a result
 const createResult = async (req, res) => {
   const { code_name, name, parameters, caption } = req.body;
 
@@ -92,7 +93,7 @@ const deleteResult = async (req, res) => {
   }
 };
 
-// Get a result by ID
+// Get the results for a simulation
 const getResultsForSimulation = async (req, res) => {
   
   const { id } = req.params;
