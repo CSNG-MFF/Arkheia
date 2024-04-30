@@ -195,7 +195,7 @@ const InspectResults = () => {
         <div>
         { results.length > 0 && (
           <div>
-            <h2 style={{ padding: '25px'}}>Select Result</h2>
+            <h2 style={{ paddingLeft: '25px', textAlign: 'center'}}>Inspect results</h2>
             <Form style={{ paddingLeft: '25px'}}>
               <FormGroup>
                 <Label for="resultSelect">Result</Label>
@@ -204,6 +204,7 @@ const InspectResults = () => {
                   id="resultSelect"
                   value={selectedResultName}
                   onChange={handleResultChange}
+                  style={{ maxWidth: '30%'}}
                 >
                   {availableResultNames.map((resultName) => (
                     <option key={resultName} value={resultName}>
@@ -214,7 +215,7 @@ const InspectResults = () => {
               </FormGroup>
             </Form>
             <div style={{ paddingLeft: '25px'}}>
-              <label htmlFor="scaleSlider" style={{paddingRight: '25px'}}>Image Scale</label>
+              <label htmlFor="scaleSlider" style={{paddingRight: '25px',}}>Image Scale</label>
               <input 
                 type="range"
                 id="scaleSlider"
@@ -231,7 +232,7 @@ const InspectResults = () => {
                 {Object.keys(parameterDifferences).map((key) => (
                   <div key={key} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                     <Button
-                      style={{ margin: '10px'}}
+                      style={{ margin: '2px'}}
                       color={key === selectedKey ? 'primary' : 'secondary'}
                       onClick={() => setSelectedKey(key)}
                     >
@@ -245,7 +246,7 @@ const InspectResults = () => {
                         <Button 
                           color={isLastSelected ? 'danger' : isSelected ? 'success' : 'secondary'}
                           key={index}
-                          style={{ margin: '10px'}}
+                          style={{ margin: '2px'}}
                           onClick={() => !isLastSelected && toggleSelection(key, value)}
                           disabled={isLastSelected}
                         >
@@ -280,7 +281,7 @@ const InspectResults = () => {
                   <tbody>
                     {selectedValues && selectedValues[selectedKey] && selectedValues[selectedKey].map((value, index) => (
                       <tr key={index}>
-                        <th scope="row" style={{ textAlign: 'center', verticalAlign: 'middle'}}>
+                        <th scope="row" style={{ textAlign: 'center', verticalAlign: 'middle', fontSize: '0.5em'}}>
                           {String(value)}
                         </th>
                         {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key) => (
