@@ -9,14 +9,14 @@ const {
  
 const router = express.Router()
 
-router.get('/', (getSimulations))
+router.get('/', getSimulations) // Route to get all simulations
 
-router.post('/', createSimulation)
+router.post('/', createSimulation) // Route to create a simulation
 
-router.delete('/:id', deleteSimulation)
+router.delete('/:id', deleteSimulation) // Route to delete a simulation
 
-router.get('/:id', getSimulation)
+router.get('/:id', getSimulation) // Route to get one simulation
 
-router.put('/:id', updateSimulation)
+router.put('/:id', updateSimulation) // Route to update a simulation
 
 module.exports = router
