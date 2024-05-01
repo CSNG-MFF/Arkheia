@@ -1,0 +1,21 @@
+{
+  "name": "arkheia",
+  "version": "1.0.0",
+  "description": "- mongod version 2.0.0\r - next version 13.4.19\r - node version 20.7.0\r - nodeman version 1.1.2\r - nodemon version 3.0.1\r - npm version 9.6.5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "set-up-frontend": "cd frontend && npm install --silent",
+    "set-up-backend": "cd server && npm install --silent",
+    "frontend": "cd frontend && npm start",
+    "backend": "cd server && npm start",
+    "database": "cd server && npm run db",
+    "start": "concurrently \"npm run set-up-frontend\" \"npm run set-up-backend\" \"npm run database\" \"npm run frontend\" \"npm run backend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
