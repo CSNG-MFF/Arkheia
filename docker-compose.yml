@@ -1,34 +1,7 @@
-version: '3.7'
+version: '3'
 
 services:
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    image: arkheia-server
-    container_name: arkheia-node-server
-    command: npm start
-    volumes:
-      - ./server/:/app
-      - /app/node_modules
-    ports:
-      - "5000:5000"
-    depends_on:
-      - mongo
-    env_file: ./server/.env
-    environment:
-      - NODE_ENV=development
-    networks:
-      - app-network
-  mongo:
-    image: mongo
-    volumes:
-      - data-volume:/data/db
-    ports:
-      - "27017:27017"
-    networks:
-      - app-network
-  client:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -36,18 +9,46 @@ services:
     container_name: arkheia-react-client
     command: npm start
     volumes:
-      - ./frontend/:/app
-      - /app/node_modules
+      - ./frontend/:/usr/app
+      - /usr/app/node_modules
     depends_on:
-      - server
+      - backend
     ports:
       - "3000:3000"
     networks:
       - app-network
 
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: arkheia-server
+    container_name: arkheia-node-server
+    command: npm start
+    volumes:
+      - ./server/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "4000:4000"
+    depends_on:
+      - database
+    env_file: ./server/.env
+    networks:
+      - app-network
+
+  database:
+    image: mongo
+    volumes:
+      - data-volume:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+    - app-network
+    container_name: arkheia-database
+
 networks:
-    app-network:
-        driver: bridge
+  app-network:
+    driver: bridge
 
 volumes:
     data-volume:

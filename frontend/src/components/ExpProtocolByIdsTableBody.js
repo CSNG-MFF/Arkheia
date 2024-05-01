@@ -1,6 +1,6 @@
 import { IoEye } from "react-icons/io5";
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 
 import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter } from "reactstrap";
 
