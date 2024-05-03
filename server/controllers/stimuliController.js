@@ -18,7 +18,7 @@ const createStimulus = async (req, res) => {
   const { code_name, short_description, long_description, parameters } = req.body;
 
   if (!req.file) {
-    return res.status(400).json({ error: 'Image is required' });
+    return res.status(400).json({ error: 'GIF is required' });
   }
 
   try {

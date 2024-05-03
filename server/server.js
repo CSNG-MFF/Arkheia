@@ -80,7 +80,7 @@ mongoose.connect(process.env.MONGODB_URI)
         app.listen(process.env.PORT, () => {
             console.log("Server running in port 4000");
         })
-        console.log("Successfully connected to mongodb");
+        console.log("Successfully connected to MongoDB");
     })
     .catch((error) => {
         console.log(error);

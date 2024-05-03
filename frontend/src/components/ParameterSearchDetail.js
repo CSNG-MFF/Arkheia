@@ -2,7 +2,7 @@ import { IoTrashSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { IoEye } from "react-icons/io5";
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 
 import { Button, Alert  } from "reactstrap";
 

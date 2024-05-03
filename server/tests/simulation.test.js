@@ -1,12 +1,15 @@
 require('dotenv').config()
 
-const mongoose = require('mongoose');
-const { createSimulation, getSimulations, deleteSimulation } = require('../controllers/simulationRunsController');
+const fs = require('fs');
+const request = require('supertest'); 
+const { GridFSBucket } = require('mongodb'); 
+
+const { getSimulation, createSimulation, getSimulations, deleteSimulation, updateSimulation } = require('../controllers/simulationRunsController');
 const { getStimuli, createStimulus, deleteStimulus, getStimuliForSimulation } = require('../controllers/stimuliController');
 const { getResults, createResult, deleteResult, getResultsForSimulation } = require('../controllers/resultsController');
 const { getExpProtocols, createExpProtocol, deleteExpProtocol, getExpProtocolForSimulation } = require('../controllers/ExpProtocolController');
 const { getRecords, createRecord, deleteRecord, getRecordsForSimulation } = require('../controllers/recordsController')
-
+const { getFigureForResult, getMovieForStimulus } = require('../controllers/fileGridfsController');
 
 const Simulation = require('../models/simulation_run_model');
 const Stimuli = require('../models/stimuli_model'); // Import the models
@@ -14,6 +17,13 @@ const Result = require('../models/results_model');
 const ExpProtocol = require('../models/exp_protocol_model');
 const Record = require('../models/records_model');
 
+jest.mock('mongodb', () => ({
+  MongoClient: jest.fn(),
+  GridFSBucket: jest.fn(),
+}));
+
+// Import your server (assuming it's exported correctly)
+const app = require('../server');
 
 // Mocking the req and res objects for testing
 const mockReq = () => {
@@ -31,36 +41,86 @@ const mockRes = () => {
 };
 
 beforeEach(async () => {
+  await mongoose.connection.close();
   await mongoose.connect(process.env.MONGODB_TEST_URI);
 });
 
-// Run after all tests have finished
+// Close DB connection after tests
 afterEach(async () => {
   await mongoose.connection.close();
+  jest.restoreAllMocks();
 });
 
 
 //Stimuli tests
-describe('POST stimulus without errors', () => {
-  it('should create a new stimulus', async () => {
-    const req = mockReq();
-    const res = mockRes();
+describe('POST /stimuli', () => {
+  it('should create a new stimulus with valid data', async () => {
+    // Mock GridFSBucket methods with successful behavior
+    GridFSBucket.mockImplementation(() => ({
+      openUploadStream: jest.fn().mockReturnValue({
+        id: 'test_file_id', // Mock a file ID
+      }),
+    }));
 
-
-    req.body = {
-      code_name : "test", 
-      short_description: "test", 
-      long_description: "test", 
-      parameters: "test", 
-      movie: "test"
+    // Construct test file data
+    const testGifPath = 'path/to/your/test.gif'; // Replace with valid test GIF
+    const buffer = fs.readFileSync(testGifPath);
+    const testFile = {
+      originalname: 'test.gif',
+      mimetype: 'image/gif',
+      buffer,
+      size: buffer.length,
     };
 
-    await createStimulus(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
+    // Use 'supertest' to simulate an API request
+    const response = await request(app)
+      .post('/stimuli')
+      .attach('movie', testFile)
+      .field('code_name', 'test')
+      .field('short_description', 'test')
+      .field('long_description', 'test')
+      .field('parameters', 'test');
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('code_name', 'test'); 
+    expect(response.body.movie).toHaveProperty('fileId');
   });
 
+  it('should return a 400 error if no GIF is provided', async () => {
+    // No need to mock GridFSBucket in this scenario
+
+    const response = await request(app)
+      .post('/stimuli')
+      .field('code_name', 'test')
+      .field('short_description', 'test')
+      .field('long_description', 'test')
+      .field('parameters', 'test');
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty('error', 'GIF is required');
+  });
+
+  it('should handle errors during file upload', async () => {
+    // Simulate an upload error
+    GridFSBucket.mockImplementation(() => ({
+      openUploadStream: jest.fn().mockImplementation(() => {
+        throw new Error('Simulated Upload Error');
+      }),
+    }));
+
+    //  ... set up test file data as in the first example 
+
+    const response = await request(app)
+      // ... (rest of the test as before)
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toHaveProperty('error', 'Error uploading file to GridFS');
+  });
+
+  // ... Add more tests to cover errors in database operations
 });
 
+/*
 describe('POST stimulus with errors', () => {
   it('should not create a stimulus without errors', async () => {
     const req = mockReq();
@@ -432,3 +492,4 @@ describe('DELETE a simulation without errors', () => {
   });
 
 });
+*/

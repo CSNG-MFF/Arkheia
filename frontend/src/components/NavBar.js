@@ -359,6 +359,7 @@ const NavBar = () => {
         'Content-Type' : 'application/json'
       }
     })
+    
     if (!parameter_search_bool) {
       setUploadProgress(100);
     }
