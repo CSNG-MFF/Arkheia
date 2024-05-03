@@ -1,8 +1,7 @@
 require('dotenv').config()
 
-const fs = require('fs');
 const request = require('supertest'); 
-const { GridFSBucket } = require('mongodb'); 
+const mongoose = require('mongoose');
 
 const { getSimulation, createSimulation, getSimulations, deleteSimulation, updateSimulation } = require('../controllers/simulationRunsController');
 const { getStimuli, createStimulus, deleteStimulus, getStimuliForSimulation } = require('../controllers/stimuliController');
@@ -16,14 +15,6 @@ const Stimuli = require('../models/stimuli_model'); // Import the models
 const Result = require('../models/results_model');
 const ExpProtocol = require('../models/exp_protocol_model');
 const Record = require('../models/records_model');
-
-jest.mock('mongodb', () => ({
-  MongoClient: jest.fn(),
-  GridFSBucket: jest.fn(),
-}));
-
-// Import your server (assuming it's exported correctly)
-const app = require('../server');
 
 // Mocking the req and res objects for testing
 const mockReq = () => {
@@ -48,81 +39,28 @@ beforeEach(async () => {
 // Close DB connection after tests
 afterEach(async () => {
   await mongoose.connection.close();
-  jest.restoreAllMocks();
 });
 
 
 //Stimuli tests
-describe('POST /stimuli', () => {
-  it('should create a new stimulus with valid data', async () => {
-    // Mock GridFSBucket methods with successful behavior
-    GridFSBucket.mockImplementation(() => ({
-      openUploadStream: jest.fn().mockReturnValue({
-        id: 'test_file_id', // Mock a file ID
-      }),
-    }));
+describe('POST /stimuli: createStimulus', () => {
+  it('Create stimulus for testing purposes', async () => {
+    const fileID = new mongoose.Types.ObjectId();
+    const randomDocument = new Stimuli({
+      code_name: Math.random().toString(36).substring(7),
+      short_description: Math.random().toString(36).substring(7),
+      long_description: Math.random().toString(36).substring(7),
+      parameters: { test: Math.random().toString(36).substring(7) }, // adjust as necessary
+      movie: {
+        fileId: fileID,
+        contentType: 'image/gif'
+      }
+    });
 
-    // Construct test file data
-    const testGifPath = 'path/to/your/test.gif'; // Replace with valid test GIF
-    const buffer = fs.readFileSync(testGifPath);
-    const testFile = {
-      originalname: 'test.gif',
-      mimetype: 'image/gif',
-      buffer,
-      size: buffer.length,
-    };
-
-    // Use 'supertest' to simulate an API request
-    const response = await request(app)
-      .post('/stimuli')
-      .attach('movie', testFile)
-      .field('code_name', 'test')
-      .field('short_description', 'test')
-      .field('long_description', 'test')
-      .field('parameters', 'test');
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('code_name', 'test'); 
-    expect(response.body.movie).toHaveProperty('fileId');
+    await randomDocument.save();
   });
 
-  it('should return a 400 error if no GIF is provided', async () => {
-    // No need to mock GridFSBucket in this scenario
-
-    const response = await request(app)
-      .post('/stimuli')
-      .field('code_name', 'test')
-      .field('short_description', 'test')
-      .field('long_description', 'test')
-      .field('parameters', 'test');
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body).toHaveProperty('error', 'GIF is required');
-  });
-
-  it('should handle errors during file upload', async () => {
-    // Simulate an upload error
-    GridFSBucket.mockImplementation(() => ({
-      openUploadStream: jest.fn().mockImplementation(() => {
-        throw new Error('Simulated Upload Error');
-      }),
-    }));
-
-    //  ... set up test file data as in the first example 
-
-    const response = await request(app)
-      // ... (rest of the test as before)
-
-    expect(response.statusCode).toBe(500);
-    expect(response.body).toHaveProperty('error', 'Error uploading file to GridFS');
-  });
-
-  // ... Add more tests to cover errors in database operations
-});
-
-/*
-describe('POST stimulus with errors', () => {
-  it('should not create a stimulus without errors', async () => {
+  it('Test for empty body of request', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -131,45 +69,50 @@ describe('POST stimulus with errors', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-});
-
-describe('GET stimuli without errors', () => {
-  it('should get all the stimuli in the database', async () => {
-    const req = mockReq();
-    const res = mockRes();
-
-    req.body = {};
-    await getStimuli(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
-  });
-
-});
-
-
-////////////////
-//Result tests//
-////////////////
-describe('POST result without errors', () => {
-  it('should create a new result', async () => {
+  it('Test for no GIF in stimuli request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
     req.body = {
       code_name: "test", 
-      name: "test", 
-      parameters: "test", 
-      caption: "test", 
-      figure: "test"
+      short_description: "test", 
+      long_description: "test", 
+      parameters: "test"
     };
 
-    await createResult(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
+    await createStimulus(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
-
 });
 
-describe('POST result with errors', () => {
-  it('should not create a result without errors', async () => {
+describe('GET /stimuli: getStimuli', () => {
+  it('Get all the stimuli in the database without errors', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    await getStimuli(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+});
+
+////////////////
+//Result tests//
+////////////////
+describe('POST /results: createResult', () => {
+  it('Create result for testing purposes', async () => {
+    const randomDocument = new Result({
+      code_name: Math.random().toString(36).substring(7),
+      name: Math.random().toString(36).substring(7),
+      caption: Math.random().toString(36).substring(7),
+      parameters: { test: Math.random().toString(36).substring(7) }, // adjust as necessary
+      figure: {
+        fileId: new mongoose.Types.ObjectId(),
+        contentType: 'image/png'
+      }
+    });
+    await randomDocument.save();
+  });
+
+  it('Test for empty body of request', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -178,10 +121,25 @@ describe('POST result with errors', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
+  it('Test for no figure in result request body', async () => {
+    const req = mockReq();
+    const res = mockRes();
+
+    req.body = {
+      code_name: "test", 
+      name: "test", 
+      caption: "test", 
+      parameters: "test"
+    };
+
+    await createResult(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
 });
 
-describe('GET results without errors', () => {
-  it('should get all the results in the database', async () => {
+describe('GET /results: getResults', () => {
+  it('Should get all the results in the database', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -196,11 +154,11 @@ describe('GET results without errors', () => {
 ////////////////////////////////
 //Experimental Protocols tests//
 ////////////////////////////////
-describe('POST an experimental protocol without errors', () => {
-  it('should create a new experimental protocol', async () => {
+describe('POST /exp_protocols: createExpProtocol', () => {
+  it('Create a new experimental protocol', async () => {
     const req = mockReq();
     const res = mockRes();
-
+    
     req.body = {
       code_name: "test",
       short_description: "test", 
@@ -212,10 +170,7 @@ describe('POST an experimental protocol without errors', () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-});
-
-describe('POST an experimental protocol with errors', () => {
-  it('should not create an experimental protocol without errors', async () => {
+  it('Create experimental protocol with empty request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -224,28 +179,37 @@ describe('POST an experimental protocol with errors', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-});
-
-describe('GET experimental protocols without errors', () => {
-  it('should get all the experimental protocols in the database', async () => {
+  it('Create experimental protocol with not completely empty request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
-    req.body = {};
+    req.body = {
+      code_name: "test"
+    };
+    await createExpProtocol(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+});
+
+describe('GET /exp_protocols: getExpProtocols', () => {
+  it('Get all the experimental protocols in the database', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
     await getExpProtocols(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
-
+  
 });
 
 ////////////////
 //Record tests//
 ////////////////
-describe('POST a record without errors', () => {
-  it('should create a new record', async () => {
+describe('POST /records: createRecord', () => {
+  it('Create a new record', async () => {
     const req = mockReq();
     const res = mockRes();
-
+    
     req.body = {
       code_name: "test", 
       short_description: "test", 
@@ -259,10 +223,7 @@ describe('POST a record without errors', () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-});
-
-describe('POST a record with errors', () => {
-  it('should not create a record without errors', async () => {
+  it('Create a new record with empty request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -271,14 +232,24 @@ describe('POST a record with errors', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-});
-
-describe('GET records without errors', () => {
-  it('should get all the records in the database', async () => {
+  it('Create a new record with not completely empty request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
-    req.body = {};
+    req.body = {
+      code_name: "test"
+    };
+    await createRecord(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+});
+
+describe('GET /records: getRecords', () => {
+  it('Get all the records in the database', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
     await getRecords(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
@@ -288,8 +259,8 @@ describe('GET records without errors', () => {
 ////////////////////
 //Simulation tests//
 ////////////////////
-describe('POST a simulation without errors', () => {
-  it('should create a new simulation', async () => {
+describe('POST /simulation_runs: createSimulation', () => {
+  it('Create a new simulation', async () => {
     const req = mockReq();
     const res = mockRes();
     const records = await Record.find({});
@@ -298,16 +269,16 @@ describe('POST a simulation without errors', () => {
     const results = await Result.find({});
     const recordsArr = [];
     recordsArr.push(records[0]._id)
-
+    
     const stimuliArr = [];
     stimuliArr.push(stimuli[0]._id)
-
+    
     const expProtocolsArr = [];
     expProtocols.push(expProtocols[0]._id)
-
+    
     const resultsArr = [];
     results.push(results[0]._id)
-
+    
     req.body = {
       simulation_run_name: "test", 
       model_name: "test", 
@@ -317,17 +288,15 @@ describe('POST a simulation without errors', () => {
       stimuliIds: recordsArr, 
       expProtocolIds: stimuliArr, 
       recordIds: expProtocolsArr, 
-      resultIds: resultsArr
+      resultIds: resultsArr,
+      from_parameter_search: false
     };
 
     await createSimulation(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-});
-
-describe('POST a simulation with errors', () => {
-  it('should not create a simulation without errors', async () => {
+  it('Create a simulation with an empty request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -336,14 +305,25 @@ describe('POST a simulation with errors', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-});
-
-describe('GET simulations without errors', () => {
-  it('should get all the simulations in the database', async () => {
+  it('Create a simulation with a not completely empty request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
-    req.body = {};
+    req.body = {
+      simulation_run_name: "test", 
+      model_name: "test", 
+      creation_data: "11/01/2024-16:30:24", 
+    };
+    await createSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+});
+
+describe('GET /simulation_runs: getSimulations', () => {
+  it('Get all results in the database', async () => {
+    const req = mockReq();
+    const res = mockRes();
+
     await getSimulations(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
@@ -354,22 +334,38 @@ describe('GET simulations without errors', () => {
 /////////////////////////////////////////////
 //Tests for connections between collections//
 /////////////////////////////////////////////
-
-describe('GET record for a simulation', () => {
-  it('should get all the records associated with a simulation', async () => {
+describe('GET /records: getRecordsForSimulation', () => {
+  it('Get all the records associated with a simulation', async () => {
     const req = mockReq();
     const res = mockRes();
-
+    
     const simulation = await Simulation.find({});
     req.params = simulation[0]._id;
     await getRecordsForSimulation(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
+  it('Bad format of MongoDB ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = Math.random();
+    await getRecordsForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('Not existing simulation ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await getRecordsForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 });
 
-describe('GET experimental protocols for a simulation', () => {
-  it('should get all the experimental protocols associated with a simulation', async () => {
+describe('GET /exp_protocols: getExpProtocolForSimulation', () => {
+  it('Get all the experimental protocols associated with a simulation', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -379,57 +375,127 @@ describe('GET experimental protocols for a simulation', () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-});
-
-describe('GET results for a simulation', () => {
-  it('should get all the results associated with a simulation', async () => {
+  it('Bad format of MongoDB ID', async () => {
     const req = mockReq();
     const res = mockRes();
+    
+    req.params = Math.random();
+    await getExpProtocolForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 
+  it('Not existing simulation ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await getExpProtocolForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+});
+
+describe('GET /results: getResultsForSimulation', () => {
+  it('Get all the results associated with a simulation', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
     const simulation = await Simulation.find({});
     req.params = simulation[0]._id;
     await getResultsForSimulation(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
-});
-
-describe('GET stimuli for a simulation', () => {
-  it('should get all the stimuli associated with a simulation', async () => {
+  it('Bad format of MongoDB ID', async () => {
     const req = mockReq();
     const res = mockRes();
+    
+    req.params = Math.random();
+    await getResultsForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 
+  it('Not existing simulation ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await getResultsForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+});
+
+describe('GET /stimuli: getStimuliForSimulation', () => {
+  it('Get all the stimuli associated with a simulation', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
     const simulation = await Simulation.find({});
     req.params = simulation[0]._id;
     await getStimuliForSimulation(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
+  
+  it('Bad format of MongoDB ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = Math.random();
+    await getStimuliForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 
+  it('Not existing simulation ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await getStimuliForSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 });
 
 ////////////////
 //Delete tests//
 ////////////////
 
-describe('DELETE stimulus without errors', () => {
-  it('should delete one stimuli in the db', async () => {
+describe('DELETE /stimuli: deleteStimulus', () => {
+  it('Delete one stimulus in the db', async () => {
     const req = mockReq();
     const res = mockRes();
-
-    const stimuli = await Stimuli.find({});
-    const stimulusToDelete = stimuli[0];
-
+    
+    const stimulus = await Stimuli.find({});
+    const stimulusToDelete = stimulus[0];
+    
     req.params.id = stimulusToDelete._id;
-
+    
     await deleteStimulus(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
+  it('Bad format of MongoDB ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = Math.random();
+    await deleteStimulus(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('Not existing stimulus ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await deleteStimulus(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+  
 });
 
 
-describe('DELETE a result without errors', () => {
-  it('should delete one result in the db', async () => {
+describe('DELETE /results: deleteResult', () => {
+  it('Delete one result in the db', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -442,10 +508,27 @@ describe('DELETE a result without errors', () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
+  it('Bad format of MongoDB ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = Math.random();
+    await deleteResult(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('Not existing result ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await deleteResult(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
 });
 
-describe('DELETE a record without errors', () => {
-  it('should delete one record from the db', async () => {
+describe('DELETE /records: deleteRecord', () => {
+  it('Delete one record from the db', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -458,10 +541,27 @@ describe('DELETE a record without errors', () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
+  it('Bad format of MongoDB ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = Math.random();
+    await deleteRecord(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('Not existing record ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await deleteRecord(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
 });
 
-describe('DELETE an experimental protocol without errors', () => {
-  it('should delete one experimental protocol from the db', async () => {
+describe('DELETE /exp_protocols: deleteExpProtocol', () => {
+  it('Delete one experimental protocol from the db', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -474,11 +574,28 @@ describe('DELETE an experimental protocol without errors', () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
+  it('Bad format of MongoDB ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = Math.random();
+    await deleteExpProtocol(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('Not existing record ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await deleteExpProtocol(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
 });
 
 
-describe('DELETE a simulation without errors', () => {
-  it('should delete one simulation from the db', async () => {
+describe('DELETE /simulation_runs: deleteSimulation', () => {
+  it('Delete one simulation from the db', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -491,5 +608,21 @@ describe('DELETE a simulation without errors', () => {
     expect(res.status).toHaveBeenCalledWith(200);
   });
 
+  it('Bad format of MongoDB ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = Math.random();
+    await deleteSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it('Not existing simulation ID', async () => {
+    const req = mockReq();
+    const res = mockRes();
+    
+    req.params = new mongoose.Types.ObjectId();
+    await deleteSimulation(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
 });
-*/

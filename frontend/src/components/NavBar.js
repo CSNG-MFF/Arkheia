@@ -193,6 +193,7 @@ const NavBar = () => {
               stimuli_data.append("short_description", short_description);
               stimuli_data.append("long_description", long_description);
               stimuli_data.append("parameters", JSON.stringify(parameters));
+              
               // Find the movie file in the files array
               const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
 
@@ -359,7 +360,7 @@ const NavBar = () => {
         'Content-Type' : 'application/json'
       }
     })
-    
+
     if (!parameter_search_bool) {
       setUploadProgress(100);
     }
