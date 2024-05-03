@@ -1,8 +1,6 @@
-Sure, here is a revised README file for your MERN application:
-
 # Arkheia
 
-Arkheia is a MERN application with the following prerequisites:
+Arkheia is a MERN application responsible for the analyzation of simulation results with the following prerequisites:
 
 - Node.js: v20.7.0 or later (Use Nodeman for easy management)
 - MongoDB: v2.0.0 or later
