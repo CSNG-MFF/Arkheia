@@ -10,7 +10,7 @@ const getFigureForResult = async (req, res) => {
       // Retrieve the result from the database
       const result = await Result.findById(id);
       if (!result) {
-      return res.status(404).json({ error: 'Result not found' });
+        return res.status(404).json({ error: 'Result not found' });
       }
 
       // Establish connection to MongoDB

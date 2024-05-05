@@ -16,11 +16,9 @@ const getStimuli = async (req, res) => {
 // Create a stimulus
 const createStimulus = async (req, res) => {
   const { code_name, short_description, long_description, parameters } = req.body;
-  console.log(req.file);
   if (!req.file) {
     return res.status(400).json({ error: 'GIF is required' });
   }
-
   try {
     const client = new MongoClient(process.env.MONGODB_URI);
     await client.connect();

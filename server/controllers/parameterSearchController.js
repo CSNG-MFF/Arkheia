@@ -89,7 +89,7 @@ const getParameterSearch = async (req, res) => {
   const { id } = req.params
   
   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({error: 'Bad format of ID'})
+    return res.status(404).json({error: 'Bad format of ID'})
   }
 
   const parameter_search = await ParameterSearch.findOne({ _id : id})
@@ -103,16 +103,19 @@ const getParameterSearch = async (req, res) => {
 
 const getParameterSearchSimulations = async (req, res) => {
   const parameterSearchId = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(parameterSearchId)) {
+    return res.status(404).json({error: 'Bad format of ID'})
+  }
   try {
     const parameterSearch = await ParameterSearch.findById(parameterSearchId);
     
     if (!parameterSearch) {
-      return res.status(404).json({ error: 'Parameter search not found' });
+      return res.status(400).json({ error: 'Parameter search not found' });
     }
     
     const simulations = await Simulation.find({ _id: { $in: parameterSearch.simulations } });
     
-    res.json(simulations);
+    res.status(200).json(simulations);
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server Error');
@@ -121,9 +124,12 @@ const getParameterSearchSimulations = async (req, res) => {
 
 const getParameterSearchResults = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({error: 'Bad format of ID'})
+    }
     const parameterSearch = await ParameterSearch.findById(req.params.id).populate('simulations');
     if (!parameterSearch) {
-      return res.status(404).json({ message: 'ParameterSearch not found' });
+      return res.status(400).json({ message: 'Parameter search not found' });
     }
 
     const simulations = await Simulation.find({ '_id': { $in: parameterSearch.simulations } }).populate('results');

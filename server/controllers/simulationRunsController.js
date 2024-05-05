@@ -15,7 +15,6 @@ const getSimulations = async (req, res) => {
 // Update a simulation
 const updateSimulation = async (req, res) => {
   const { id } = req.params;
-  console.log(req.body);
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'Bad format of ID' });
   }
