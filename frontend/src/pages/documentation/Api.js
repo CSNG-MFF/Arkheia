@@ -11,7 +11,7 @@ const Api = () => {
       .then(data => setApiDocumentation(data));
   }, []);
   return (
-    <div className = "installation">
+    <div style={{ paddingLeft: '20px'}}>
       <Markdown>{apiDocumentation}</Markdown>
     </div>
   )

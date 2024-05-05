@@ -1,75 +1,89 @@
 # API
 
-Arkheia API is fully defined by the format in which individual simulation runs (or parameter searches) are stored in the associated MongoDB database. Currently the name of the database Arkheia expects data to be stored is fixed to _arkheia_. It is the responsibility of the given back-end to export the information from the given simulation environment, connect to the MongoDB database and insert the information in the prescribed format.
+Arkheia API is fully defined by the format in which individual simulation runs (or parameter searches) are stored in the associated MongoDB database. Currently the name of the database Arkheia expects data to be stored is fixed to _Arkheia_. It is the responsibility of the given simulation framework to convert the data into the described format under here into folders.
 
 ## Format for individual simulation runs
 
-Each simulation run is represented by a single JSON hierarchical data-structure which corresponds to the document inserted into the database collection named _submissions_. At the root level the data-structure contains following entries with indicated expected value types and brief explanations on the semantics of the given entry:
+The data we want to store inside the database aligns perfectly with MongoDB's preferences due to the information about the simulation arriving in a JSON file called sim_info, allowing direct mapping of data from this file into MongoDB documents. The data is then processed in the frontend and based on the models defined in the backend it is saved to the database. The simulation has the following format:
 
-    {
-            submission_date        :  string,            # '%d/%m/%Y-%H:%M:%S' formatted string representing the time of submission to Arkheia.
-            run_date               :  string,            # '%d/%m/%Y-%H:%M:%S' formatted string representing the time of the simulation run.
-            simulation_run_name    :  string,            # Name given to the simulation run
-            model_name             :  string,            # The name of the model which was simulated.
-            results                :  list of Result,    # List of JSON structures representing results.
-            stimuli                :  list of Stimulus,  # List of JSON structures representing stimuli presented during simulation.
-            recorders              :  list of Recorder,  # List of JSON structures representing recording configuration during simulation.
-            experimental_protocols :  list of Protocol,  # List of JSON structures representing experimental protocols applied to the model during simulation.
-            parameters             :  ParameterSet       # Nested dictionary representing the full parametrization of the model in this simulation run.
-    }
+![image](../assets/diagram_3.png)
+_Figure 1: The simulation_
 
-The _parameters_ entry should describe the full parametrization of the model used in this run and as all parametrization throughout Arkheia API, it should follow the _ParameterSet_ format. _ParameterSet_ is a nested dictionary where each value associated with a key (that corresponds to the name of the parameter) is a tuple _(a,b,c)_, where _a_ corresponds to the value of the parameter and can either be a scalar or _ParameterSet_ itself, _b_ is the type of the parameter, and _c_ is a short description of the parameter's meaning.
+Now we will discuss the fields present in a simulation:
+- **from_parameter_search**: Indicates whether the simulation is part of a parameter search.
+- **simulation_run_name**: Stores the name of the simulation.
+- **model_name**: Stores the name of the simulated model.
+- **creation_date**: Holds information about when the simulation was executed.
+- **model_description**: Contains a description of the simulated model.
+- **parameters**: Defined as a mixed type in the MongoDB model, allowing the storage of a JSON-type attribute.
+- **stimuli, exp_protocols, records**, and **results**: Lists of MongoDB's pre-defined IDs which is a field accessible as _id. These IDs reference associated documents, providing links for accessing related simulation data.
 
-Let's have a look at the format of the individual JSON datastructures representing a single result of the simulation run (list of these is inserted into the _results_ entry of the root JSON document described above). Each result is meant to represent a figure with an accompanying explanatory caption, and is stored as following JSON data-structure:
+The simulation together looks is described in Figure 2 below:
 
-    {
-            code                   :  string,         # Reference to the source code that generated the given figure (e.g. class or function name).
-            name                   :  string,         # The name of the figure.
-            caption                :  string,         # The explanatory caption for the figure.
-            parameters             :  ParameterSet,   # The parameters with which the figure was generated.
-            figure                 :  MongoDB GFS ID, # The reference to the figure image stored in the GFS service.
-    }
+![image](../assets/diagram_9.png)
 
-The _parameters_ entry should contain the parameters with which the generator of the figure identified by the _class_ entry was invoked to generated the given figure in the form of _ParameterSet_ described above. Finally, MongoDB provides a separate efficient storage for binary data-files (see MongoDB GridFS). The back-end implementing the specification should thus submit the image of the figure (in either the GIF, JPEG or PNG format) to the database via the GridFS API and then store the returned id which can be used to later retrieve the image to the entry _figure_.
+_Figure 2: The simulation and its components_
 
-Next we will describe the format in which the information about stimuli that were presented during simulation should be stored. A list of such data structures is meant to be stored in the _stimuli_ root level entry. It assumes that the model was presented with a list of stimuli, generated by some source code entity (class function) and parameters, and its ‘raw’ instantiation can be represented as vector stream, which in turn can be translated into a movie for visual inspection by the user. The format of each stimulus data-structure is as follows:
+# The representation of stimuli
 
-    {
-            code                   : string,          # Reference to the source code that generated the given stimulus (e.g. class or function name).
-            short_description      : string,          # Short description of the stimulus.
-            long_description       : string,          # Detailed description of the stimulus.
-            parameters             : ParameterSet,    # Parameters passed to the generator to create the stimulus (same format as for results).
-            movie                  : MongoDB GFS ID,  # The reference to the stimulus movie stored in the GFS service.
-    }
+The stimuli contain a list of IDs, which are associated with the stimuli of the simulation. These results contain a movie presented to the neural network model, which the user can freely inspect. 
+- **code_name**: Serves as a unique identifier for a specific instance of a stimulus.
+- **short_description**: Provides a brief summary of the stimulus.
+- **long_description**: Contains a more detailed description of the stimulus.
+- **parameters**: A JSON field analogous to the parameters field in the simulation document, but with potentially different keys and values.
+- **movie**: Stores a single ID referencing a file within a GridFS document.
 
-The _recorders_ root level entry should contain information on the recording configuration present during the stimulation. It assumes that it can be described a list of parametrized entities that each records from some set of neurons some variables. The _recorders_ entry should thus contain a list of JSON data-structures each corresponding to one such recording configuration entity.
+![image](../assets/diagram_4.png)
+_Figure 3: The stimulus_
 
-    {
-            code                   : string,          # Reference to the source code that generated the given recording configuration (e.g. class or function name).
-            short_description      : string           # Short description of the recording configuration.
-            long_description       : string           # Detailed description of the recording configuration.
-            parameters             : ParameterSet,    # Parameters passed to the generator of the recording configuration (same format as for results).
-            variables              : list,            # The names of the variables which were recorded 
-            source                 : string,          # The name of the neural popullation to which the recorder was applied
-    }
+# The representation of experimental protocols
 
-The _experimental_protocols_ root entry is expected to contain a list of JSON data-structures characterizing the experimental protocols that were performed during the simulation of the model:
+The exp_protocols structure represents the description of experiments run during the simulation. 
+The fields seen here, on Figure 4 are analogous to the previously mentioned fields.
 
-    {
-            code                   : string,          # Reference to the source code that generated the given experimental protocol (e.g. class or function name).
-            short_description      : string,          # Short description of the experimental protocol.
-            long_description       : string,          # Detailed description of the experimental protocol.
-            parameters             : ParameterSet,    # Parameteers passed to the generator of the experimental protocol (same format as for results).
-    }
+![image](../assets/diagram_5.png)
+_Figure 4: The experimental protocol_
 
-## Format for parameter search representation
 
-Parameter search is represented as a collection of simulation runs with systematically varying subset of parameters. For sake of efficiency the parameter searches are stored in a separate collection (within the same instance of the MongoDB database) named _parameterSearchRuns_. Each parameter search is a JSON document of following format:
+# The representation of records
 
-    {
-            submission_date        : string           # '%d/%m/%Y-%H:%M:%S' formatted string representing the time of submission to Arkheia.
-            name                   : string           # Name given to this parameter search.
-            simulation_runs        : list             # List of JSON datastructures of the same format as the description of individual simulation run.
-    }
+The recorders contain the list of IDs associated with the recording apparatus used to capture the neural activity in the simulated model. 
+- **code_name**: A unique identifier for the recording.
+- **short_description**: A brief summary of the recording.
+- **long_description**: A detailed description of the recording.
+- **parameters**: A field in a JSON format containing parameters related to the records
+- **variables**: An array of strings, which is associated with a variable that was recorded from the neurons of the simulation. 
+- **source**: The name of the neurons to which this recorder was applied to.
 
-The _simulation_runs_ entry should contain a list of JSON data-structures, each corresponding to one simulation run with same format as the JSON data-structure describing individual simulation run described in previous section. Finally the _parameter_combinations_ entry should contain a list of tuples, with each tuple holding a name of the parameter that was varied, and a list of parameter values that were explored (note that currently Arkheia supports only grid parameter searches).
+![image](../assets/diagram_6.png)
+_Figure 5: The recorders_
+
+
+# The representation of results
+
+The results are important for streamlined simulation analysis. They often include figures, which are images, with explanatory captions, enhancing data visualization. Mozaik analysis of recorded simulation data produces results containing figures with mainly graphs and other metrics.
+- **code_name**: Identifies the source code responsible for generating the result.
+- **name**: The designated name for the result.
+- **parameters**: The specific set of parameters used to generate the result.
+- **caption**: A caption of the accompanying result.
+- **figure**: The ID for the GridFS storage to be associated with the figure of the result
+
+# The representation of parameter searches
+
+A parameter search is a series of simulations where we systematically vary a subset of input parameters. This allows the researchers to observe how changing these parameters affects the simulation results, providing insights into the model's behavior based on certain factors. 
+Arkheia supports two ways to handle parameter searches. Users can provide a file specifying parameter combinations, allowing for faster processing and the inclusion of searches with intentionally missing parameter combinations. This way Arkheia doesn’t have to search through the simulations to identify the varying subsets of simulation parameters’ values. 
+
+![image](../assets/diagram_7.png)
+_Figure 6: The parameter search_
+
+
+Alternatively, Arkheia can directly analyze uploaded simulation parameter files, identifying variations between simulations. This is convenient when a modified parameter file is unavailable, but this comes at a performance cost, because Arkheia will have to iterate through all of the simulations’ parameters.
+- **run_date**: The date the parameter search was executed on the simulation framework.
+- **name**: The designated name for the parameter search.
+- **model_name**: The name of the simulated model.
+- **simulations**: A list of simulation IDs associated with the parameter search.
+- **parameter_combinations**: An object representing the varying parameters within the parameter search. Keys within this object are parameter names, and their values are lists of the different parameter values tested.
+
+![image](../assets/diagram_8.png)
+
+_Figure 6: The parameter search and simulations connection_

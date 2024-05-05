@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardBody, CardTitle, Container } from 'reactstrap';
-import { FaRegLightbulb } from 'react-icons/fa'; // Example icon, you can choose any
+import { FaRegLightbulb } from 'react-icons/fa';
 
 const Home = () => {
   return (

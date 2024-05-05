@@ -11,7 +11,7 @@ const Client = () => {
       .then(data => setClientDocumentation(data));
   }, []);
   return (
-    <div className = "client-documentation">
+    <div style={{ paddingLeft: '20px'}}>
       <Markdown>{clientDocumentation}</Markdown>
     </div>
   )

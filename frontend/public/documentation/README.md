@@ -1,33 +1,84 @@
-#### Setup for Arkheia
+# Arkheia
 
-#### Prerequisites
+Arkheia is a MERN application responsible for the analyzation of simulation results with the following prerequisites:
 
-- mongodb
-- npm
-- python3
+- Node.js: v20.7.0 or later (Use Nodeman for easy management)
+- MongoDB: v2.0.0 or later
+- Next.js: v13.4.19 or later
+- npm: v9.6.5 or later
+- Docker and Docker Compose (optional for containerized setup)
 
-To install the dependencies run:
-`npm install`
+## Installation
 
-## Startup
+### Clone the Repository
 
-### Backend
-First go to the `server` subdirectory:
-`cd server`
-assuming you are in the `Arkheia` directory
+```bash
+git clone https://github.com/NoPleaseNorbi/Arkheia.git
+```
 
-To start the development server
-`npm run dev`
+### Install Dependencies
 
-To run mongodb:
-`mongod` or `npm run db`
+This project uses `concurrently` to manage multiple npm scripts. To install all dependencies for both frontend and backend, run:
 
-### Frontend
-Go to the `backend` subdirectory:
-`cd backend`
+```bash
+npm run set-up-frontend
+npm run set-up-backend
+```
 
-assuming you are in the `Arkheia` directory
+## Running the Application
 
-To start the frontend run
-`npm start`
+There are three ways to start the application:
 
+1. **Using npm scripts (locally):**
+
+   Start the database, frontend, and backend concurrently from the root of the project:
+
+   ```bash
+   npm start
+   ```
+
+2. **Using Docker:**
+
+   Before using Docker, make sure to update the `.env` file:
+
+   ```
+   PORT=4000
+   MONGODB_URI=mongodb://database/ArkheiaData
+   MONGODB_TEST_URI=mongodb://database/ArkheiaTestDB
+   ```
+
+   And update the `proxy` in the frontend's `package.json`:
+
+   ```json
+   "proxy": "http://arkheia-node-server:4000",
+   ```
+
+   Then, you can use Docker Compose to start the application:
+
+   ```bash
+   docker-compose up
+   ```
+
+3. **Manually starting the frontend and backend:**
+
+   - To start the frontend:
+
+     ```bash
+     cd frontend
+     npm start
+     ```
+
+   - To start the backend:
+
+     ```bash
+     cd server
+     npm start
+     ```
+
+## Testing
+
+To run the tests, make sure the backend server is not running and that the database is still running. From the root directory, run:
+
+```bash
+npm run test
+```

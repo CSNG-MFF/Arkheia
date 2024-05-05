@@ -11,7 +11,7 @@ const Installation = () => {
       .then(data => setDocumentation(data));
   }, []);
   return (
-    <div className = "installation">
+    <div style={{ paddingLeft: '20px'}}>
       <Markdown>{documentation}</Markdown>
     </div>
   )

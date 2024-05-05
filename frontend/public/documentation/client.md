@@ -1,153 +1,106 @@
 # Client documentation
 
-Arkheia offers users a convenient way of organizing, exploring and publishing their neural simulation specifications and results via a dedicated web application.
+Arkheia offers users a convenient way of organizing, exploring and publishing neural simulation results using a dedicated web application.
 In this section of the documentation we will explain to the user the web-based GUI frontend.
 To find out how to install and deploy Arkheia please refer to the [Installation & Deployment](/documentation/installation) section of the documentation.
-The Arkheia follows the common client-server architecture. To learn how to communicate with the server, and extend Arkheia to be compatible with your
-favorite simulation work-flow, please refer to the [API](/documentation/api) part of the documentation. Furthermore, if you want to learn more about the motivations behind
-Arkheia design, or gain inspiration for various possible use-cases, read the [Arkheia manuscript](????). Should you use Arkheia in your scientific project resulting in publication, please cite this paper.
 
-## Landing page
+The Arkheia follows the common client-server architecture. To learn how to communicate with the server, and extend Arkheia to be compatible with any other simulation framework, please refer to the [API](/documentation/api) part of the documentation. 
 
-When accessing an instance of Arkheia repository, user will first see the landing page depicted in figure 1. This page can be always accessed again
-via the _About_ item of the top menu strip, or upon clicking the Arkheia logo on the left side of the top menu strip.
+## The Navbar
+Upon entering the webpage, the user will see a navbar, on the top side of the page, which is always present, no matter where the user heads.
 
-TODO
-_Figure 1: About page._
+![image](../assets/picture_1.PNG)
+_Figure 1: The Navbar_
 
-The center of the landing page is occupied with the welcome message that can be customized by the user to tell visitors basic information
-about the given repository instance (Fig 1.1), refer to [API](/documentation/api) on how to populate the message. The Arkheia [documentation](/documentation)
-can be accessed via the _Documentation_ item in the top menu strip (Fig 1.4). Arkheia facilitates sharing of two types of simulation results:
+![image](../assets/picture_2.PNG)
+_Figure 2: The Navbar during upload_
 
-1. Individual simulation runs can be accessed via the _Simulation runs_ item of the top menu strip (Fig 1.2).
-2. Sets of simulation runs resulting from parameter searches can be accessed via the _Parameter searches_ item of the top menu strip (Fig 1.3).
+![image](../assets/picture_3.PNG)
+_Figure 3: The Navbar after a succesful upload_
 
-## Documentation
 
-The documentation page contains links to three parts of the Arkheia project documentation:
+On the left side, the application name serves as a clickable button that redirects the user to Arkheia's welcome page. The navbar includes buttons for Simulation runs, Parameter searches, About, and a Documentation dropdown, providing easy access to these respective sections of Arkheia. The plus icons beside the Simulation runs and Parameter searches buttons enable folder uploads. Clicking the plus icon triggers a directory selection dialog.
 
-1. the documentation of the client web-based user interface (Fig 2.1) that you are currently viewing
-2. the documentation of the [API](/documentation/api) specification (Fig 2.2) with which user can access the Arkheia database and thus use to integrate Arkheia with his favorite simulation tools
-3. the installation & deployment guideline outlining several different use-cases for Arkheia usage accompanied by step-by-step instructions (Fig 2.3)
+![image](../assets/picture_4.PNG)
+_Figure 4: The dropdown menu for the different documentations_
 
-TODO
-_Figure 2: Documentation page._
+The documentation section offers guides for installation, using the Arkheia client, and working with the API.
+If the user clicks any other button during an upload, a dialog will pop up, which asks the user if they really want to leave the page. If the user clicks on the Leave site? button, the current uploading will stop and the simulation or the parameter search will not be uploaded, and saved to the database.
 
 ## Individual simulation runs page
 
-The _simulation runs_ page offers a simple tabular representation of the set of simulation runs that were submitted to the repository, with each
-row corresponding to single simulation run, and each column representing one simulation run property. The first four columns tell user (in this order)
-when the given simulation run was submitted to the repository (Fig 3.1), when was the actual simulation executed (Fig 3.2), the name the user gave to
-that specific simulation run (Fig 3.3) and the name of the model that was simulated (Fig 3.4). The next four columns contain links (the 'eye' icons)
-that take the user to pages further exploring the content of the given simulation run. From left to right, user can explore the full parametrization
-of the simulation (Fog 3.5), view all the stimuli that have been presented to the model (Fig 3.6), explore all the experimental protocols that have
-been executed on the model during the simulation (Fig 3.7), and finally view the results that have been generated during the simulation (Fig 3.8).
-Note that throughout the web-application you will encounter many similar tabular views, and in most cases the columns will be annotated with short
-tool-tips briefly explaining what does the given column represent. In most of these tabular views, just like here in _simulation runs_, user will also be
-able to sort the table based on a selected column by clicking on it's header name. Below the header name, user can also find an input window which allows
-him to filter results based on entered string.
+This page is responsible for showing the simulations to the user. This page contains a table, where the rows contain the simulations uploaded. 
 
-TODO
-_Figure 3: Simulation runs page._
+The user can see every simulation uploaded in one page. The headers of the table contain a tooltip, which can help the user navigate the page. The following columns are available at this page:
+View simulation alone: If the user clicks the eye icon, the corresponding simulation will open in another page, with all of the information about it, the parameters, the stimuli, the experimental protocols, and the results of the simulation. 
+Submission date: The date the simulation was submitted to Arkheia
+Run date: The time the simulation was run on a simulation framework
+Model name: The name of the model that was simulated
+View model description: The user can view the description of a model. The press of this button will trigger a modal to show up. 
+View parameters: The parameters of a specific simulation
+View stimuli: The stimuli of the simulation
+View experimental protocols: The experimental protocols of the simulation
+View results: The results of the simulation
+Delete simulation run: Deletes one simulation run. This delete operation is handled in a way that not only the simulation is deleted from the database, but every document connected with the simulation. So, in this case it means, that the stimuli, experimental protocols, results, and the records will be deleted from the database too. This leads to a better performance over time and memory reusability. 
+The user can also change the name of the simulation with a right click. From the label a textbox will form, containing the current name of the simulation. This textbox can be freely changed, and the changes will save automatically, after the user clicks away.
+If the user deletes a simulation from this table, an alert will show up in that row of the table where the simulation was previously located. After the deletion is complete, the window will refresh. There is also a search bar for the model and run names, using which the user can filter out the simulations.
+
+![image](../assets/picture_6.PNG)
+_Figure 5: The simulation runs page_
 
 ## The parameters page
 
-Arkheia allows demonstration of the simulation's parametric configuration in the form of a tree structure. The parameter exploration page provides a classic tree-view graphical user interface with which user can conveniently explore this tree of parameters. The nodes marked with + sign can be expanded upon clicking the icon (Fig 4.1), the nodes marked
-by the - sign can be collapsed (Fig 4.2). The leafs of the tree (marked by square icon) contain the value of the parameter defined by the path to the given leaf (Fig 4.3). The value is treated by Arkheia as an arbitrary string, thus Arkheia back-ends can convey extra information to the value of the parameters, such as their type, or as depicted in Fig 4.3 express
-that the parameter is not a constant value but a distribution.
+This page is responsible for rendering the parameters of the simulation.
+The user can expand certain parts of the JSON using the right arrow keys. These keys also show the user how many values are inside it. The user can not only use the keys, but the names themselves to expand that part of the JSON. The used component is highly customisable, which should allow us to change the style of it in the future based on the user demand. 
 
-TODO
-_Figure 4: Parameter view page._
+![image](../assets/picture_7.PNG)
+_Figure 6: Parameter view page._
 
 ## The stimulus view page
 
-This page lets user to explore all stimuli that have been presented to the model during the simulation. It is organized in the same tabular manner
-as the _Individual simulation runs_ page. The first column show the name of the stimulus (this should ideally correspond to the name of the code
-(e.g. class or function)) that generates it (Fig 5.1). Second column contains a short description of the stimulus directly visible in the table (Fig 5.2), while
-the third column contains longer description viewable upon clicking the corresponding 'eye' icon (Fig 5.3). The fourth column contains links that show upon clicking the list
-of parameters and their values of the given stimulus in a pop-up panel (Fig 5.4). Finally, the fifth column contains small thumbnails of the actual stimulus that
-was presented to the model (Fig 5.5).
+This page will show the user the stimuli of the simulation. Not every simulation will have stimuli, especially if the simulation inside the simulation framework was interrupted. 
+The stimuli page is once again, a table containing all the stimuli associated with the simulation uploaded. The Source code name is the identifier that generates the given instance of the stimulus. The Short description is the brief description of the stimulus in that row, similarly, the Long description is the longer, more precise description of the stimulus. Clicking on the eye icon under the Parameters column will result in the web page showing the user a modal, which has the stimulus’s parameters inside of it. This page also contains the parameters shown using the react-json-tree library. On the far-right side, there are the movies the simulations were generated with. We should note that these GIFs have a certain speed of playback, which isn't necessarily the same speed at which they were used during simulation.
 
-TODO
-_Figure 5: Stimulus view page._
 
-Upon clicking the thumbnails, pop-up panel showing the full-sized stimulus movie appears (Fig 6).
-
-TODO
-_Figure 6: Stimulus parameters view page._
+![image](../assets/picture_8.PNG)
+_Figure 7: Stimulus view page._
 
 ## Experimental protocols page
 
-This page is again organized in the now familiar tabular manner, this time listing experimental protocols that were conducted during the simulation (top of the page) and
-the recording configurations describing what has been recorded and where during the simulation. For the experimental protocols 4 properties are listed, the reference to the
-source code corresponding to the invocation of the given experimental protocols (Fig 7.1; this is typically a name of a class or a function), a short description of the protocol
-(Fig 7.2), longer description that can be expanded and retracted upon selecting the 'eye' icon (Fig 7.3), and the parameter values that the specific protocol was invoked with
-that show up as an pop-up upon selecting the corresponding 'eye' icon (Fig 7.4).
+This page shows the user the experimental protocols and the records of the simulation. These protocols which are shown here were performed over the model during the simulation run.
+The experimental protocols part of the page is very similar to the stimuli view page. It contains the Source code name, Short description, Long description, and Parameters parts, these correspond to the same functionality as on the stimuli page. The records part is very similar to the experimental protocols, the only differences are the Target population and the Recorded variables parts. The Target population is the identifier of the neural population where the recordings were performed. The Recorded variables are the variables that were recorded inside the selected neurons.
 
-TODO
-_Figure 7: Experimental protocols page._
 
-The recording configurations section of the page is a bit more structured, listing 6 different properties, starting again with the reference to the
-source code which is responsible for the given recording configuration (Fig 7.5), the name of the target population of neurons in which the
-recording was performed (Fig 7.6), the list of signals that were recorded (e.g. spikes, membrane potential etc.) (Fig 7.7), short (Fig 7.8) and long (Fig 7.9) description of the
-recording configuration, and the list of parameter values with which the recording configuration was invoked with (Fig 7.10), which appear as a pop-up upon clicking the
-corresponding 'eye' icon (Fig 8).
-
-TODO
-_Figure 8: Experimental protocols page with parameters modal._
+![image](../assets/picture_9.PNG)
+_Figure 8: Experimental protocols page._
 
 ## Results page
+The main attraction of the results page is the generated figures of the simulation. The user can use these figures to more deeply analyze the simulation results. 
+The user is presented with the already well-known table structure. The table's rows are the results from the simulation.  The Source name is the identifier of the source code that generated the given figure. The Name column represents the name given to the figure and the Parameters are, similarly to the stimuli page and the experimental protocol page, the parameters of the source code that generated the given figure. The Caption is the caption given to the figure. The last row is the header Figure which is the figure generated from the simulation. The figures in the last column can be clicked. This triggers a modal to open up, and inside the modal, the user will see the figure in full width, meaning the figure will be the size of almost the whole window.
 
-The results page lets user browse figures that have been generated during the simulation. For each figure, the page lists the reference to the source code responsible for
-generating the figure (Fig 9.1,this can be a class or function name for example), the name of the figure assigned by user (Fig 9.2), and finally the right-most column contains the
-thumbnails of the figures.
 
-TODO
+![image](../assets/picture_10.PNG)
 _Figure 9: Results page._
-
-Upon clicking the thumbnails, the figure is displayed at full size (Fig 10). At the top of the full-size panel, user can navigate through the other figures generated during the simulation without leaving the full-size view:
-
-TODO
-_Figure 10: Results page - full-screen figure._
 
 ## Parameter search page
 
-The parameter search page is very similar to the _Individual simulation runs page_, except that instead of listing individual simulations runs, it list sets of simulation runs
-originating from a systematic parameter search. The first four columns thus tell user (in this order) when the given parameter search was submitted to the repository (Fig 11.1), when was the actual parameter search executed (Fig 11.2), the name the user gave to that specific parameter search (Fig 11.3) and the name of the model that was simulated (Fig 11.4).
-The 'eye' icons in the fifth column take the user to a view which is identical to the _Individual simulation runs page_, but listing only simulation runs from the given
-parameter search (Fig 11.5). Finally they 'eye' icons in the fifth column pass the user to an interactive view in which the user can explore the results
-as a function of the parameter values that have been varied throughout the parameter search.
+Here the user will be presented, similarly to the simulations page, with a table, containing all the parameter searches the user uploaded.
+Upon entering this page, the user can see that the layout is similar to the simulation runs page. The table has multiple columns, which we already discussed, like the Submission date, Run date, Name, and Model name. The View individual runs icon will send the user to the simulation runs page, there the table with the simulations will fill with the simulations present in the parameter search. The ID of the parameter search will be appended to the URL of the simulations page, thus informing the frontend of the simulations page to render not the simulations without parameter searches, but the simulations connected to the parameters search, to whom the ID belongs. Here the users can filter the parameter searches based on the name of the parameter search, or by the name of the model. The user can inspect the results of the parameter search using the Inspect results column. 	
 
-TODO
-_Figure 11: Parameter search page._
+
+![image](../assets/picture_11.PNG)
+_Figure 10: Parameter search page._
 
 ## Parameter search inspect page
 
-<a id="psip-anchor"></a>
+This page is responsible for showing the users the different figures based on the selected parameters of the simulations. The user can filter out the different values based on their preferences, thus enabling for an easier comparison between figures. 
+Upon entering this page, the user will be presented with, depending on the size of the parameter search, a loading page, which is visible even for the largest of parameter searches only for a split second, or with the page on Figure 11, immediately. This page consists of an Input component, where the user can select the figure they want to see in the table on the underside of this page. The Image Scale slider is for changing the sizes of the figures in the table. Then the parameters follow. The left side of the collection of buttons are the keys of the parameter combinations, whose structure we already discussed earlier. The button is blue if that key is selected to be on the y-axis of the table. There can always be only one key selected. The values are green and are immediately next to the key. These values represent the x-axis of the table. The user can activate and deactivate certain values, but there must always be one value selected for a parameter. Enforcing this, the frontend automatically checks if there is only one button activated in a row, and will lock it, so the user won’t be able to press it until another button is activated in the same row.
 
-This page allows users to interactively explore the results that originate in a series of simulations in which the parameters of the simulation were systematically varied. Currently
-only grid-like searches of parameters are supported. Broadly, the page is dived into two horizontal panels, the top containing various control elements (Fig 12,1-4),
-and the bottom panel containing the actual view of the parameter search results (Fig 12,5-7). The bottom view always contains set of instances of a specific figure
-that was generated during the simulations in the parameter search. The figure instances are arranged into grid (Fig 12.5), such that the values of parameters assigned to the
-two axis of the grid orderly vary along the axis, thus allowing user to gain insight into how do the properties of the simulations depicted in the selected figure change
-with the changing parameter values. The vertical axes of the grid always corresponds to a single parameter (Fig 12.6), while the horizontal axis corresponds to the remaining
-parameters whose values are hierarchically ordered (Fig 12.7). Usually the figures corresponding to all the explored parameter combinations cannot be viewed within the
-screen at the same time, but user needs to scroll around the grid, however the horizontal and vertical guides will automatically scroll in-sync with the grid to provide
-user a matching guide as to which parameter value combinations generated the viewed figures.
+![image](../assets/picture_12.PNG)
+_Figure 11: The upper part of the insect results page_
 
-TODO
-_Figure 12: Parameter search inspect page._
+On the underside of the page, the user will see a table representing a grid. The grid is filled with the figures selected by the user, based on the corresponding x and y-axis parameters and their values. The table fills in the data iterating through all of the parameters and their values and checking it against all the simulations. By the definition of the parameter searches, for every combination, only one simulation exists. After the simulation is found based on the selected figure, the table is generated. If no simulation exists for a combination, nothing will be shown. The header has a fixed position and will be always shown, similarly, the first column defining the y-axis will be always shown, even when scrolling away from it to the right side. The figures are clickable, if the user clicks them, a modal with an enlarged figure will pop up. If the user changes the selected key or the selected values, the table will automatically change, without a need for a refresh. 
 
-In the top panel user can manipulate the exact information viewed in the figure grid at the bottom. User can select which of the multiple figures generated for each
-simulation within the parameter search to display (Fig 12.1). User can adjust the size of the individual figures in the grid to gain appropriate view of the information
-depicted in them (Fig 12.2). Below, the list of the parameters that varied during parameter search is displayed (Fig 12.3; any parameters that did not vary are automatically excluded
-by Arkheia). Upon clicking any of the parameter names, that parameter is selected to be viewed along the y-axis of the grid, while remaining are assigned to the x-axis.
-Furthermore, next to each parameter the list of different values that were assigned to the parameter during the search are displayed. Each can be clicked, by which
-user toggles whether that parameter value should be included in the grid or not. Any parameters for which single value remains selected are automatically removed
-from the horizontal guideline (unless it is selected for the vertical guideline) in order to reduce clutter. This way user can flexibly select different slices through the multi-dimensional parameter search space which can be powerful way to gain insight into such inherently complex data. The parameter list panel can be disabled
-to gain more space for viewing of the grid (Fig 12.4). Finally upon clicking on any of the figures in the grid view, the figure will be displayed at full-size in a pop-over
-panel, which will at the top also contains controls for navigating through all the other figures that the given simulation run (i.e. corresponding to the given
-combination of parameter values) generated (Fig 13).
+![image](../assets/picture_13.PNG)
+_Figure 12 The underside of the inspect results page_
 
-TODO
-_Figure 13: Parameter search inspect page - full-screen._
