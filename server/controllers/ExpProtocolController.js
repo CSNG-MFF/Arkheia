@@ -4,9 +4,8 @@ const ExpProtocol = require('../models/exp_protocol_model');
 
 // Get all experimental protocols
 const getExpProtocols = async (req, res) => {
-  const expProtocol = await ExpProtocol.find({}).sort({ createdAt: -1 });
-
-  res.status(200).json(expProtocol);
+  const exp_protocol = await ExpProtocol.find({}).sort({ createdAt: -1 });
+  res.status(200).json(exp_protocol);
 };
 
 // Create an experimental protocol
@@ -14,8 +13,8 @@ const createExpProtocol = async (req, res) => {
   const { code_name, short_description, long_description, parameters } = req.body;
 
   try {
-    const expProtocol = await ExpProtocol.create({ code_name, short_description, long_description, parameters });
-    res.status(200).json(expProtocol);
+    const exp_protocol = await ExpProtocol.create({ code_name, short_description, long_description, parameters });
+    res.status(200).json(exp_protocol);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -29,16 +28,16 @@ const deleteExpProtocol = async (req, res) => {
     return res.status(404).json({ error: 'Bad format of ID' });
   }
 
-  const expProtocol = await ExpProtocol.findOneAndDelete({ _id: id });
+  const exp_protocol = await ExpProtocol.findOneAndDelete({ _id: id });
 
-  if (!expProtocol) {
-    return res.status(400).json({ error: 'No such stimulus' });
+  if (!exp_protocol) {
+    return res.status(400).json({ error: 'No such experimental protocol' });
   }
 
-  res.status(200).json(expProtocol);
+  res.status(200).json(exp_protocol);
 };
 
-// Get a stimulus by ID
+// Get the experimental protocols associated with a simulation
 const getExpProtocolForSimulation = async (req, res) => {
   
   const { id } = req.params;

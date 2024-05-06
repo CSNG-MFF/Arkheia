@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const Simulation = require('../models/simulation_run_model');
 const Records = require('../models/records_model');
 
-// Get all experimental protocols
+// Get all records
 const getRecords = async (req, res) => {
   const record = await Records.find({}).sort({ createdAt: -1 });
 
   res.status(200).json(record);
 };
 
-// Create an experimental protocol
+// Create a record
 const createRecord = async (req, res) => {
   const { code_name, short_description, long_description, parameters, variables, source } = req.body;
 
@@ -21,7 +21,7 @@ const createRecord = async (req, res) => {
   }
 };
 
-// Delete an experimental protocol
+// Delete a record
 const deleteRecord = async (req, res) => {
   const { id } = req.params;
 
@@ -38,7 +38,7 @@ const deleteRecord = async (req, res) => {
   res.status(200).json(record);
 };
 
-// Get a stimulus by ID
+// Get records associated with a simulation
 const getRecordsForSimulation = async (req, res) => {
   
   const { id } = req.params;

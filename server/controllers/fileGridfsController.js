@@ -3,6 +3,8 @@ const Result = require('../models/results_model');
 const Stimuli = require('../models/stimuli_model')
 const { MongoClient, GridFSBucket } = require('mongodb');
 
+
+// Get the figure for a result
 const getFigureForResult = async (req, res) => {
   const { id } = req.params;
 
@@ -13,7 +15,6 @@ const getFigureForResult = async (req, res) => {
         return res.status(404).json({ error: 'Result not found' });
       }
 
-      // Establish connection to MongoDB
       const client = new MongoClient(process.env.MONGODB_URI);
       await client.connect();
 
@@ -21,21 +22,22 @@ const getFigureForResult = async (req, res) => {
       const bucket = new GridFSBucket(db);
 
       // Find the file by its ObjectID
-      const fileId = new mongoose.Types.ObjectId(result.figure.fileId);
-      const downloadStream = bucket.openDownloadStream(fileId);
+      const file_id = new mongoose.Types.ObjectId(result.figure.file_id);
+      const download_stream = bucket.opendownload_stream(file_id);
 
       // Set response headers
       res.set('Content-Type', result.figure.contentType);
       res.set('Content-Disposition', 'inline');
 
       // Pipe the file data to the response stream
-      downloadStream.pipe(res);
+      download_stream.pipe(res);
   } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Internal server error' });
   }
 };
 
+// Get the movie for a stimulus
 const getMovieForStimulus = async (req, res) => {
   const { id } = req.params;
 
@@ -46,7 +48,6 @@ const getMovieForStimulus = async (req, res) => {
       return res.status(404).json({ error: 'Stimulus not found' });
       }
 
-      // Establish connection to MongoDB
       const client = new MongoClient(process.env.MONGODB_URI);
       await client.connect();
 
@@ -54,15 +55,15 @@ const getMovieForStimulus = async (req, res) => {
       const bucket = new GridFSBucket(db);
 
       // Find the file by its ObjectID
-      const fileId = new mongoose.Types.ObjectId(stimuli.movie.fileId);
-      const downloadStream = bucket.openDownloadStream(fileId);
+      const file_id = new mongoose.Types.ObjectId(stimuli.movie.file_id);
+      const download_stream = bucket.opendownload_stream(file_id);
 
       // Set response headers
       res.set('Content-Type', stimuli.movie.contentType);
       res.set('Content-Disposition', 'inline');
 
       // Pipe the file data to the response stream
-      downloadStream.pipe(res);
+      download_stream.pipe(res);
   } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Internal server error' });

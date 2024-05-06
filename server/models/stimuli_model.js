@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 // The schema for the stimuli
-const StimuliSchema = new Schema({
+const StimulusSchema = new Schema({
   code_name: {
     type: String,
     required: true
@@ -26,4 +26,4 @@ const StimuliSchema = new Schema({
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Stimuli', StimuliSchema);
+module.exports = mongoose.model('Stimulus', StimulusSchema);

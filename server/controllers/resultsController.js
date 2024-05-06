@@ -28,11 +28,11 @@ const createResult = async (req, res) => {
     const db = client.db(); // Get the database instance
     const bucket = new GridFSBucket(db);
 
-    const uploadStream = bucket.openUploadStream(req.file.originalname);
+    const upload_stream = bucket.openUploadStream(req.file.originalname);
 
-    const readStream = createReadStream(req.file.path);
+    const read_stream = createReadStream(req.file.path);
     
-    readStream.pipe(uploadStream)
+    read_stream.pipe(upload_stream)
       .on('error', (error) => {
         // Handle upload error
         console.error('Error uploading file:', error);
@@ -48,7 +48,7 @@ const createResult = async (req, res) => {
           parameters,
           caption,
           figure: { 
-            fileId: uploadStream.id.toString(),
+            fileId: upload_stream.id.toString(),
             contentType: req.file.mimetype
           }
         });

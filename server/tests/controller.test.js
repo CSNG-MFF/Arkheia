@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const mongoose = require('mongoose');
 
+// Import the functions for testing
 const { getSimulation, createSimulation, getSimulations, deleteSimulation, updateSimulation } = require('../controllers/simulationRunsController');
 const { getStimuli, createStimulus, deleteStimulus, getStimuliForSimulation } = require('../controllers/stimuliController');
 const { getResults, createResult, deleteResult, getResultsForSimulation } = require('../controllers/resultsController');
@@ -11,7 +12,7 @@ const { getParameterSearches, createParameterSearch, deleteParameterSearch, getP
 
 // Import the models
 const Simulation = require('../models/simulation_run_model');
-const Stimuli = require('../models/stimuli_model');
+const Stimulus = require('../models/stimuli_model');
 const Result = require('../models/results_model');
 const ExpProtocol = require('../models/exp_protocol_model');
 const Record = require('../models/records_model');
@@ -33,6 +34,7 @@ const mockRes = () => {
   return res;
 };
 
+// Connect to the DB before the tests
 beforeEach(async () => {
   await mongoose.connection.close();
   await mongoose.connect(process.env.MONGODB_TEST_URI);
@@ -43,12 +45,13 @@ afterEach(async () => {
   await mongoose.connection.close();
 });
 
-
-//Stimuli tests
+/////////////////
+//Stimuli tests//
+/////////////////
 describe('POST /stimuli: createStimulus', () => {
   it('Create stimulus for testing purposes', async () => {
     const fileID = new mongoose.Types.ObjectId();
-    const randomDocument = new Stimuli({
+    const randomDocument = new Stimulus({
       code_name: Math.random().toString(36).substring(7),
       short_description: Math.random().toString(36).substring(7),
       long_description: Math.random().toString(36).substring(7),
@@ -62,7 +65,7 @@ describe('POST /stimuli: createStimulus', () => {
     await randomDocument.save();
   });
 
-  it('Test for empty body of request', async () => {
+  it('Empty body of request', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -71,7 +74,7 @@ describe('POST /stimuli: createStimulus', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('Test for no GIF in stimuli request body', async () => {
+  it('No GIF in stimuli request body', async () => {
     const req = mockReq();
     const res = mockRes();
 
@@ -172,11 +175,11 @@ describe('POST /exp_protocols: createExpProtocol', () => {
     await createExpProtocol(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
 
-    const createdExpProtocol = await ExpProtocol.findOne({ code_name: req.body.code_name });
-    expect(createdExpProtocol).not.toBeNull();
-    expect(createdExpProtocol.short_description).toBe(req.body.short_description);
-    expect(createdExpProtocol.long_description).toBe(req.body.long_description);
-    expect(createdExpProtocol.parameters).toBe(req.body.parameters);
+    const created_exp_protocol = await ExpProtocol.findOne({ code_name: req.body.code_name });
+    expect(created_exp_protocol).not.toBeNull();
+    expect(created_exp_protocol.short_description).toBe(req.body.short_description);
+    expect(created_exp_protocol.long_description).toBe(req.body.long_description);
+    expect(created_exp_protocol.parameters).toBe(req.body.parameters);
   });
 
   it('Create experimental protocol with empty request body', async () => {
@@ -232,13 +235,13 @@ describe('POST /records: createRecord', () => {
     await createRecord(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
 
-    const createdRecord = await Record.findOne({ code_name: req.body.code_name });
-    expect(createdRecord).not.toBeNull();
-    expect(createdRecord.short_description).toBe(req.body.short_description);
-    expect(createdRecord.long_description).toBe(req.body.long_description);
-    expect(createdRecord.parameters).toBe(req.body.parameters);
-    expect(createdRecord.variables).toBe(req.body.variables);
-    expect(createdRecord.source).toBe(req.body.source);
+    const created_record = await Record.findOne({ code_name: req.body.code_name });
+    expect(created_record).not.toBeNull();
+    expect(created_record.short_description).toBe(req.body.short_description);
+    expect(created_record.long_description).toBe(req.body.long_description);
+    expect(created_record.parameters).toBe(req.body.parameters);
+    expect(created_record.variables).toBe(req.body.variables);
+    expect(created_record.source).toBe(req.body.source);
   });
 
   it('Create a new record with empty request body', async () => {
@@ -283,19 +286,19 @@ describe('POST /simulation_runs: createSimulation', () => {
       const req = mockReq();
       const res = mockRes();
       const records = await Record.find({});
-      const stimuli = await Stimuli.find({});
-      const expProtocols = await ExpProtocol.find({});
+      const stimuli = await Stimulus.find({});
+      const exp_protocols = await ExpProtocol.find({});
       const results = await Result.find({});
-      const recordsArr = [];
-      recordsArr.push(records[0]._id)
+      const records_array = [];
+      records_array.push(records[0]._id)
       
-      const stimuliArr = [];
-      stimuliArr.push(stimuli[0]._id)
+      const stimuli_array = [];
+      stimuli_array.push(stimuli[0]._id)
       
-      const expProtocolsArr = [];
-      expProtocols.push(expProtocols[0]._id)
+      const exp_protocols_array = [];
+      exp_protocols.push(exp_protocols[0]._id)
       
-      const resultsArr = [];
+      const results_array = [];
       results.push(results[0]._id)
       
       req.body = {
@@ -304,22 +307,22 @@ describe('POST /simulation_runs: createSimulation', () => {
         creation_data: "11/01/2024-16:30:24", 
         model_description: "test", 
         parameters: "test", 
-        stimuliIds: recordsArr, 
-        expProtocolIds: stimuliArr, 
-        recordIds: expProtocolsArr, 
-        resultIds: resultsArr,
+        stimuliIds: records_array, 
+        expProtocolIds: stimuli_array, 
+        recordIds: exp_protocols_array, 
+        resultIds: results_array,
         from_parameter_search: false
       };
 
       await createSimulation(req, res);
       expect(res.status).toHaveBeenCalledWith(200);
 
-      const createdSimulation = await Simulation.findOne({ simulation_run_name: req.body.simulation_run_name });
-      expect(createdSimulation).not.toBeNull();
-      expect(createdSimulation.model_name).toBe(req.body.model_name);
-      expect(createdSimulation.model_description).toBe(req.body.model_description);
-      expect(createdSimulation.parameters).toBe(req.body.parameters);
-      expect(createdSimulation.from_parameter_search).toBe(req.body.from_parameter_search);
+      const created_simulation = await Simulation.findOne({ simulation_run_name: req.body.simulation_run_name });
+      expect(created_simulation).not.toBeNull();
+      expect(created_simulation.model_name).toBe(req.body.model_name);
+      expect(created_simulation.model_description).toBe(req.body.model_description);
+      expect(created_simulation.parameters).toBe(req.body.parameters);
+      expect(created_simulation.from_parameter_search).toBe(req.body.from_parameter_search);
     });
 
   it('Create a simulation with an empty request body', async () => {
@@ -404,8 +407,8 @@ describe('PUT /simulation_runs: updateSimulation', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalled();
 
-    const updatedSimulation = await Simulation.findById(req.params.id);
-    expect(updatedSimulation.simulation_run_name).toBe(req.body.simulation_run_name);
+    const updated_simulation = await Simulation.findById(req.params.id);
+    expect(updated_simulation.simulation_run_name).toBe(req.body.simulation_run_name);
   });
 
   it('Update one simulation in the database with a non existing field', async () => {
@@ -451,24 +454,24 @@ describe('POST /parameter_searches: createParameterSearch', () => {
     const req = mockReq();
     const res = mockRes();
     const simulations = await Simulation.find({});
-    const simulationsArr = [];
-    simulationsArr.push(simulations[0]._id)
+    const simulations_array = [];
+    simulations_array.push(simulations[0]._id)
     
     req.body = {
       name: "test",
       model_name: "test",
       run_date: "11/01/2024-16:30:24", 
-      simulationIds: simulationsArr, 
+      simulationIds: simulations_array, 
       parameter_combinations: "test"
     };
 
     await createParameterSearch(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
 
-    const createdParameterSearch = await ParameterSearch.findOne({ name: req.body.name });
-    expect(createdParameterSearch).not.toBeNull();
-    expect(createdParameterSearch.model_name).toBe(req.body.model_name);
-    expect(createdParameterSearch.parameter_combinations).toBe(req.body.parameter_combinations);
+    const created_parameter_search = await ParameterSearch.findOne({ name: req.body.name });
+    expect(created_parameter_search).not.toBeNull();
+    expect(created_parameter_search.model_name).toBe(req.body.model_name);
+    expect(created_parameter_search.parameter_combinations).toBe(req.body.parameter_combinations);
   });
 
   it('Create a parameter search with an empty request body', async () => {
@@ -551,8 +554,8 @@ describe('PUT /parameter_searches: updateParameterSearch', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalled();
 
-    const updatedParameterSearch = await ParameterSearch.findById(req.params.id);
-    expect(updatedParameterSearch.name).toBe(req.body.name);
+    const updated_parameter_search = await ParameterSearch.findById(req.params.id);
+    expect(updated_parameter_search.name).toBe(req.body.name);
   });
 
   it('Update one parameter search in the database with a non existing field', async () => {
@@ -832,15 +835,15 @@ describe('DELETE /records: deleteRecord', () => {
     const res = mockRes();
 
     const record = await Record.find({});
-    const recordToDelete = record[0];
+    const record_to_delete = record[0];
 
-    req.params.id = recordToDelete._id;
+    req.params.id = record_to_delete._id;
 
     await deleteRecord(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
 
-    const deletedRecord = await Record.findById(req.params.id);
-    expect(deletedRecord).toBeNull();
+    const deleted_record = await Record.findById(req.params.id);
+    expect(deleted_record).toBeNull();
   });
 
   it('Bad format of MongoDB ID', async () => {
@@ -867,16 +870,16 @@ describe('DELETE /exp_protocols: deleteExpProtocol', () => {
     const req = mockReq();
     const res = mockRes();
 
-    const expProtocol = await ExpProtocol.find({});
-    const expProtocolToDelete = expProtocol[0];
+    const exp_protocol = await ExpProtocol.find({});
+    const exp_protocol_to_delete = exp_protocol[0];
 
-    req.params.id = expProtocolToDelete._id;
+    req.params.id = exp_protocol_to_delete._id;
 
     await deleteExpProtocol(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
 
-    const deletedExpProtocol = await ExpProtocol.findById(req.params.id);
-    expect(deletedExpProtocol).toBeNull();
+    const deleted_exp_protocol = await ExpProtocol.findById(req.params.id);
+    expect(deleted_exp_protocol).toBeNull();
   });
 
   it('Bad format of MongoDB ID', async () => {
@@ -905,15 +908,15 @@ describe('DELETE /simulation_runs: deleteSimulation', () => {
     const res = mockRes();
 
     const simulation = await Simulation.find({});
-    const simulationToDelete = simulation[0];
+    const simulation_to_delete = simulation[0];
 
-    req.params.id = simulationToDelete._id;
+    req.params.id = simulation_to_delete._id;
 
     await deleteSimulation(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
 
-    const deletedSimulation = await Simulation.findById(req.params.id);
-    expect(deletedSimulation).toBeNull();
+    const deleted_simulation = await Simulation.findById(req.params.id);
+    expect(deleted_simulation).toBeNull();
   });
 
   it('Bad format of MongoDB ID', async () => {
@@ -941,15 +944,15 @@ describe('DELETE /parameter_search: deleteParameterSearch', () => {
     const res = mockRes();
 
     const parameter_search = await ParameterSearch.find({});
-    const parameterToDelete = parameter_search[0];
+    const parameter_search_to_delete = parameter_search[0];
 
-    req.params.id = parameterToDelete._id;
+    req.params.id = parameter_search_to_delete._id;
 
     await deleteParameterSearch(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
 
-    const deletedParameterSearch = await ParameterSearch.findById(req.params.id);
-    expect(deletedParameterSearch).toBeNull();
+    const deleted_parameter_search = await ParameterSearch.findById(req.params.id);
+    expect(deleted_parameter_search).toBeNull();
   });
 
   it('Bad format of MongoDB ID', async () => {

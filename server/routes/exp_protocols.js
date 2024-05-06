@@ -4,7 +4,7 @@ const {
   createExpProtocol,
   deleteExpProtocol,
   getExpProtocolForSimulation
-} = require('../controllers/ExpProtocolController'); // Import the stimulus controller functions
+} = require('../controllers/ExpProtocolController');
 
 const router = express.Router();
 

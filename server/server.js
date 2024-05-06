@@ -10,7 +10,7 @@ const aboutRoutes = require('./routes/about')
 const documentationRoutes = require('./routes/documentation')
 const simulationRunsRoutes = require('./routes/simulation_runs')
 const stimuliRoutes = require('./routes/stimuli')
-const expProtocolRoutes = require('./routes/exp_protocol')
+const expProtocolRoutes = require('./routes/exp_protocols')
 const recordRoutes = require('./routes/records')
 const resultRoutes = require('./routes/results')
 const parameterSearchRoutes = require('./routes/parameter_searches')
@@ -33,6 +33,7 @@ const app = express();
 app.use(express.json({ limit: '50mb' }))
 
 
+// Next.js
 app.use((req, res, next) => {
     console.log(req.path, req.method)
     next();

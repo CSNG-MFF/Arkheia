@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-// Thes shcema for the records
-const RecordsSchema = new Schema({
+// The shcema for the records
+const RecordSchema = new Schema({
   code_name: {
     type: String,
     required: true
@@ -30,4 +30,4 @@ const RecordsSchema = new Schema({
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Records', RecordsSchema);
+module.exports = mongoose.model('Record', RecordSchema);

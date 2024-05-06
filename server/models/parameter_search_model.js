@@ -16,7 +16,7 @@ const ParameterSearchSchema = new Schema({
     type: String,
     required: true
   },
-  simulations: [{ type: Schema.Types.ObjectId, ref: 'Simulations'}],
+  simulations: [{ type: Schema.Types.ObjectId, ref: 'Simulation'}],
   parameter_combinations: {
     type: Object
   }

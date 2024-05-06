@@ -4,7 +4,7 @@ const {
   createResult,
   deleteResult,
   getResultsForSimulation
-} = require('../controllers/resultsController'); // Import the result controller functions
+} = require('../controllers/resultsController');
 
 const {
   getFigureForResult

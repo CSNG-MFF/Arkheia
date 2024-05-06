@@ -22,4 +22,4 @@ const ExpProtocolSchema = new Schema({
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('ExpProtocols', ExpProtocolSchema);
+module.exports = mongoose.model('ExpProtocol', ExpProtocolSchema);

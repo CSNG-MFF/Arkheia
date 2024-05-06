@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Simulation = require('../models/simulation_run_model');
-const Stimuli = require('../models/stimuli_model');
+const Stimulus = require('../models/stimuli_model');
 const ExpProtocol = require('../models/exp_protocol_model');
 const Record = require('../models/records_model');
 const Result = require('../models/results_model');
@@ -30,12 +30,12 @@ const updateSimulation = async (req, res) => {
   res.status(200).json(simulation);
 };
 
-// Create simulation with file upload
+// Create simulation
 const createSimulation = async (req, res) => {
   const {simulation_run_name, model_name, creation_data, model_description, parameters, stimuliIds, expProtocolIds, recordIds, resultIds, from_parameter_search } = req.body
     // Add to database
     try {
-      const stimuli = await Stimuli.find({ _id: { $in: stimuliIds } });
+      const stimuli = await Stimulus.find({ _id: { $in: stimuliIds } });
       const exp_protocols = await ExpProtocol.find({ _id: { $in: expProtocolIds } });
       const records = await Record.find({ _id: { $in: recordIds } });
       const results = await Result.find({ _id: { $in: resultIds } });
@@ -72,7 +72,7 @@ const deleteSimulation = async (req, res) => {
   }
 
   // Assuming that Stimuli, ExpProtocols, Records, and Results are mongoose models
-  await Stimuli.deleteMany({ '_id': { $in: simulation.stimuli } });
+  await Stimulus.deleteMany({ '_id': { $in: simulation.stimuli } });
   await ExpProtocol.deleteMany({ '_id': { $in: simulation.exp_protocols } });
   await Record.deleteMany({ '_id': { $in: simulation.records } });
   await Result.deleteMany({ '_id': { $in: simulation.results } });

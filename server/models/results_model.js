@@ -26,4 +26,4 @@ const ResultSchema = new Schema({
 }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Results', ResultSchema);
+module.exports = mongoose.model('Result', ResultSchema);

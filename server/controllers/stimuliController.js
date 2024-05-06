@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Simulation = require('../models/simulation_run_model');
-const Stimuli = require('../models/stimuli_model'); // Import the Stimuli model
+const Stimuli = require('../models/stimuli_model');
 const fs = require('fs');
 const { createReadStream } = require('fs');
 const { GridFSBucket } = require('mongodb');
@@ -26,11 +26,11 @@ const createStimulus = async (req, res) => {
     const db = client.db(); // Get the database instance
     const bucket = new GridFSBucket(db);
 
-    const uploadStream = bucket.openUploadStream(req.file.originalname);
+    const upload_stream = bucket.openUploadStream(req.file.originalname);
 
-    const readStream = createReadStream(req.file.path);
+    const read_stream = createReadStream(req.file.path);
     
-    readStream.pipe(uploadStream)
+    read_stream.pipe(upload_stream)
       .on('error', (error) => {
         // Handle upload error
         console.error('Error uploading file:', error);
@@ -46,7 +46,7 @@ const createStimulus = async (req, res) => {
           long_description,
           parameters,
           movie: { 
-            fileId: uploadStream.id.toString(),
+            fileId: upload_stream.id.toString(),
             contentType: req.file.mimetype
           }
         });
