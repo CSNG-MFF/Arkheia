@@ -117,7 +117,7 @@ const ParameterSearch = () => {
           </tr>
         </thead>
         <tbody>
-          {parameterSearch  && parameterSearch .filter((parameter_search) => (
+          {parameterSearch && parameterSearch.filter((parameter_search) => (
             parameter_search.name.toLowerCase().includes(runNameSearch.toLowerCase()) &&
             parameter_search.model_name.toLowerCase().includes(modelNameSearch.toLowerCase())
           )).map((parameter_search) => (
