@@ -16,8 +16,7 @@ const About = () => {
                 Cooperation with the Computational Systems Neuroscience Group (CSNG)
               </CardTitle>
               <p className="text-justify">
-                <FaAtom className="mr-2" /> <strong>Arkheia</strong>
-                is a  web-based repository designed for the visualization of complex neural simulations. 
+                <FaAtom className="mr-2" /> <strong>Arkheia</strong> is a  web-based repository designed for the visualization of complex neural simulations. 
                 Developed at the <strong>MFF UK</strong>, Arkheia leverages 
                 the <strong>Mozaik framework</strong> to save the simulations and parameter searches generated. 
               </p>

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import { useLocation } from 'react-router-dom';
 
 import {
-  Table
+  Table,
+  UncontrolledTooltip
 } from 'reactstrap'
 
 import ResultByIdsTableBody from "../components/ResultByIdsTableBody";
@@ -36,21 +37,46 @@ const ResultsById = () => {
       >
         <thead style={{ textAlign: 'center'}}>
           <tr>
-            <th>
+            <th id="SourceName">
               Source name	
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="SourceName"
+            >
+              The source code identifier that generates the given figure (e.g. a class or function name).
+            </UncontrolledTooltip>
+            <th id="Name">
               Name
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="Name"
+            >
+              The name of the figure.
+            </UncontrolledTooltip>
+            <th id="Parameters">
               Parameters
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="Parameters"
+            >
+              The parameters with which the source code that generated the figure was invoked with.
+            </UncontrolledTooltip>
+            <th id="Caption">
               Caption
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="Caption"
+            >
+              The figure caption. Click the eye icon to show the text.
+            </UncontrolledTooltip>
+            <th id="Figure">
               Figure
             </th>
+            <UncontrolledTooltip
+              target="Figure"
+            >
+              The figure. Click to enlarge the figure.
+            </UncontrolledTooltip>
           </tr>
         </thead>
         <tbody>   

@@ -38,21 +38,46 @@ const StimuliById = () => {
       >
         <thead style={{ textAlign: 'center'}}>
           <tr>
-            <th>
+            <th id="SourceCode">
               Source code name
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="SourceCode"
+            >
+              The source code identifier that generates the given instance of Stimulus (e.g. a class or function name)
+            </UncontrolledTooltip>
+            <th id="ShortDescription">
               Short description
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="ShortDescription"
+            >
+              Brief description of the recording configuration.
+            </UncontrolledTooltip>
+            <th id="LongDescription">
               Long description
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="LongDescription"
+            >
+              Detailed description of the recording configuration.
+            </UncontrolledTooltip>
+            <th id="Parameters">
               Parameters
             </th>
-            <th>
+            <UncontrolledTooltip
+              target="Parameters"
+            >
+              Click the eye icon to inspect the parameters and their values of the given stimulus instance.
+            </UncontrolledTooltip>
+            <th id="View">
               View
             </th>
+            <UncontrolledTooltip
+              target="View"
+            >
+              The stimulus movie. Note that due to frame-rate cap in web-browsers the speed of the movies does not neccessarily correspond to the speed at which they were presented during simulation.
+            </UncontrolledTooltip>
           </tr>
         </thead>
         <tbody>   
