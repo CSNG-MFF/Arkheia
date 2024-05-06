@@ -9,12 +9,12 @@ import { JSONTree } from 'react-json-tree';
 import '../styles/simulation_button.css'
 
 const StimuliByIdsTableBody = ({ stimuli }) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [longDescriptionPopOver, setLongDescriptionPopOver] = useState(false);
   const [parameterModalOpen, setParameterModalOpen] = useState(false);
 
 
   const togglePopover = () => {
-    setPopoverOpen(!popoverOpen);
+    setLongDescriptionPopOver(!longDescriptionPopOver);
   }
 
   const toggleParameterModalOpen = () => {
@@ -42,7 +42,7 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
         <Popover
           trigger="legacy"
           placement="bottom"
-          isOpen={popoverOpen}
+          isOpen={longDescriptionPopOver}
           target={`popover_${stimuli._id}`} // Target each popover with the unique id
           toggle={togglePopover}
         >

@@ -16,13 +16,13 @@ const ExpProtocolsById = () => {
   const [record, setRecord] = useState([]);
 
   useEffect(() => {
-    // Fetch stimuli for the simulation
+    // Fetch stimuli connected with the simulation
     const fetchExpProtocols = async () => {
       try {
         const response = await fetch(`/exp_protocols/` + simulation._id);
-        const expProtocolData = await response.json();
+        const exp_protocol_data = await response.json();
         if (response.ok) {
-          setExpProtocol(expProtocolData);
+          setExpProtocol(exp_protocol_data);
         }
       } catch (error) {
         console.error('Error fetching experimental protocols:', error);
