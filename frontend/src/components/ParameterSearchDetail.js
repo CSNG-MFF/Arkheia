@@ -11,7 +11,7 @@ import '../styles/simulation_button.css'
 const ParameterSearchDetail = ({ parameter_search }) => {
   const history = useNavigate();
 
-   // Controls the visibility of the alert for deletion
+  // Controls the visibility of the alert for deletion
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
 
   // If the user want to see the individual simulation runs

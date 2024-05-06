@@ -10,10 +10,10 @@ import '../styles/simulation_button.css'
 
 const SimulationDetail = ({ simulation }) => {
   const history = useNavigate();
-   // Controls the visibility of the deletion alert
+  // Controls the visibility of the deletion alert
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
 
-   // Controls the visibility of the model description popover
+  // Controls the visibility of the model description popover
   const [modelDescriptionPopOverOpen, setModelDescriptionPopOverOpen] = useState(false);
 
   // Controls the visibility of the input field for editing the name of the simulation

@@ -10,13 +10,13 @@ import '../styles/simulation_button.css'
 
 
 const ResultByIdsTableBody = ({ result }) => {
-   // Controls the visibility of the parameter modal
+  // Controls the visibility of the parameter modal
   const [parameterModalOpen, setParameterModalOpen] = useState(false);
 
-   // Controls the visibility of the caption popover
+  // Controls the visibility of the caption popover
   const [captionPopoverOpen, setCaptionPopoverOpen] = useState(false);
 
-   // Controls the visibility of the figure modal
+  // Controls the visibility of the figure modal
   const [viewModalOpen, setViewModalOpen] = useState(false);
   
   // The modal for the parameters

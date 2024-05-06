@@ -11,27 +11,40 @@ const InspectResults = () => {
   const location = useLocation();
   const parameter_search = location.state;
   
+  // Controls the visibility of the modal
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
+  // Controls the scale of the images inside the grid table
   const [imageScale, setImageScale] = useState(0.5);
 
+  // Controls the X axis of the table using the selected key
   const [selectedKey, setSelectedKey] = useState(null);
 
+  // The combinations of the parameters
   const [parameterDifferences, setParameterDifferences] = useState({});
+
+  // Helper boolean for checking if simualtions are loading
   const [isLoadingSimulations, setIsLoadingSimulations] = useState(false);
+
+  // Helper boolean for checking if the results are loading
   const [isLoadingResults, setIsLoadingResults] = useState(false);
+
+  // The simulations inside the page
   const [simulations, setSimulations] = useState([]);
+
+  // The results inside the webpage
   const [results, setResults] = useState([]);
 
-  const [availableResultNames, setAvailableResultNames] = useState([]); // For result name options
+  // The avalaible result names
+  const [availableResultNames, setAvailableResultNames] = useState([]);
 
-  const [selectedResults, setSelectedResults] = useState([]);
-  const [selectedResultName, setSelectedResultName] = useState(''); // For tracking the selected result name
+  // The selected result name
+  const [selectedResultName, setSelectedResultName] = useState('');
 
-
-
+  // The seelcted values of the parameter combinations
   const [selectedValues, setSelectedValues] = useState({});
   
+  // The Y axis of the table based on the not selected value combinations
   const [notSelectedValuesCombinations, setNotSelectedValuesCombinations] = useState({});
 
   const toggleViewModal = () => {
@@ -43,7 +56,7 @@ const InspectResults = () => {
       setIsLoadingSimulations(true);
       setIsLoadingResults(true);
 
-      const fetchData = async () => {
+      const fetchData = async () => { // Fetch the needed data for the page
         if (parameter_search && parameter_search._id) {
           const response = await fetch(`/parameter_searches/${parameter_search._id}/simulations`);
           const json = await response.json();
@@ -51,45 +64,43 @@ const InspectResults = () => {
             setSimulations(json);
             setIsLoadingSimulations(false);
             try {
-              const allResults = []; // Array to store results from all simulations
-              let availableNames = new Set();
+              const all_results = []; // Array to store results from all simulations
+              let avalaible_names = new Set();
               const response = await fetch(`/parameter_searches/${parameter_search._id}/results`);
-              const resultsData = await response.json();
+              const results_data = await response.json();
               if (response.ok) {
-                for (const results of resultsData) {
+                for (const results of results_data) {
                   for (const result of results) {
                     if (result.name) {
-                      availableNames.add(result.name); // Add result name to the set
+                      avalaible_names.add(result.name); // Add result name to the set
                     }
-                    allResults.push(result); // Add results for this simulation
+                    all_results.push(result); // Add results for this simulation
                   }
                 }
               } else {
                 console.error(`Error fetching results for parameter search ${parameter_search._id}:`, response.statusText);
-              }
-              console.log(allResults);
+              }              
+              setAvailableResultNames([...avalaible_names]); // Set the names of all the avalaible results
+              setResults(all_results); // Set the results inside the page
+              setIsLoadingResults(false); // Not loading the results anymore
               
-              setAvailableResultNames([...availableNames]);
-              setResults(allResults);
-              setIsLoadingResults(false);
-              
-              let parameterVariations = {};
+              let parameter_variations = {}; 
 
               if (parameter_search.parameter_combinations) {
-                parameterVariations = parameter_search.parameter_combinations;
+                parameter_variations = parameter_search.parameter_combinations;
               }
               else {
                 for (const simulation of json) {
-                  addVariations(simulation.parameters.sheets, 'sheets', parameterVariations);
+                  addVariations(simulation.parameters.sheets, 'sheets', parameter_variations);
                 }
               }
-              for (const key in parameterVariations) {
-                parameterVariations[key] = Array.from(parameterVariations[key]);
-                if (parameterVariations[key].length <= 1) {
-                  delete parameterVariations[key];
+              for (const key in parameter_variations) {
+                parameter_variations[key] = Array.from(parameter_variations[key]);
+                if (parameter_variations[key].length <= 1) {
+                  delete parameter_variations[key];
                 }
               }
-              setParameterDifferences(parameterVariations);
+              setParameterDifferences(parameter_variations); // Set the parameter combinations
             } catch (error) {
               console.error('Error fetching results (general):', error);
             }
@@ -98,29 +109,29 @@ const InspectResults = () => {
       }
       fetchData();
     }
-  }, [])
-
+  }, [isLoadingResults, isLoadingSimulations, parameter_search, results.length, simulations.length])
+ 
   useEffect(() => {
-    if (parameterDifferences) {
-      setSelectedValues(
+    if (parameterDifferences) { // If the parameter combinations are set
+      setSelectedValues( // Sets the first values to be selected
         Object.keys(parameterDifferences).reduce((acc, key) => {
-          acc[key] = parameterDifferences[key].slice(); // start with all values selected
+          acc[key] = parameterDifferences[key].slice(); // Start with all values selected
           return acc;
         }, {})
       );
-      const firstKey = Object.keys(parameterDifferences)[0];
-      if (firstKey) {
-        setSelectedKey(firstKey);
+      const first_key = Object.keys(parameterDifferences)[0];
+      if (first_key) {
+        setSelectedKey(first_key);
       }
     }
   }, [parameterDifferences]);
 
   useEffect(() => {
-    if (selectedValues && selectedKey) {
+    if (selectedValues && selectedKey) { // If the key is selected
       const keys = Object.keys(selectedValues).filter(key => key !== selectedKey);
       const combinations = [];
   
-      const generateCombinations = (index, currentCombination) => {
+      const generateCombinations = (index, currentCombination) => { // Generates all of the combinations to be inside the grid
         if (index === keys.length) {
           combinations.push({ ...currentCombination });
           return;
@@ -139,23 +150,18 @@ const InspectResults = () => {
   }, [selectedValues, selectedKey]);
 
   useEffect(() => {
-    if (availableResultNames.length > 0) {
-      const firstResult = availableResultNames[0];
-      setSelectedResultName(firstResult);
-      const matchingResults = results.filter((result) => result.name === firstResult.name);
-      setSelectedResults([...matchingResults]);
+    if (availableResultNames.length > 0) { // Sets the first avalaible result, this is important, to show immediately something on the page
+      const first_result = availableResultNames[0];
+      setSelectedResultName(first_result);
     }
   }, [availableResultNames]);
 
-  const handleResultChange = (event) => {
-    setSelectedResults([]);
-    const selectedName = event.target.value;
-    const matchingResults = results.filter((result) => result.name === selectedName);
-    setSelectedResults([...matchingResults]);
-    setSelectedResultName(selectedName);
+  const handleResultChange = (event) => { // Sets the selected name if te user changes it
+    const selected_name = event.target.value;
+    setSelectedResultName(selected_name);
   };
 
-  const handleScaleChange = (event) => {
+  const handleScaleChange = (event) => { // Changes the styles of the images to accomodate the image scale
     setImageScale(parseFloat(event.target.value).toFixed(2));
     const scale = event.target.value;
     const images = document.querySelectorAll('img');
@@ -169,22 +175,20 @@ const InspectResults = () => {
   };
   const toggleSelection = (key, value) => {
     setSelectedValues(prevState => {
-      // Create a deep copy of prevState to avoid directly mutating state
-      const newSelectedKeys = JSON.parse(JSON.stringify(prevState));
+      const new_selected_keys = JSON.parse(JSON.stringify(prevState));
   
-      // Check if key exists in newSelectedKeys, if not initialize it
-      if (!newSelectedKeys[key]) {
-        newSelectedKeys[key] = [];
+      // Check if key exists in new_selected_keys, if not initialize it
+      if (!new_selected_keys[key]) {
+        new_selected_keys[key] = [];
       }
   
-      const index = newSelectedKeys[key].indexOf(value);
-  
+      const index = new_selected_keys[key].indexOf(value);
       if (index === -1) {
-        newSelectedKeys[key].push(value); // select
-      } else if (newSelectedKeys[key].length > 1) {
-        newSelectedKeys[key].splice(index, 1); // deselect if not the last one
+        new_selected_keys[key].push(value); // Select
+      } else if (new_selected_keys[key].length > 1) {
+        new_selected_keys[key].splice(index, 1); // Deselect if not the last one
       }
-      return newSelectedKeys;
+      return new_selected_keys;
     });
   };
 
@@ -221,7 +225,7 @@ const InspectResults = () => {
                 id="scaleSlider"
                 min="0.35"
                 max="1.5"  
-                step="0.01"  // Smaller step for smoother transitions
+                step="0.01"
                 value={imageScale}
                 onChange={handleScaleChange}
                 style={{ width: '500px'}}
@@ -239,22 +243,21 @@ const InspectResults = () => {
                       {String(key)}
                     </Button>
                     {parameterDifferences[key].map((value, index) => {
-                      const isSelected = selectedValues[key] && selectedValues[key].includes(value);
-                      const isLastSelected = isSelected && selectedValues[key].length === 1;
+                      const is_selected = selectedValues[key] && selectedValues[key].includes(value);
+                      const is_last_selected = is_selected && selectedValues[key].length === 1;
 
                       return (
                         <Button 
-                          color={isLastSelected ? 'danger' : isSelected ? 'success' : 'secondary'}
+                          color={is_last_selected ? 'danger' : is_selected ? 'success' : 'secondary'}
                           key={index}
                           style={{ margin: '2px'}}
-                          onClick={() => !isLastSelected && toggleSelection(key, value)}
-                          disabled={isLastSelected}
+                          onClick={() => !is_last_selected && toggleSelection(key, value)}
+                          disabled={is_last_selected}
                         >
                           {String(value)}
                         </Button>
                       );
                     })}
-
                   </div>
                 ))}
               </div>
@@ -287,16 +290,14 @@ const InspectResults = () => {
                         {notSelectedValuesCombinations && Object.keys(notSelectedValuesCombinations).map((key) => (
                           <td key={key}>
                           {(() => {
-                            const allKeysValues = Object.entries(notSelectedValuesCombinations[key]).concat([[selectedKey, value]]);
-                            console.log(allKeysValues);
-                            const simulationMatch = simulations.find(simulation =>
-                              allKeysValues.every(([key, val]) => _.get(simulation.parameters, key) === val)
+                            const all_keys_values = Object.entries(notSelectedValuesCombinations[key]).concat([[selectedKey, value]]);
+                            const simulation_match = simulations.find(simulation =>
+                              all_keys_values.every(([key, val]) => _.get(simulation.parameters, key) === val)
                             );
 
-                            if (simulationMatch) {
-                              console.log("haha");
+                            if (simulation_match) {
                               const result = results.find(result => 
-                                result.name === selectedResultName && simulationMatch.results.includes(result._id)
+                                result.name === selectedResultName && simulation_match.results.includes(result._id)
                               );
                               if (result) {
                                 return (
@@ -307,7 +308,6 @@ const InspectResults = () => {
                                       type="button"
                                       onClick={toggleViewModal}
                                     >
-
                                       <img
                                         key={result._id}
                                         src={`/results/${result._id}/image`}
@@ -361,18 +361,18 @@ const InspectResults = () => {
 export default InspectResults
 
 // ONLY USED WHEN PARAMETER COMBINATIONS ARE NOT DEFINED
-function addVariations(obj, path, parameterVariations) {
+function addVariations(obj, path, parameter_variations) {
   for (const key in obj) {
     if (typeof obj[key] === 'object' && obj[key] !== null) {
       // If the value is an object, recursively search it
-      addVariations(obj[key], `${path}.${key}`, parameterVariations);
+      addVariations(obj[key], `${path}.${key}`, parameter_variations);
     } else {
       // If the value is not an object, add it to the variations
       const fullPath = `${path}.${key}`;
-      if (parameterVariations[fullPath]) {
-        parameterVariations[fullPath].add(obj[key]);
+      if (parameter_variations[fullPath]) {
+        parameter_variations[fullPath].add(obj[key]);
       } else {
-        parameterVariations[fullPath] = new Set([obj[key]]);
+        parameter_variations[fullPath] = new Set([obj[key]]);
       }
     }
   }
