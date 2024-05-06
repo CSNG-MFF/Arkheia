@@ -2,7 +2,7 @@ import { IoTrashSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { IoEye } from "react-icons/io5";
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 
 import { Button, Alert, Popover, PopoverBody } from "reactstrap";
 
@@ -10,41 +10,55 @@ import '../styles/simulation_button.css'
 
 const SimulationDetail = ({ simulation }) => {
   const history = useNavigate();
+   // Controls the visibility of the deletion alert
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const [editingName, setEditingName] = useState(false);
+
+   // Controls the visibility of the model description popover
+  const [modelDescriptionPopOverOpen, setModelDescriptionPopOverOpen] = useState(false);
+
+  // Controls the visibility of the input field for editing the name of the simulation
+  const [editingName, setEditingName] = useState(false); 
+
+  // Controls the new name of the simulation
   const [newName, setNewName] = useState(simulation.simulation_run_name);
 
+  // Reroutes the user to the alone view page
   const handleAloneView = () => {
     const id = simulation._id;
     history(`/${id}/simulation`, { state: simulation });
   }
 
-  const togglePopover = () => {
-    setPopoverOpen(!popoverOpen);
+  // Toggles the model description popover
+  const toggleModelDescriptionPopover = () => {
+    setModelDescriptionPopOverOpen(!modelDescriptionPopOverOpen);
   }
 
+  // Reroutes the user to the parameters view
   const handleParamatersView = () => {
     const id = simulation._id;
     history(`/${id}/parameters`, { state: simulation });
   }
 
+  // Reroutes the user to the stimuli view page
   const handleStimuliView = () => {
     const id = simulation._id;
     history(`/${id}/stimuli`, { state: simulation });
   }
   
+  // Reroutes the user to the experimental protocols page
   const handleExpProtocolsView = () => {
     const id = simulation._id;
     history(`/${id}/experimental-protocols`, { state: simulation });
   }
 
+  // Reroutes the user to the results page
   const handleResultsView = () => {
     const id = simulation._id;
     history(`/${id}/results`, { state: simulation });
   }
 
   // Currently not used
+  /*
   const handleDownload = async () => {
     try {
       const simulationsJson = JSON.stringify(simulation, null, 2);
@@ -68,7 +82,9 @@ const SimulationDetail = ({ simulation }) => {
       console.error(error);
     }
   }
+  */
 
+  // The handling of a simulation deletion
   const handleDelete = async () => {
 
     const response = await fetch('/simulation_runs/' + simulation._id, {
@@ -88,6 +104,7 @@ const SimulationDetail = ({ simulation }) => {
     }
   }
 
+  // Handles the change of name, updating it inside the database
   const handleNameChange = async () => {
     try {
       const response = await fetch(`/simulation_runs/${simulation._id}`, {
@@ -140,10 +157,10 @@ const SimulationDetail = ({ simulation }) => {
         {simulation.model_name}
       </td>
       <td style={{ textAlign: 'center', padding: 0 }}>
-        <Button id={`model_description_popover_${simulation._id}`} className="icon-button" type="button" onClick={togglePopover}>
+        <Button id={`model_description_popover_${simulation._id}`} className="icon-button" type="button" onClick={toggleModelDescriptionPopover}>
           <IoEye size={28} className="icon" />
         </Button>
-        <Popover trigger="legacy" placement="bottom" isOpen={popoverOpen} target={`model_description_popover_${simulation._id}`} toggle={togglePopover}>
+        <Popover trigger="legacy" placement="bottom" isOpen={modelDescriptionPopOverOpen} target={`model_description_popover_${simulation._id}`} toggle={toggleModelDescriptionPopover}>
           <PopoverBody>
             {simulation.model_description}
           </PopoverBody>

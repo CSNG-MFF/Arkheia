@@ -1,6 +1,6 @@
 import { IoEye } from "react-icons/io5";
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 
 import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter, ModalHeader, List } from "reactstrap";
 
@@ -10,15 +10,20 @@ import '../styles/simulation_button.css'
 
 const RecordByIdsTableBody = ({ record }) => {
   
-  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(false);
-  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(false);
+  // Controls visibility of the long description popover
+  const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(false); 
 
+  // Controls the visibility of the parameter modal
+  const [parameterModalOpen, setParameterModalOpen] = useState(false);
+
+  // The popover for the long description
   const toggleLongDescriptionPopover = () => {
     setLongDescriptionPopoverOpen(!longDescriptionPopoverOpen);
   };
 
-  const toggleParameterPopover = () => {
-    setParameterPopoverOpen(!parameterPopoverOpen);
+  // The modal for the parameters
+  const toggleParameterModal = () => {
+    setParameterModalOpen(!parameterModalOpen);
   }
 
 
@@ -77,13 +82,13 @@ const RecordByIdsTableBody = ({ record }) => {
           className="icon-button"
           id={`parameter_${record._id}`}
           type="button"
-          onClick={toggleParameterPopover} 
+          onClick={toggleParameterModal} 
         >
           <IoEye size={28} className="icon" />
         </Button>
         <Modal
-          isOpen={parameterPopoverOpen}
-          toggle={toggleParameterPopover}
+          isOpen={parameterModalOpen}
+          toggle={toggleParameterModal}
           target={`parameter_${record._id}`}
         >
           <ModalHeader style={{ backgroundColor: 'rgb(0, 43, 54)', textAlign: 'center' }}>
@@ -98,7 +103,7 @@ const RecordByIdsTableBody = ({ record }) => {
             />
           </ModalBody>
           <ModalFooter style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
-            <Button color="warning" onClick={toggleParameterPopover}>
+            <Button color="warning" onClick={toggleParameterModal}>
               Close
             </Button>
           </ModalFooter>

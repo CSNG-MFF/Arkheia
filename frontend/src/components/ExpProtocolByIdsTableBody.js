@@ -10,15 +10,20 @@ import '../styles/simulation_button.css'
 
 const ExpProtocolByIdsTableBody = ({ expProtocol }) => {
   
+   // Controls the visibility of the long description popover
   const [longDescriptionPopoverOpen, setLongDescriptionPopoverOpen] = useState(false);
-  const [parameterPopoverOpen, setParameterPopoverOpen] = useState(false);
 
+   // Controls the visibility of the parameter modal
+  const [parameterModalOpen, setParameterModalOpen] = useState(false);
+
+  // The popover for the long description
   const toggleLongDescriptionPopover = () => {
     setLongDescriptionPopoverOpen(!longDescriptionPopoverOpen);
   };
 
-  const toggleParameterPopover = () => {
-    setParameterPopoverOpen(!parameterPopoverOpen);
+  // The modal for the parameter
+  const toggleParameterModal = () => {
+    setParameterModalOpen(!parameterModalOpen);
   }
 
   return (
@@ -56,13 +61,13 @@ const ExpProtocolByIdsTableBody = ({ expProtocol }) => {
           className="icon-button"
           id={`parameter_${expProtocol._id}`}
           type="button"
-          onClick={toggleParameterPopover} 
+          onClick={toggleParameterModal} 
         >
           <IoEye size={28} className="icon" />
         </Button>
         <Modal
-          isOpen={parameterPopoverOpen}
-          toggle={toggleParameterPopover}
+          isOpen={parameterModalOpen}
+          toggle={toggleParameterModal}
           target={`parameter_${expProtocol._id}`}
         >
           <ModalHeader style={{ backgroundColor: 'rgb(0, 43, 54)', textAlign: 'center' }}>
@@ -77,7 +82,7 @@ const ExpProtocolByIdsTableBody = ({ expProtocol }) => {
             />
           </ModalBody>
           <ModalFooter style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
-            <Button color="warning" onClick={toggleParameterPopover}>
+            <Button color="warning" onClick={toggleParameterModal}>
               Close
             </Button>
           </ModalFooter>

@@ -67,7 +67,7 @@ const InspectResults = () => {
               } else {
                 console.error(`Error fetching results for parameter search ${parameter_search._id}:`, response.statusText);
               }
-              console.log(availableNames);
+              console.log(allResults);
               
               setAvailableResultNames([...availableNames]);
               setResults(allResults);
@@ -80,7 +80,7 @@ const InspectResults = () => {
               }
               else {
                 for (const simulation of json) {
-                  addVariations(simulation.parameters, '', parameterVariations);
+                  addVariations(simulation.parameters.sheets, 'sheets', parameterVariations);
                 }
               }
               for (const key in parameterVariations) {
@@ -288,11 +288,13 @@ const InspectResults = () => {
                           <td key={key}>
                           {(() => {
                             const allKeysValues = Object.entries(notSelectedValuesCombinations[key]).concat([[selectedKey, value]]);
+                            console.log(allKeysValues);
                             const simulationMatch = simulations.find(simulation =>
                               allKeysValues.every(([key, val]) => _.get(simulation.parameters, key) === val)
                             );
 
                             if (simulationMatch) {
+                              console.log("haha");
                               const result = results.find(result => 
                                 result.name === selectedResultName && simulationMatch.results.includes(result._id)
                               );

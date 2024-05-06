@@ -20,16 +20,31 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 const NavBar = () => {
-  const inputRef = useRef(null);
+  const simulationInputRef = useRef(null);
   const parameterSearchInputRef = useRef(null);
 
-  const [alertVisible, setAlertVisible] = useState(false);
+  // Controls the visibility of the simulation upload alert
+  const [simulationAlertVisible, setSimulationAlertVisible] = useState(false);
+
+  // Controls the visibility of the parameter search upload alert
   const [parameterSearchAlertVisible, setParameterSearchAlertVisible] = useState(false);
 
+  // Controls the upload progress of both simulations and parameter searches
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Controls if an upload is happening
   const [isUploadActive, setIsUploadActive] = useState(false);
   
+  // The names of the files searched
+  const information_file = "sim_info.json";
+  const parameters_file = "parameters.json";
+  const stimuli_file = "stimuli.json";
+  const experimental_protocols_file = "experimental_protocols.json";
+  const records_file = "recorders.json";
+  const results_file = "results.json";
 
+  const parameter_combinations_file = "parameter_combinations.json"
+  // Checks if an upload is active, if yes, the user will be asked if they really want to leave the page
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       if (isUploadActive) {
@@ -46,6 +61,7 @@ const NavBar = () => {
     };
   }, [isUploadActive]);
 
+  // Handles the upload of parameter searches
   const handleParameterSearchUpload = async (event) => {
     setIsUploadActive(true);
     const files = event.target.files;
@@ -59,22 +75,22 @@ const NavBar = () => {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
-      const filePromise = new Promise((resolve, reject) => {
+      const file_promise = new Promise((resolve, reject) => {
         reader.onload = async function(e) {
           const contents = e.target.result;
-          if (file.name === "sim_info.json" && (model_name == "" || run_date == "" || name == "")) {
-            const jsonData = JSON.parse(contents);
-            model_name = jsonData.model_name;
-            name = jsonData.simulation_run_name;
-            const [datePart, timePart] = jsonData.run_date.split("-");
-            const [day, month, year] = datePart.split("/");
-            const [hours, minutes, seconds] = timePart.split(":");
+          if (file.name === information_file && (model_name === "" || run_date === "" || name === "")) {
+            const json_data = JSON.parse(contents);
+            model_name = json_data.model_name;
+            name = json_data.simulation_run_name;
+            const [date_part, time_part] = json_data.run_date.split("-");
+            const [day, month, year] = date_part.split("/");
+            const [hours, minutes, seconds] = time_part.split(":");
             const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
             run_date = date.toISOString();
           }
-          else if (file.name == "parameter_combinations.json") {
-            const jsonData = JSON.parse(contents);
-            jsonData.forEach(item => {
+          else if (file.name === parameter_combinations_file) {
+            const json_data = JSON.parse(contents);
+            json_data.forEach(item => {
               for (let key in item) {
                 if (!parameter_combinations[key]) {
                   parameter_combinations[key] = [];
@@ -90,18 +106,18 @@ const NavBar = () => {
         reader.onerror = reject;
       });
       reader.readAsText(file);
-      await filePromise;
+      await file_promise;
 
-      const filePath = file.webkitRelativePath;
-      const pathParts = filePath.split('/');
+      const file_path = file.webkitRelativePath;
+      const path_parts = file_path.split('/');
 
       // If the file is in a subfolder, add the file to the folder's list
-      if (pathParts.length > 2) {
-        const folderName = pathParts[1];
-        if (!folders[folderName]) {
-          folders[folderName] = [];
+      if (path_parts.length > 2) {
+        const folder_name = path_parts[1];
+        if (!folders[folder_name]) {
+          folders[folder_name] = [];
         }
-        folders[folderName].push(file);
+        folders[folder_name].push(file);
       }
     }
 
@@ -138,7 +154,7 @@ const NavBar = () => {
       setParameterSearchAlertVisible(true);  // Show the alert
       setTimeout(() => setParameterSearchAlertVisible(false), 3000);
       setTimeout(() => window.location.reload(), 2000);
-      inputRef.current.value = "";
+      simulationInputRef.current.value = "";
     }
 
     parameterSearchInputRef.current.value = "";
@@ -162,7 +178,7 @@ const NavBar = () => {
       const filePromise = new Promise((resolve, reject) => {
         reader.onload = async function(e) {
           const contents = e.target.result;
-          if (file.name === "sim_info.json") {
+          if (file.name === information_file) {
             const jsonData = JSON.parse(contents);
   
             simulation_run_name = jsonData.simulation_run_name;
@@ -176,10 +192,10 @@ const NavBar = () => {
             const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
             creation_data = date.toISOString();
           }
-          else if (file.name === "parameters.json") {
+          else if (file.name === parameters_file) {
             parametersJsonData = JSON.parse(contents);
           }
-          else if (file.name === "stimuli.json") {
+          else if (file.name === stimuli_file) {
             const jsonData = JSON.parse(contents);
             for (var stimulus of jsonData) {
               const code_name = stimulus.code;
@@ -203,7 +219,7 @@ const NavBar = () => {
               }
             }
           }
-          else if (file.name === "experimental_protocols.json") {
+          else if (file.name === experimental_protocols_file) {
             const jsonData = JSON.parse(contents);
             for (var exp_protocol of jsonData) {
               const code_name = exp_protocol.class;
@@ -214,7 +230,7 @@ const NavBar = () => {
               expProtocols.push(whole_exp_protocol);
             }
           }
-          else if (file.name === "recorders.json") {
+          else if (file.name === records_file) {
             const jsonData = JSON.parse(contents);
             for (var record of jsonData) {
               const code_name = record.code;
@@ -227,7 +243,7 @@ const NavBar = () => {
               records.push(whole_record);
             }
           }
-          else if (file.name === "results.json") {
+          else if (file.name === results_file) {
             const jsonData = JSON.parse(contents);
             for (var result of jsonData) {
               const code_name = result.code;
@@ -372,10 +388,10 @@ const NavBar = () => {
     if (response.ok) {
       console.log('new simulation added');
       if (!parameter_search_bool) {
-        setAlertVisible(true);  // Show the alert
-        setTimeout(() => setAlertVisible(false), 3000);
+        setSimulationAlertVisible(true);  // Show the alert
+        setTimeout(() => setSimulationAlertVisible(false), 3000);
         setTimeout(() => window.location.reload(), 2000);
-        inputRef.current.value = "";
+        simulationInputRef.current.value = "";
       }
     }
     return json._id;
@@ -417,11 +433,11 @@ const NavBar = () => {
                     type="file"
                     webkitdirectory="true"
                     style={{ display: 'none' }}
-                    ref={inputRef} 
+                    ref={simulationInputRef} 
                     onChange={handleFolderUpload} 
                   />
                     <IoAddOutline size={30} style={{ cursor: 'pointer' }} onClick={() => {
-                      inputRef.current.click();
+                      simulationInputRef.current.click();
                     }}/>
                   </NavLink>
                 </NavItem>
@@ -482,7 +498,7 @@ const NavBar = () => {
             </Dropdown>
           </Nav>
         </Navbar>
-        <Alert style={{ paddingLeft: 20, paddingRight: 20 }} color="success" isOpen={alertVisible} toggle={() => setAlertVisible(false)}>
+        <Alert style={{ paddingLeft: 20, paddingRight: 20 }} color="success" isOpen={simulationAlertVisible} toggle={() => setSimulationAlertVisible(false)}>
           Simulation added successfully!
         </Alert>
         <Alert style={{ paddingLeft: 20, paddingRight: 20 }} color="success" isOpen={parameterSearchAlertVisible} toggle={() => setParameterSearchAlertVisible(false)}>

@@ -9,14 +9,19 @@ import { JSONTree } from 'react-json-tree';
 import '../styles/simulation_button.css'
 
 const StimuliByIdsTableBody = ({ stimuli }) => {
+  // Controls the visibility of the long description popover
   const [longDescriptionPopOver, setLongDescriptionPopOver] = useState(false);
+
+  // Controls the visibility of the parameter modal
   const [parameterModalOpen, setParameterModalOpen] = useState(false);
 
 
+  // Toggles the long description popover
   const togglePopover = () => {
     setLongDescriptionPopOver(!longDescriptionPopOver);
   }
 
+  // Toggles the parameter modal
   const toggleParameterModalOpen = () => {
     setParameterModalOpen(!parameterModalOpen);
   }
