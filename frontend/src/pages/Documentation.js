@@ -6,8 +6,7 @@ import {
   Col,
   Card,
   CardTitle,
-  CardText,
-  CardHeader
+  CardText
 } from 'reactstrap'
 
 const Documentation = () => {

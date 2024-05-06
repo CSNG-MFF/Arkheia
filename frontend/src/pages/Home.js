@@ -12,7 +12,7 @@ const Home = () => {
               <FaRegLightbulb /> Welcome to Arkheia
             </CardTitle>
             <p className="lead">
-              Dive into the depths of data and simulation results.
+              Dive into the depths of simulation and parameter search results.
             </p>
           </CardBody>
         </Card>

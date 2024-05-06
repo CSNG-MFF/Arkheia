@@ -1,8 +1,8 @@
 import { IoEye } from "react-icons/io5";
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 
-import { Button, Popover, PopoverBody, Modal, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Popover, PopoverBody, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import { JSONTree } from 'react-json-tree';
 
@@ -50,7 +50,10 @@ const ResultByIdsTableBody = ({ result }) => {
           target={`modal_${result._id}`} // Target each popover with the unique id
           toggle={toggleParameterModalOpen} 
         >
-          <ModalBody>
+          <ModalHeader style={{ backgroundColor: 'rgb(0, 43, 54)', textAlign: 'center' }}>
+            <h1 style={{ textAlign: 'center', color: 'white'}}> Parameters </h1>
+          </ModalHeader>
+          <ModalBody style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
             <JSONTree
               hideRoot={true}
               labelRenderer={([key]) => <strong>{key}</strong>}
@@ -58,8 +61,8 @@ const ResultByIdsTableBody = ({ result }) => {
               data={JSON.parse(result.parameters)}
             />
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={toggleParameterModalOpen}>
+          <ModalFooter style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
+            <Button color="warning" onClick={toggleParameterModalOpen}>
               Close
             </Button>
           </ModalFooter>
@@ -106,11 +109,11 @@ const ResultByIdsTableBody = ({ result }) => {
           style={{ maxWidth: '90%', maxHeight: '90%', height: 'auto' }}
         >
           <ModalBody>
-              <img
-                src={`/results/${result._id}/image`} 
-                alt="Result Figure"
-                style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
-              />
+            <img
+              src={`/results/${result._id}/image`} 
+              alt="Result Figure"
+              style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
+            />
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={toggleViewModal}>

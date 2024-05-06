@@ -2,7 +2,7 @@ import { IoEye } from "react-icons/io5";
 
 import React, { useState, useRef } from 'react'
 
-import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter, List } from "reactstrap";
+import { Button, UncontrolledPopover, PopoverBody, Modal, ModalBody, ModalFooter, ModalHeader, List } from "reactstrap";
 
 import { JSONTree } from 'react-json-tree';
 
@@ -86,7 +86,10 @@ const RecordByIdsTableBody = ({ record }) => {
           toggle={toggleParameterPopover}
           target={`parameter_${record._id}`}
         >
-          <ModalBody>
+          <ModalHeader style={{ backgroundColor: 'rgb(0, 43, 54)', textAlign: 'center' }}>
+            <h1 style={{ textAlign: 'center', color: 'white'}}> Parameters </h1>
+          </ModalHeader>
+          <ModalBody style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
             <JSONTree 
               hideRoot={true}
               labelRenderer={([key]) => <strong>{key}</strong>}
@@ -94,8 +97,8 @@ const RecordByIdsTableBody = ({ record }) => {
               data={record.parameters} 
             />
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={toggleParameterPopover}>
+          <ModalFooter style={{ backgroundColor: 'rgb(0, 43, 54)' }}>
+            <Button color="warning" onClick={toggleParameterPopover}>
               Close
             </Button>
           </ModalFooter>
