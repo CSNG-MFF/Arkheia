@@ -8,10 +8,16 @@ import {
 } from 'reactstrap'
 
 const ParameterSearch = () => {
+  // Controls the parameter search
   const [parameterSearch, setParameterSearches] = useState(null);
     
+  // The input for the name search
   const [runNameSearch, setRunNameSearch] = useState('');
+
+  // The input for the model name search
   const [modelNameSearch, setModelNameSearch] = useState('');
+  
+  // Fetches the parmaeter searches
   useEffect(() => {
     const fetchParameterSearches = async () => {
       const response = await fetch('/parameter_searches')
@@ -90,7 +96,7 @@ const ParameterSearch = () => {
             </UncontrolledTooltip>
           </tr>
           <tr>
-            <th colSpan={2}></th> {/* Empty for 'View Alone' */}
+            <th colSpan={2}></th>
             <th>
               <input
                 type="text"

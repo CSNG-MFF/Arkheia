@@ -16,7 +16,7 @@ const ExpProtocolsById = () => {
   const [record, setRecord] = useState([]);
 
   useEffect(() => {
-    // Fetch stimuli connected with the simulation
+    // Fetch experimental protocols connected with the simulation
     const fetchExpProtocols = async () => {
       try {
         const response = await fetch(`/exp_protocols/` + simulation._id);
@@ -32,7 +32,7 @@ const ExpProtocolsById = () => {
   }, [simulation._id]);
 
   useEffect(() => {
-    // Fetch stimuli for the simulation
+    // Fetch records for the simulation
     const fetchRecords = async () => {
       try {
         const response = await fetch(`/records/` + simulation._id);

@@ -44,6 +44,7 @@ const NavBar = () => {
   const results_file = "results.json";
 
   const parameter_combinations_file = "parameter_combinations.json"
+
   // Checks if an upload is active, if yes, the user will be asked if they really want to leave the page
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -67,29 +68,28 @@ const NavBar = () => {
     const files = event.target.files;
     const folders = {};
 
-    let model_name = "";
-    let run_date = "";
-    let name = "";
-    let parameter_combinations = {};
-    setUploadProgress(1);
-    for (let i = 0; i < files.length; i++) {
+    const parameter_search = {};
+    setUploadProgress(1); // Set the progress bar to 1
+    for (let i = 0; i < files.length; i++) { // Iterate trough all the files
       const file = files[i];
       const reader = new FileReader();
       const file_promise = new Promise((resolve, reject) => {
         reader.onload = async function(e) {
           const contents = e.target.result;
-          if (file.name === information_file && (model_name === "" || run_date === "" || name === "")) {
+          if (file.name === information_file && !parameter_search.name) {
             const json_data = JSON.parse(contents);
-            model_name = json_data.model_name;
-            name = json_data.simulation_run_name;
+            parameter_search.model_name = json_data.model_name;
+            parameter_search.name = json_data.simulation_run_name;
             const [date_part, time_part] = json_data.run_date.split("-");
             const [day, month, year] = date_part.split("/");
             const [hours, minutes, seconds] = time_part.split(":");
             const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
-            run_date = date.toISOString();
+            parameter_search.run_date = date.toISOString();
           }
           else if (file.name === parameter_combinations_file) {
             const json_data = JSON.parse(contents);
+            let parameter_combinations = {};
+            // Iterate trough all of the parameter combinations
             json_data.forEach(item => {
               for (let key in item) {
                 if (!parameter_combinations[key]) {
@@ -100,6 +100,7 @@ const NavBar = () => {
                 }
               }
             });
+            parameter_search.parameter_combinations = parameter_combinations;
           } 
           resolve();
         };
@@ -121,118 +122,128 @@ const NavBar = () => {
       }
     }
 
+    // The ids of the saved simulations
     let simulationIds = [];
-    const totalFiles = Object.keys(folders).length;
-    let processedFiles = 0;
+    const total_files = Object.keys(folders).length;
+    let processed_files = 0;
+
     // Call processFiles for each folder
-    for (const folderName in folders) {
-      const folderFiles = folders[folderName];
-      const result_simulation_id = await processFiles(folderFiles, true);
-      processedFiles++;
-      setUploadProgress((processedFiles / totalFiles) * 100);
-      console.log("Processed", folderName, result_simulation_id);
+    for (const folder_name in folders) {
+      const folder_files = folders[folder_name];
+      const result_simulation_id = await processFiles(folder_files, true);
+      processed_files++;
+      setUploadProgress((processed_files / total_files) * 100);
       simulationIds.push(result_simulation_id);
     }
-    const ParameterSearches = {model_name, name, run_date, simulationIds, parameter_combinations};
-    console.log(ParameterSearches);
-    const response = await fetch('/parameter_searches', {
-      method: 'POST',
-      body: JSON.stringify(ParameterSearches),
-      headers: {
-        'Content-Type' : 'application/json'
-      }
-    })
-    setUploadProgress(100);
 
-    const json = await response.json()
-    if (!response.ok) {
-      console.error(json.error);
-    }
+    // If certain values of a parameter search are defined, we can save it to the database
+    if (parameter_search.model_name && parameter_search.name && parameter_search.run_date) {
+      const parameter_search_together = {
+        model_name: parameter_search.model_name,
+        name: parameter_search.name,
+        run_date: parameter_search.run_date,
+        simulationIds,
+        parameter_combinations: parameter_search.parameter_combinations
+      };
+      const response = await fetch('/parameter_searches', {
+        method: 'POST',
+        body: JSON.stringify(parameter_search_together),
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      })
+      setUploadProgress(100);
   
-    if (response.ok) {
-      console.log('new parameterSearch added');
-      setParameterSearchAlertVisible(true);  // Show the alert
-      setTimeout(() => setParameterSearchAlertVisible(false), 3000);
-      setTimeout(() => window.location.reload(), 2000);
-      simulationInputRef.current.value = "";
+      const json = await response.json()
+      if (!response.ok) {
+        console.error(json.error);
+      }
+    
+      if (response.ok) {
+        setParameterSearchAlertVisible(true);  // Show the alert
+        setTimeout(() => setParameterSearchAlertVisible(false), 3000); // Fade out the alert after 3 seconds
+        setTimeout(() => window.location.reload(), 2000); // Reload the window after 2 seconds
+        simulationInputRef.current.value = "";
+      }
     }
-
     parameterSearchInputRef.current.value = "";
     setIsUploadActive(false);
   };
 
   const processFiles = async (files, parameter_search_bool) => {
-    let processedFiles = 0;
+    let processed_files = 0; // Count the number of processed files for the progress bar
     if (!parameter_search_bool) {
       setUploadProgress(1);
     }
-    let parametersJsonData, simulation_run_name, model_name, creation_data, model_description;
+
+    const simulation_data = {};
+
     const stimuli = [];
-    const expProtocols = [];
+    const exp_protocols = [];
     const records = [];
     const results = [];
-    const savedResults = [];
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const reader = new FileReader();
-      const filePromise = new Promise((resolve, reject) => {
+      const file_promise = new Promise((resolve, reject) => { // Go trough all of the files inside the folder
         reader.onload = async function(e) {
           const contents = e.target.result;
           if (file.name === information_file) {
-            const jsonData = JSON.parse(contents);
+            const json_data = JSON.parse(contents);
   
-            simulation_run_name = jsonData.simulation_run_name;
-            model_name = jsonData.model_name;
-            const unformatted_creation_data = jsonData.run_date;
-            model_description = jsonData.model_description;
-  
+            simulation_data.simulation_run_name = json_data.simulation_run_name;
+            simulation_data.model_name = json_data.model_name;
+            simulation_data.model_description = json_data.model_description;
+            
+            const unformatted_creation_data = json_data.run_date;
             const [datePart, timePart] = unformatted_creation_data.split("-");
             const [day, month, year] = datePart.split("/");
             const [hours, minutes, seconds] = timePart.split(":");
             const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
-            creation_data = date.toISOString();
+            simulation_data.creation_data = date.toISOString();
           }
           else if (file.name === parameters_file) {
-            parametersJsonData = JSON.parse(contents);
+            simulation_data.parameters = JSON.parse(contents);
           }
           else if (file.name === stimuli_file) {
-            const jsonData = JSON.parse(contents);
-            for (var stimulus of jsonData) {
+            const json_data = JSON.parse(contents);
+            for (var stimulus of json_data) {
               const code_name = stimulus.code;
               const short_description = stimulus.short_description;
               const long_description = stimulus.long_description;
               const parameters = stimulus.parameters;
               const movie = stimulus.movie;
-              const movieFilePath = file.webkitRelativePath.replace(file.name, '') + movie;
-              const stimuli_data = new FormData();
-              stimuli_data.append("code_name", code_name);
-              stimuli_data.append("short_description", short_description);
-              stimuli_data.append("long_description", long_description);
-              stimuli_data.append("parameters", JSON.stringify(parameters));
+              const movie_file_path = file.webkitRelativePath.replace(file.name, '') + movie;
+              const stimulus_data = new FormData();
+              stimulus_data.append("code_name", code_name);
+              stimulus_data.append("short_description", short_description);
+              stimulus_data.append("long_description", long_description);
+              stimulus_data.append("parameters", JSON.stringify(parameters));
               
               // Find the movie file in the files array
-              const movieFile = Array.from(files).find(f => f.webkitRelativePath === movieFilePath);
+              const movie_file = Array.from(files).find(f => f.webkitRelativePath === movie_file_path);
 
-              if (movieFile) {
-                stimuli_data.append("movie", movieFile);
-                stimuli.push(stimuli_data);
+              if (movie_file) {
+                stimulus_data.append("movie", movie_file);
+                stimuli.push(stimulus_data);
               }
             }
           }
           else if (file.name === experimental_protocols_file) {
-            const jsonData = JSON.parse(contents);
-            for (var exp_protocol of jsonData) {
+            const json_data = JSON.parse(contents);
+            for (var exp_protocol of json_data) {
               const code_name = exp_protocol.class;
               const short_description = exp_protocol.short_description;
               const long_description = exp_protocol.long_description;
               const parameters = exp_protocol.parameters;
               const whole_exp_protocol = { code_name, short_description, long_description, parameters };
-              expProtocols.push(whole_exp_protocol);
+              exp_protocols.push(whole_exp_protocol);
             }
           }
           else if (file.name === records_file) {
-            const jsonData = JSON.parse(contents);
-            for (var record of jsonData) {
+            const json_data = JSON.parse(contents);
+            for (var record of json_data) {
               const code_name = record.code;
               const short_description = record.short_description;
               const long_description = record.long_description;
@@ -244,25 +255,25 @@ const NavBar = () => {
             }
           }
           else if (file.name === results_file) {
-            const jsonData = JSON.parse(contents);
-            for (var result of jsonData) {
+            const json_data = JSON.parse(contents);
+            for (var result of json_data) {
               const code_name = result.code;
               const name = result.name;
               const parameters = result.parameters;
               const caption = result.caption;
               const figure = result.figure;
-              const figurePath = file.webkitRelativePath.replace(file.name, '') + figure;
-              const data = new FormData();
-              data.append("code_name", code_name);
-              data.append("name", name);
-              data.append("parameters", JSON.stringify(parameters));
-              data.append("caption", caption);
+              const figure_path = file.webkitRelativePath.replace(file.name, '') + figure;
+              const result_data = new FormData();
+              result_data.append("code_name", code_name);
+              result_data.append("name", name);
+              result_data.append("parameters", JSON.stringify(parameters));
+              result_data.append("caption", caption);
 
               // Find the figure file in the files array
-              const figureFile = Array.from(files).find(f => f.webkitRelativePath === figurePath);
-              if (figureFile) {
-                data.append("figure", figureFile);
-                results.push(data);
+              const figure_file = Array.from(files).find(f => f.webkitRelativePath === figure_path);
+              if (figure_file) {
+                result_data.append("figure", figure_file);
+                results.push(result_data);
               }
             }
           }
@@ -272,22 +283,27 @@ const NavBar = () => {
       });
   
       reader.readAsText(file);
-      await filePromise;
+      await file_promise;
     }
   
-    const simulationWithParameters = { simulation_run_name, model_name, creation_data, model_description, parameters: parametersJsonData };
+    const simulation_together = { 
+      simulation_run_name: simulation_data.simulation_run_name, 
+      model_name: simulation_data.model_name, 
+      creation_data: simulation_data.creation_data, 
+      model_description: simulation_data.model_description, 
+      parameters: simulation_data.parameters };
   
-    const savedStimulus = [];
-    const savedExpProtocols = [];
-    const savedRecords = [];
-    
+    const saved_stimuli = [];
+    const saved_experimental_protocols = [];
+    const saved_records = [];
+    const saved_results = [];
 
-    const totalFiles = stimuli.length + expProtocols.length + records.length + results.length;
+    const total_files = stimuli.length + exp_protocols.length + records.length + results.length;
 
     for (var stimulus of stimuli) {
       if (!parameter_search_bool) {
-        processedFiles++;
-        setUploadProgress((processedFiles / totalFiles) * 100);
+        processed_files++;
+        setUploadProgress((processed_files / total_files) * 100);
       }
       const response = await fetch('/stimuli', {
         method: 'POST',
@@ -298,18 +314,18 @@ const NavBar = () => {
         console.error(json.error);
       }
       else {
-        savedStimulus.push(json._id);
+        saved_stimuli.push(json._id);
       }
     }
   
-    for (var expProtocol of expProtocols) {
+    for (var experimental_protocol of exp_protocols) {
       if (!parameter_search_bool) {
-        processedFiles++;
-        setUploadProgress((processedFiles / totalFiles) * 100);
+        processed_files++;
+        setUploadProgress((processed_files / total_files) * 100);
       }
       const response = await fetch('/exp_protocols', {
         method: 'POST',
-        body: JSON.stringify(expProtocol),
+        body: JSON.stringify(experimental_protocol),
         headers: {
           'Content-Type' : 'application/json'
         }
@@ -319,14 +335,14 @@ const NavBar = () => {
         console.error(json.error);
       }
       else {
-        savedExpProtocols.push(json._id);
+        saved_experimental_protocols.push(json._id);
       }
     }
   
     for (var record of records) {
       if (!parameter_search_bool) {
-        processedFiles++;
-        setUploadProgress((processedFiles / totalFiles) * 100);
+        processed_files++;
+        setUploadProgress((processed_files / total_files) * 100);
       }
       const response = await fetch('/records', {
         method: 'POST',
@@ -340,14 +356,14 @@ const NavBar = () => {
         console.error(json.error);
       }
       else {
-        savedRecords.push(json._id);
+        saved_records.push(json._id);
       }
     }
 
     for (var result of results) {
       if (!parameter_search_bool) {
-        processedFiles++;
-        setUploadProgress((processedFiles / totalFiles) * 100);
+        processed_files++;
+        setUploadProgress((processed_files / total_files) * 100);
       }
       const response = await fetch('/results', {
         method: 'POST',
@@ -358,20 +374,20 @@ const NavBar = () => {
         console.error(json.error);
       }
       else {
-        savedResults.push(json._id);
+        saved_results.push(json._id);
       }
     }
   
-    simulationWithParameters.stimuliIds = savedStimulus;
-    simulationWithParameters.expProtocolIds = savedExpProtocols;
-    simulationWithParameters.recordIds = savedRecords;
-    simulationWithParameters.resultIds = savedResults;
-    simulationWithParameters.from_parameter_search = parameter_search_bool;
+    simulation_together.stimuliIds = saved_stimuli;
+    simulation_together.expProtocolIds = saved_experimental_protocols;
+    simulation_together.recordIds = saved_records;
+    simulation_together.resultIds = saved_results;
+    simulation_together.from_parameter_search = parameter_search_bool;
   
     
     const response = await fetch('/simulation_runs', {
       method: 'POST',
-      body: JSON.stringify(simulationWithParameters),
+      body: JSON.stringify(simulation_together),
       headers: {
         'Content-Type' : 'application/json'
       }
@@ -386,7 +402,6 @@ const NavBar = () => {
     }
   
     if (response.ok) {
-      console.log('new simulation added');
       if (!parameter_search_bool) {
         setSimulationAlertVisible(true);  // Show the alert
         setTimeout(() => setSimulationAlertVisible(false), 3000);
@@ -397,6 +412,7 @@ const NavBar = () => {
     return json._id;
   };
 
+  // Handles a folder upload
   const handleFolderUpload = async (event) => {
     setIsUploadActive(true); // Start tracking upload state
     const files = event.target.files;

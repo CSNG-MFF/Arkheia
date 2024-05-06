@@ -13,13 +13,13 @@ const ResultsById = () => {
   const simulation = location.state;
   const [results, setResults] = useState([]);
   useEffect(() => {
-    // Fetch stimuli for the simulation
+    // Fetch results for the simulation
     const fetchResults = async () => {
       try {
         const response = await fetch(`/results/` + simulation._id);
-        const resultsData = await response.json();
+        const results_data = await response.json();
         if (response.ok) {
-          setResults(resultsData);
+          setResults(results_data);
         }
       } catch (error) {
         console.error('Error fetching results:', error);

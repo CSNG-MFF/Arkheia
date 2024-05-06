@@ -55,7 +55,7 @@ describe('POST /stimuli: createStimulus', () => {
       code_name: Math.random().toString(36).substring(7),
       short_description: Math.random().toString(36).substring(7),
       long_description: Math.random().toString(36).substring(7),
-      parameters: { test: Math.random().toString(36).substring(7) }, // adjust as necessary
+      parameters: { test: Math.random().toString(36).substring(7) },
       movie: {
         fileId: fileID,
         contentType: 'image/gif'
@@ -108,7 +108,7 @@ describe('POST /results: createResult', () => {
       code_name: Math.random().toString(36).substring(7),
       name: Math.random().toString(36).substring(7),
       caption: Math.random().toString(36).substring(7),
-      parameters: { test: Math.random().toString(36).substring(7) }, // adjust as necessary
+      parameters: { test: Math.random().toString(36).substring(7) },
       figure: {
         fileId: new mongoose.Types.ObjectId(),
         contentType: 'image/png'
