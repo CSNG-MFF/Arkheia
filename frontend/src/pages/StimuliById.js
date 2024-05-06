@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import { useLocation } from 'react-router-dom';
 
 import {
-  Table
+  Table,
+  UncontrolledTooltip
 } from 'reactstrap'
 
 import StimuliByIdsTableBody from "../components/StimuliByIdsTableBody";
@@ -12,13 +13,14 @@ const StimuliById = () => {
   const simulation = location.state;
   const [stimuli, setStimuli] = useState([]);
   useEffect(() => {
+
     // Fetch stimuli for the simulation
     const fetchStimuli = async () => {
       try {
         const response = await fetch(`/stimuli/` + simulation._id);
-        const stimuliData = await response.json();
+        const stimuli_data = await response.json();
         if (response.ok) {
-          setStimuli(stimuliData);
+          setStimuli(stimuli_data);
         }
       } catch (error) {
         console.error('Error fetching stimuli:', error);
@@ -30,9 +32,9 @@ const StimuliById = () => {
     <div>
       <h1 className="text-center">Stimuli</h1>
       <Table
-      bordered
-      hover
-      size="sm"
+        bordered
+        hover
+        size="sm"
       >
         <thead style={{ textAlign: 'center'}}>
           <tr>

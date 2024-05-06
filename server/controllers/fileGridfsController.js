@@ -22,8 +22,8 @@ const getFigureForResult = async (req, res) => {
       const bucket = new GridFSBucket(db);
 
       // Find the file by its ObjectID
-      const file_id = new mongoose.Types.ObjectId(result.figure.file_id);
-      const download_stream = bucket.opendownload_stream(file_id);
+      const file_id = new mongoose.Types.ObjectId(result.figure.fileId);
+      const download_stream = bucket.openDownloadStream(file_id);
 
       // Set response headers
       res.set('Content-Type', result.figure.contentType);
@@ -55,8 +55,8 @@ const getMovieForStimulus = async (req, res) => {
       const bucket = new GridFSBucket(db);
 
       // Find the file by its ObjectID
-      const file_id = new mongoose.Types.ObjectId(stimuli.movie.file_id);
-      const download_stream = bucket.opendownload_stream(file_id);
+      const file_id = new mongoose.Types.ObjectId(stimuli.movie.fileId);
+      const download_stream = bucket.openDownloadStream(file_id);
 
       // Set response headers
       res.set('Content-Type', stimuli.movie.contentType);

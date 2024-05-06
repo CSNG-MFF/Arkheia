@@ -1,6 +1,5 @@
 import React from "react";
 import '../../styles/footer.css'
-// reactstrap components
 import { 
   Navbar,
   Nav, 
@@ -10,10 +9,7 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="footer" style={{ 
-      width: '100%', 
-      marginTop: 40
-      }}>
+    <footer className="footer" style={{ width: '100%',  marginTop: 20 }}>
       <Navbar className='footerNavbar' color='secondary' >
         <Nav style={{ float: 'left' }}>
           <NavItem>

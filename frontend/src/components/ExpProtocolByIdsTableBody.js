@@ -21,7 +21,6 @@ const ExpProtocolByIdsTableBody = ({ expProtocol }) => {
     setParameterPopoverOpen(!parameterPopoverOpen);
   }
 
-
   return (
     <>
     <tr>
