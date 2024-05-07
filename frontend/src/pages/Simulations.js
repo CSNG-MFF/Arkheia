@@ -43,7 +43,7 @@ const Simulations = () => {
     }
 
     fetchSimulations()
-  }, [])
+  }, [parameter_search])
 
   return (
     <div className = "Simulations">

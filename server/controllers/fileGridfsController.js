@@ -27,7 +27,7 @@ const getFigureForResult = async (req, res) => {
       const db = client.db(); // Get the database instance
       const bucket = new GridFSBucket(db);
 
-      // Find the file by its ObjectID
+      // Find the file by its ID
       const file_id = new mongoose.Types.ObjectId(result.figure.fileId);
       const download_stream = bucket.openDownloadStream(file_id);
 
@@ -66,7 +66,7 @@ const getMovieForStimulus = async (req, res) => {
       const db = client.db(); // Get the database instance
       const bucket = new GridFSBucket(db);
 
-      // Find the file by its ObjectID
+      // Find the file by its ID
       const file_id = new mongoose.Types.ObjectId(stimuli.movie.fileId);
       const download_stream = bucket.openDownloadStream(file_id);
 

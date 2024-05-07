@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import React, { useEffect, useState } from "react"
-import _ from 'lodash'; // Import lodash
+import _ from 'lodash';
 
 import { Container, Button, Form, FormGroup, Label, Input, Table, Modal, ModalBody, ModalFooter } from 'reactstrap'; // Import Reactstrap components
 
