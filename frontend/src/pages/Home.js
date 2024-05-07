@@ -2,6 +2,10 @@ import React from 'react';
 import { Card, CardBody, CardTitle, Container } from 'reactstrap';
 import { FaRegLightbulb } from 'react-icons/fa';
 
+/**
+ * 
+ * @returns The home page of the application
+ */
 const Home = () => {
   return (
     <div className="home">

@@ -8,21 +8,30 @@ import {
   UncontrolledTooltip
 } from 'reactstrap'
 
+/**
+ * 
+ * @returns The simulations page
+ */
 const Simulations = () => {
   const location = useLocation();
   const parameter_search = location.state;
+  
+  // The data holder for the simulations
   const [simulations, setSimulations] = useState(null);
 
+  // The input element for the run name filter
   const [runNameSearch, setRunNameSearch] = useState('');
+
+  // The input element for the model name filter
   const [modelNameSearch, setModelNameSearch] = useState('');
     
-  useEffect(() => {
+  useEffect(() => { // Fetch the simulations based on if they are part of a parameter search
     const fetchSimulations = async () => {
       if (parameter_search && parameter_search._id) {
         const response = await fetch(`/parameter_searches/${parameter_search._id}/simulations`);
         const json = await response.json();
         if (response.ok) {
-          setSimulations(json);
+          setSimulations(json); 
         }
       } else {
         const response = await fetch('/simulation_runs')

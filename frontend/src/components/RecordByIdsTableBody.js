@@ -8,6 +8,11 @@ import { JSONTree } from 'react-json-tree';
 
 import '../styles/simulation_button.css'
 
+/**
+ * 
+ * @param param0 The record to show in the table 
+ * @returns The table body of the records
+ */
 const RecordByIdsTableBody = ({ record }) => {
   
   // Controls visibility of the long description popover

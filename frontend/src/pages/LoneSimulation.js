@@ -5,6 +5,10 @@ import StimuliById from './StimuliById';
 import ExpProtocolsById from './ExpProtocolsById';
 import ResultsById from './ResultsById';
 
+/**
+ * 
+ * @returns A simulation with all of its information
+ */
 const LoneSimulation = () => {
   const location = useLocation();
   const simulation = location.state;

@@ -2,6 +2,10 @@ import React from 'react';
 import { Container, Row, Col, Card, CardBody, CardTitle, CardHeader } from 'reactstrap';
 import { FaUniversity, FaAtom } from 'react-icons/fa';
 
+/**
+ * 
+ * @returns The about page
+ */
 const About = () => {
   return (
     <Container className="about my-5">

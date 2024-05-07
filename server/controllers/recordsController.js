@@ -2,14 +2,26 @@ const mongoose = require('mongoose');
 const Simulation = require('../models/simulation_run_model');
 const Records = require('../models/records_model');
 
-// Get all records
+/**
+ * Gets all the records
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of records
+ */
 const getRecords = async (req, res) => {
   const record = await Records.find({}).sort({ createdAt: -1 });
 
   res.status(200).json(record);
 };
 
-// Create a record
+/**
+ * Creates a record
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the created record
+ */
 const createRecord = async (req, res) => {
   const { code_name, short_description, long_description, parameters, variables, source } = req.body;
 
@@ -21,7 +33,14 @@ const createRecord = async (req, res) => {
   }
 };
 
-// Delete a record
+/**
+ * Deletes a record
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the deleted record
+ */
+
 const deleteRecord = async (req, res) => {
   const { id } = req.params;
 
@@ -38,7 +57,13 @@ const deleteRecord = async (req, res) => {
   res.status(200).json(record);
 };
 
-// Get records associated with a simulation
+/**
+ * Gets all the records for a simulation
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of records
+ */
 const getRecordsForSimulation = async (req, res) => {
   
   const { id } = req.params;

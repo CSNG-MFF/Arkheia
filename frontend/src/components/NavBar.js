@@ -19,6 +19,10 @@ import {
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+/**
+ * 
+ * @returns The navbar of the page
+ */
 const NavBar = () => {
   const simulationInputRef = useRef(null);
   const parameterSearchInputRef = useRef(null);
@@ -62,7 +66,10 @@ const NavBar = () => {
     };
   }, [isUploadActive]);
 
-  // Handles the upload of parameter searches
+  /**
+   * 
+   * @param event the folder of the parameter search 
+   */
   const handleParameterSearchUpload = async (event) => {
     setIsUploadActive(true);
     const files = event.target.files;
@@ -170,6 +177,12 @@ const NavBar = () => {
     setIsUploadActive(false);
   };
 
+  /**
+   * 
+   * @param files The files that we want to save 
+   * @param parameter_search_bool Controls if the simulation is a part of a parameter search
+   * @returns 
+   */
   const processFiles = async (files, parameter_search_bool) => {
     let processed_files = 0; // Count the number of processed files for the progress bar
     if (!parameter_search_bool) {
@@ -189,7 +202,7 @@ const NavBar = () => {
       const file_promise = new Promise((resolve, reject) => { // Go trough all of the files inside the folder
         reader.onload = async function(e) {
           const contents = e.target.result;
-          if (file.name === information_file) {
+          if (file.name === information_file) { // If we ecountered the information file
             const json_data = JSON.parse(contents);
   
             simulation_data.simulation_run_name = json_data.simulation_run_name;
@@ -201,12 +214,13 @@ const NavBar = () => {
             const [day, month, year] = datePart.split("/");
             const [hours, minutes, seconds] = timePart.split(":");
             const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+
             simulation_data.creation_data = date.toISOString();
           }
-          else if (file.name === parameters_file) {
+          else if (file.name === parameters_file) { // If we encountered the parameters
             simulation_data.parameters = JSON.parse(contents);
           }
-          else if (file.name === stimuli_file) {
+          else if (file.name === stimuli_file) { // If we we encountered the stimuli file
             const json_data = JSON.parse(contents);
             for (var stimulus of json_data) {
               const code_name = stimulus.code;
@@ -230,7 +244,7 @@ const NavBar = () => {
               }
             }
           }
-          else if (file.name === experimental_protocols_file) {
+          else if (file.name === experimental_protocols_file) { // If we ecnountered the experimental protocols file
             const json_data = JSON.parse(contents);
             for (var exp_protocol of json_data) {
               const code_name = exp_protocol.class;
@@ -241,7 +255,7 @@ const NavBar = () => {
               exp_protocols.push(whole_exp_protocol);
             }
           }
-          else if (file.name === records_file) {
+          else if (file.name === records_file) { // If we encountered the records file
             const json_data = JSON.parse(contents);
             for (var record of json_data) {
               const code_name = record.code;
@@ -286,20 +300,25 @@ const NavBar = () => {
       await file_promise;
     }
   
+    // Add together the simulation
     const simulation_together = { 
       simulation_run_name: simulation_data.simulation_run_name, 
       model_name: simulation_data.model_name, 
       creation_data: simulation_data.creation_data, 
       model_description: simulation_data.model_description, 
-      parameters: simulation_data.parameters };
-  
+      parameters: simulation_data.parameters 
+    };
+    
+    // The IDs of the saved components
     const saved_stimuli = [];
     const saved_experimental_protocols = [];
     const saved_records = [];
     const saved_results = [];
 
+    // Helper variable for the progress bar
     const total_files = stimuli.length + exp_protocols.length + records.length + results.length;
 
+    // Iterate trough all of the stimuli and save them
     for (var stimulus of stimuli) {
       if (!parameter_search_bool) {
         processed_files++;
@@ -317,7 +336,8 @@ const NavBar = () => {
         saved_stimuli.push(json._id);
       }
     }
-  
+
+    // Iterate trough all of the experimental protocols and save them
     for (var experimental_protocol of exp_protocols) {
       if (!parameter_search_bool) {
         processed_files++;
@@ -339,6 +359,7 @@ const NavBar = () => {
       }
     }
   
+    // Iterate trough all of the records and save them
     for (var record of records) {
       if (!parameter_search_bool) {
         processed_files++;
@@ -360,6 +381,7 @@ const NavBar = () => {
       }
     }
 
+    // Iterate trough all of the results and save them
     for (var result of results) {
       if (!parameter_search_bool) {
         processed_files++;
@@ -378,6 +400,7 @@ const NavBar = () => {
       }
     }
   
+    // Add the ids of the saved components to the simulation
     simulation_together.stimuliIds = saved_stimuli;
     simulation_together.expProtocolIds = saved_experimental_protocols;
     simulation_together.recordIds = saved_records;
@@ -385,6 +408,7 @@ const NavBar = () => {
     simulation_together.from_parameter_search = parameter_search_bool;
   
     
+    // Save the data to the database
     const response = await fetch('/simulation_runs', {
       method: 'POST',
       body: JSON.stringify(simulation_together),

@@ -6,14 +6,26 @@ const { createReadStream } = require('fs');
 const { GridFSBucket } = require('mongodb');
 const { MongoClient } = require('mongodb');
 
-// Get all results
+/**
+ * Gets all the results
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of results
+ */
 const getResults = async (req, res) => {
   const result = await Result.find({}).sort({ createdAt: -1 });
 
   res.status(200).json(result);
 };
 
-// Create a result
+/**
+ * Creates a result
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the created result
+ */
 const createResult = async (req, res) => {
   const { code_name, name, parameters, caption } = req.body;
 
@@ -60,7 +72,13 @@ const createResult = async (req, res) => {
   }
 };
 
-// Delete a result
+/**
+ * Deletes a result
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the deleted result
+ */
 const deleteResult = async (req, res) => {
   const { id } = req.params;
 
@@ -93,7 +111,13 @@ const deleteResult = async (req, res) => {
   }
 };
 
-// Get the results for a simulation
+/**
+ * Gets all the results for associated with a simulation
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of results
+ */
 const getResultsForSimulation = async (req, res) => {
   
   const { id } = req.params;

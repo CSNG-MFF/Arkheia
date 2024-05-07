@@ -6,6 +6,10 @@ import { Container, Button, Form, FormGroup, Label, Input, Table, Modal, ModalBo
 
 import '../styles/inspect_results.css'
 
+/**
+ * 
+ * @returns The inspect results page
+ */
 const InspectResults = () => {
   
   const location = useLocation();
@@ -361,6 +365,13 @@ const InspectResults = () => {
 export default InspectResults
 
 // ONLY USED WHEN PARAMETER COMBINATIONS ARE NOT DEFINED
+
+/**
+ * 
+ * @param obj The object to be searched trough
+ * @param path The path of the object
+ * @param parameter_variations The place to save the parameter variations
+ */
 function addVariations(obj, path, parameter_variations) {
   for (const key in obj) {
     if (typeof obj[key] === 'object' && obj[key] !== null) {

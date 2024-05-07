@@ -7,6 +7,10 @@ import {
   NavLink 
 } from "reactstrap";
 
+/**
+ * 
+ * @returns The footer of the page
+ */
 const Footer = () => {
   return (
     <footer className="footer" style={{ width: '100%',  marginTop: 20 }}>

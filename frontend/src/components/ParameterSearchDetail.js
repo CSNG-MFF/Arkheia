@@ -8,6 +8,11 @@ import { Button, Alert  } from "reactstrap";
 
 import '../styles/simulation_button.css'
 
+/**
+ * 
+ * @param param0 The parameter search to show
+ * @returns the detail of the parameter search
+ */
 const ParameterSearchDetail = ({ parameter_search }) => {
   const history = useNavigate();
 

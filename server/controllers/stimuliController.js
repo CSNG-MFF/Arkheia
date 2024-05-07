@@ -6,14 +6,26 @@ const { createReadStream } = require('fs');
 const { GridFSBucket } = require('mongodb');
 const { MongoClient } = require('mongodb');
 
-// Get all stimuli
+/**
+ * Gets all the stimuli
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of stimuli
+ */
 const getStimuli = async (req, res) => {
   const stimuli = await Stimuli.find({}).sort({ createdAt: -1 });
 
   res.status(200).json(stimuli);
 };
 
-// Create a stimulus
+/**
+ * Creates a stimulus
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the created stimulus
+ */
 const createStimulus = async (req, res) => {
   const { code_name, short_description, long_description, parameters } = req.body;
   if (!req.file) {
@@ -58,7 +70,13 @@ const createStimulus = async (req, res) => {
   }
 };
 
-// Delete a stimulus
+/**
+ * Deletes a stimulus
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the deleted stimulus
+ */
 const deleteStimulus = async (req, res) => {
   const { id } = req.params;
 
@@ -92,7 +110,13 @@ const deleteStimulus = async (req, res) => {
   }
 };
 
-// Get a stimulus by ID
+/**
+ * Gets all the stimuli associated with a simulation
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of stimuli
+ */
 const getStimuliForSimulation = async (req, res) => {
   
   const { id } = req.params;

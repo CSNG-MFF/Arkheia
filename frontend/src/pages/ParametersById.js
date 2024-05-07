@@ -7,6 +7,10 @@ const theme = {
   base00: '#272822'
 };
 
+/**
+ * 
+ * @returns The parameters of a simulation
+ */
 const ParametersById = () => {
   const location = useLocation();
   const simulation = location.state;

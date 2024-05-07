@@ -9,6 +9,10 @@ import {
   CardText
 } from 'reactstrap'
 
+/**
+ * 
+ * @returns The main documentation page of Arkheia
+ */
 const Documentation = () => {
   return (
       <div className = "documentation">

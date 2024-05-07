@@ -9,6 +9,11 @@ import { JSONTree } from 'react-json-tree';
 import '../styles/simulation_button.css'
 
 
+/**
+ * 
+ * @param param0 The result to show inside the table
+ * @returns The table body with the results
+ */
 const ResultByIdsTableBody = ({ result }) => {
   // Controls the visibility of the parameter modal
   const [parameterModalOpen, setParameterModalOpen] = useState(false);

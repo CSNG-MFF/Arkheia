@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route} from 'react-router-dom'
 
-//pages and components 
+// Pages and components 
 import Home from './pages/Home'
 import Navbar from './components/NavBar'
 import Simulations from './pages/Simulations'
@@ -22,6 +22,10 @@ import ParameterSearch from './pages/ParameterSearch'
 
 import InspectResults from './pages/InspectResults'
 
+/**
+ * 
+ * @returns The main app component for React
+ */
 function App() {
   return (
     <div className="App">

@@ -8,6 +8,11 @@ import { Button, Alert, Popover, PopoverBody } from "reactstrap";
 
 import '../styles/simulation_button.css'
 
+/**
+ * 
+ * @param param0 The simulation to show inside the table body 
+ * @returns The table body with the simulations
+ */
 const SimulationDetail = ({ simulation }) => {
   const history = useNavigate();
   // Controls the visibility of the deletion alert

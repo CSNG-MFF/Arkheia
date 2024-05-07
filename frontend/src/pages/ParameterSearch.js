@@ -7,6 +7,10 @@ import {
   UncontrolledTooltip
 } from 'reactstrap'
 
+/**
+ * 
+ * @returns The parameter searches uploaded to the website
+ */
 const ParameterSearch = () => {
   // Controls the parameter search
   const [parameterSearch, setParameterSearches] = useState(null);

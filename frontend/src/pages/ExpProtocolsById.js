@@ -9,6 +9,10 @@ import {
 import ExpProtocolByIdsTableBody from "../components/ExpProtocolByIdsTableBody";
 import RecordByIdsTableBody from "../components/RecordByIdsTableBody";
 
+/**
+ * 
+ * @returns The experimental protocols and the recorders of a simulation
+ */
 const ExpProtocolsById = () => {
   const location = useLocation();
   const simulation = location.state;

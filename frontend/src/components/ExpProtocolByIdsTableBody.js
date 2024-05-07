@@ -8,6 +8,11 @@ import { JSONTree } from 'react-json-tree';
 
 import '../styles/simulation_button.css'
 
+/**
+ * 
+ * @param param0 The experimental protocol to be shown 
+ * @returns The table body for the experimental protocols
+ */
 const ExpProtocolByIdsTableBody = ({ expProtocol }) => {
   
    // Controls the visibility of the long description popover

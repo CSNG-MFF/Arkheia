@@ -8,6 +8,10 @@ import {
 
 import StimuliByIdsTableBody from "../components/StimuliByIdsTableBody";
 
+/**
+ * 
+ * @returns The stimuli of a simulation by an id
+ */
 const StimuliById = () => {
   const location = useLocation();
   const simulation = location.state;

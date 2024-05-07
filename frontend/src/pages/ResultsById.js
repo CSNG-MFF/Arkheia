@@ -8,6 +8,10 @@ import {
 
 import ResultByIdsTableBody from "../components/ResultByIdsTableBody";
 
+/**
+ * 
+ * @returns The results of a simulation
+ */
 const ResultsById = () => {
   const location = useLocation();
   const simulation = location.state;
@@ -31,9 +35,9 @@ const ResultsById = () => {
     <div>
       <h1 className="text-center">Results</h1>
       <Table
-      bordered
-      hover
-      size="sm"
+        bordered
+        hover
+        size="sm"
       >
         <thead style={{ textAlign: 'center'}}>
           <tr>

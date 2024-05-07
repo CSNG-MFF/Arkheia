@@ -8,6 +8,11 @@ import { JSONTree } from 'react-json-tree';
 
 import '../styles/simulation_button.css'
 
+/**
+ * 
+ * @param param0 The stimuli to be used inside the table 
+ * @returns The table with the stimuli
+ */
 const StimuliByIdsTableBody = ({ stimuli }) => {
   // Controls the visibility of the long description popover
   const [longDescriptionPopOver, setLongDescriptionPopOver] = useState(false);

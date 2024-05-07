@@ -6,17 +6,29 @@ const ExpProtocol = require('../models/exp_protocol_model');
 const Record = require('../models/records_model');
 const Result = require('../models/results_model');
 
-// Get all parameter searches
+/**
+ * Gets all the all the parameter searches
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of parameter searches
+ */
 const getParameterSearches = async (req, res) => {
   const parameter_searches = await ParameterSearch.find({}).sort({createdAt: -1})
 
   res.status(200).json(parameter_searches)
 };
 
-// Create a parameter search
+/**
+ * Creates a parameter search
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resloves with an array of parameter searches
+ */
 const createParameterSearch = async (req, res) => {
   const {name, model_name, run_date, simulationIds, parameter_combinations } = req.body
-    //add to db
+    // Add to db
     try {
       const simulations = await Simulation.find({ _id: { $in: simulationIds }});
       const parameter_search = await ParameterSearch.create({
@@ -32,7 +44,13 @@ const createParameterSearch = async (req, res) => {
     }
 };
 
-// Update a parameter search
+/**
+ * Updates one parameter search based on the ID inside the req.params
+ * 
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Retrieves the updated parameter search
+ */
 const updateParameterSearch = async (req, res) => {
   const { id } = req.params;
 
@@ -51,7 +69,13 @@ const updateParameterSearch = async (req, res) => {
   res.status(200).json(parameter_search);
 }
 
-// Delete a parameter search
+/**
+ * Deletes one parameter search
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the deleted parameter search
+ */
 const deleteParameterSearch = async (req, res) => {
   const { id } = req.params;
   
@@ -83,7 +107,13 @@ const deleteParameterSearch = async (req, res) => {
 };
 
 
-// Get a parameter search by ID
+/**
+ * Gets one parameter search based on the ID inside req.param
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the parameter search
+ */
 const getParameterSearch = async (req, res) => {
   const { id } = req.params
   
@@ -100,7 +130,13 @@ const getParameterSearch = async (req, res) => {
   res.status(200).json(parameter_search)
 }
 
-// Get all the simulations associated with a parameter search
+/**
+ * Gets all the simulations associated with the parameter search
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of simulations
+ */
 const getParameterSearchSimulations = async (req, res) => {
   const parameterSearchId = req.params.id;
   if (!mongoose.Types.ObjectId.isValid(parameterSearchId)) {
@@ -122,7 +158,13 @@ const getParameterSearchSimulations = async (req, res) => {
   }
 }
 
-// Get all the results associated with simulations which are associated with a parameter search
+/**
+ * Gets all the results for the parameter searches
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of results
+ */
 const getParameterSearchResults = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {

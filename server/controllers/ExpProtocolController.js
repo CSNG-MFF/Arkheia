@@ -2,13 +2,25 @@ const mongoose = require('mongoose');
 const Simulation = require('../models/simulation_run_model');
 const ExpProtocol = require('../models/exp_protocol_model');
 
-// Get all experimental protocols
+/**
+ * Retrieves all experimental protocols from the database.
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of experimental protocols on success.
+ */
 const getExpProtocols = async (req, res) => {
   const exp_protocol = await ExpProtocol.find({}).sort({ createdAt: -1 });
   res.status(200).json(exp_protocol);
 };
 
-// Create an experimental protocol
+/**
+ * Creates one experimental protocol
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the created experimental protocol.
+ */
 const createExpProtocol = async (req, res) => {
   const { code_name, short_description, long_description, parameters } = req.body;
 
@@ -20,7 +32,13 @@ const createExpProtocol = async (req, res) => {
   }
 };
 
-// Delete an experimental protocol
+/**
+ * Deletes one experimental protocol
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with the deleted experimental protocol.
+ */
 const deleteExpProtocol = async (req, res) => {
   const { id } = req.params;
 
@@ -37,7 +55,13 @@ const deleteExpProtocol = async (req, res) => {
   res.status(200).json(exp_protocol);
 };
 
-// Get the experimental protocols associated with a simulation
+/**
+ * Gets all the experimental protocols for a simulation
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with an array of experimental protocols
+ */
 const getExpProtocolForSimulation = async (req, res) => {
   
   const { id } = req.params;

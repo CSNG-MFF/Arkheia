@@ -4,7 +4,13 @@ const Stimuli = require('../models/stimuli_model')
 const { MongoClient, GridFSBucket } = require('mongodb');
 
 
-// Get the figure for a result
+/**
+ * Gets the figure for a result
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves the figure
+ */
 const getFigureForResult = async (req, res) => {
   const { id } = req.params;
 
@@ -37,7 +43,13 @@ const getFigureForResult = async (req, res) => {
   }
 };
 
-// Get the movie for a stimulus
+/**
+ * Gets all the movie for a stimulus
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns Resolves with a movie for a stimulus
+ */
 const getMovieForStimulus = async (req, res) => {
   const { id } = req.params;
 
