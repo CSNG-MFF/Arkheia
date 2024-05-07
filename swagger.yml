@@ -1,0 +1,861 @@
+openapi: 3.0.3
+info:
+  title: Arkheia
+  description: Arkheia is a web-based repository designed for the visualization of complex neural simulations. Developed at the MFF UK, Arkheia leverages the Mozaik framework to save the simulations and parameter searches generated.
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+tags:
+  - name: Experimental protocol
+    description: The experimental protocols of the simulation
+  - name: Stimulus
+    description: The stimuli of the simulation
+  - name: Result
+    description: The results of the simulation
+  - name: Record
+    description: The recorders of the simulation
+  - name: Simulation
+    description: The simulations
+  - name: Parameter search
+    description: The parameter searches
+paths:
+  /exp_protocols:
+    post:
+      tags:
+        - Experimental protocol
+      summary: Saves one experimental protocol to the database
+      description: Saves one experimental protocol to the database
+      requestBody:
+        description: Saves one experimental protocol to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Experimental-protocol'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experimental-protocol'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - Experimental protocol
+      summary: Gets all the experimental protocols from the database
+      description: Gets all the experimental protocols from the database
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experimental-protocol'
+  /exp_protocols/{id}:
+    delete:
+      tags:
+        - Experimental protocol
+      summary: Deletes one experimental protocol from the database
+      description: Deletes one experimental protocol from the database
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the experimental protocol to be deleted
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experimental-protocol'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing experimental protocol
+    get:
+      tags:
+        - Experimental protocol
+      summary: Retrieves all of the experimental protocols connected with a simulation
+      description: Retrieves all of the experimental protocols connected with a simulation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the simulation
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID or not existing simulation
+        '500':
+          description: Internal server error
+  /stimuli:
+    post:
+      tags:
+        - Stimulus
+      summary: Saves one stimulus to the database
+      description: Saves one stimulus to the database
+      requestBody:
+        description: Saves one stimulus to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Stimulus'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stimulus'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - Stimulus
+      summary: Gets all the stimuli from the database
+      description: Gets all the stimuli from the database
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stimulus'
+  /stimuli/{id}:
+    delete:
+      tags:
+        - Stimulus
+      summary: Deletes one stimulus from the database
+      description: Deletes one stimulus from the database
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the stimulus to be deleted
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stimulus'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing stimulus
+    get:
+      tags:
+        - Stimulus
+      summary: Retrieves all of the stimuli connected with a simulation
+      description: Retrieves all of the stimuli connected with a simulation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the simulation
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID or not existing simulation
+        '500':
+          description: Internal server error
+    
+  /stimuli/{id}/image:
+    get:
+      tags:
+        - Stimulus
+      summary: Gets the movie associated with the stimulus
+      description: Gets the movie associated with the stimulus
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the movie
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Stimulus not found
+        '500':
+          description: Internal server error
+  /results:
+    post:
+      tags:
+        - Result
+      summary: Saves one result to the database
+      description: Saves one result to the database
+      requestBody:
+        description: Saves one result to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Result'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - Result
+      summary: Gets all the results from the database
+      description: Gets all the results from the database
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /results/{id}:
+    delete:
+      tags:
+        - Result
+      summary: Deletes one result from the database
+      description: Deletes one result from the database
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the result to be deleted
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing result
+    get:
+      tags:
+        - Result
+      summary: Retrieves all of the results connected with a simulation
+      description: Retrieves all of the results connected with a simulation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the simulation
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID or not existing simulation
+        '500':
+          description: Internal server error
+    
+  /results/{id}/image:
+    get:
+      tags:
+        - Result
+      summary: Gets the figure associated with the result
+      description: Gets the figure associated with the result
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the figure
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Result not found
+        '500':
+          description: Internal server error
+          
+  /records:
+    post:
+      tags:
+        - Record
+      summary: Saves one record to the database
+      description: Saves one record to the database
+      requestBody:
+        description: Saves one record to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Record'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - Record
+      summary: Gets all the records from the database
+      description: Gets all the records from the database
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+  /records/{id}:
+    delete:
+      tags:
+        - Record
+      summary: Deletes one record from the database
+      description: Deletes one record from the database
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the record to be deleted
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing record
+    get:
+      tags:
+        - Record
+      summary: Retrieves all of the results connected with a simulation
+      description: Retrieves all of the results connected with a simulation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the simulation
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID or not existing simulation
+        '500':
+          description: Internal server error
+          
+  /simulation_runs:
+    post:
+      tags:
+        - Simulation
+      summary: Saves one simulation to the database
+      description: Saves one simulation to the database
+      requestBody:
+        description: Saves one simulation to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Simulation'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Simulation'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - Simulation
+      summary: Gets all the simulations from the database
+      description: Gets all the simulations from the database
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Simulation'
+  /simulation_runs/{id}:
+    delete:
+      tags:
+        - Simulation
+      summary: Deletes one simulation from the database
+      description: Deletes one simulation from the database
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the simulation to be deleted
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Simulation'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing record
+    get:
+      tags:
+        - Simulation
+      summary: Retrieves one simulation
+      description: Retrieves one simulation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the simulation
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing simulation
+        '500':
+          description: Internal server error
+          
+    put:
+      tags:
+        - Simulation
+      summary: Updates one simulation
+      description: Updates one simulation
+      requestBody:
+        description: Updates one simulation in the database. The request body should contain one field of the schema provided here.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Simulation'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the simulation
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing simulation
+        '500':
+          description: Internal server error
+  /parameter_searches:
+    post:
+      tags:
+        - Parameter search
+      summary: Saves one parameter search to the database
+      description: Saves one parameter search to the database
+      requestBody:
+        description: Saves one parameter search to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameter-search'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parameter-search'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - Parameter search
+      summary: Gets all the parameter searches from the database
+      description: Gets all the parmaeter searches from the database
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parameter-search'
+  /parameter_searches/{id}:
+    delete:
+      tags:
+        - Parameter search
+      summary: Deletes one parameter search from the database
+      description: Deletes one parameter search from the database
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the parameter search to be deleted
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parameter-search'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing record
+    get:
+      tags:
+        - Parameter search
+      summary: Retrieves one parameter search
+      description: Retrieves one parameter search
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the parameter search
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing parameter search
+          
+    put:
+      tags:
+        - Parameter search
+      summary: Updates one parameter search
+      description: Updates one parameter search
+      requestBody:
+        description: Updates one parameter search in the database. The request body should contain one field of the schema provided here.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parameter-search'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the parameter search
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: binary
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Not existing parameter search
+        '500':
+          description: Internal server error
+  /parameter_searches/{id}/simulations:
+    get:
+      tags:
+        - Parameter search
+      summary: Gets all the simulations associated with the parameter search
+      description: Gets all the simulations associated with the parameter search
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the parameter search
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Simulation'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Parameter search not found
+        '500':
+          description: Internal server error
+  /parameter_searches/{id}/results:
+    get:
+      tags:
+        - Parameter search
+      summary: Gets all the results associated with the parameter search
+      description: Gets all the results associated with the parameter search
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: binary
+          required: true
+          description: ID of the parameter search
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Result'
+        '404':
+          description: Not a valid MongoDB ID
+        '400':
+          description: Parameter search not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    Experimental-protocol:
+      required:
+        - code_name
+        - short_description
+        - long_description
+        - parameters
+      type: object
+      properties:
+        code_name:
+          type: string
+        short_description: 
+          type: string
+        long_description:
+          type: string
+        parameters:
+          type: object
+    Stimulus:
+      required:
+        - code_name
+        - short_description
+        - long_description
+        - parameters
+      type: object
+      properties:
+        code_name:
+          type: string
+        short_description: 
+          type: string
+        long_description:
+          type: string
+        parameters:
+          type: object
+        movie:
+          type: string
+          format: byte
+    Result:
+      required:
+        - code_name
+        - name
+        - caption
+        - parameters
+      type: object
+      properties:
+        code_name:
+          type: string
+        name: 
+          type: string
+        caption:
+          type: string
+        parameters:
+          type: object
+        figure:
+          type: string
+          format: byte
+    Record:
+      required:
+        - code_name
+        - short_description
+        - long_description
+        - parameters
+        - variables
+        - source
+      type: object
+      properties:
+        code_name:
+          type: string
+        short_description: 
+          type: string
+        long_description:
+          type: string
+        parameters:
+          type: object
+        variables:
+          type: array
+          items:
+            type: string
+        source:
+          type: string
+    Simulation:
+      required:
+        - from_parameter_search
+        - simulation_run_name
+        - model_name
+        - creation_data
+        - model_description
+        - parameters
+        - stimuli
+        - exp_protocols
+        - records
+        - results
+      type: object
+      properties: 
+        from_parameter_search:
+          type: boolean
+        simulation_run_name:
+          type: string
+        model_name:
+          type: string
+        creation_data:
+          type: string
+          format: date-time
+        model_description:
+          type: string
+        parameters:
+          type: object
+        stimuli:
+          type: string
+          format: binary
+        exp_protocols:
+          type: string
+          format: binary
+        records:
+          type: string
+          format: binary
+        results:
+          type: string
+          format: binary
+    Parameter-search:
+      required:
+        - run_date
+        - name
+        - model_name
+        - simulations
+        - parameter_combinations
+      type: object
+      properties:
+        run_date:
+          type: string
+          format: date-time
+        name:
+          type: string
+        model_name:
+          type: string
+        simulations:
+          type: string
+          format: binary
+        parameter_combinations:
+          type: object
+  
