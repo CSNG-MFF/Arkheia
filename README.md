@@ -18,6 +18,11 @@ git clone https://github.com/NoPleaseNorbi/Arkheia.git
 
 ### Install Dependencies
 
+Firstly run this in the root directory to install the dependencies for the whole project:
+
+```bash
+npm install
+```
 This project uses `concurrently` to manage multiple npm scripts. To install all dependencies for both frontend and backend, run:
 
 ```bash
