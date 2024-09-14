@@ -87,3 +87,12 @@ To run the tests, make sure the backend server is not running and that the datab
 ```bash
 npm run test
 ```
+
+
+## Accessing files through SSHFS
+
+To access simulation results on a file system mounted with `sshfs`, you'll need to mount it with the following command:
+
+```
+sshfs [user@]host:[remote_directory] path/to/mountpoint -o uid=$(id -u),gid=$(id -g)
+```
