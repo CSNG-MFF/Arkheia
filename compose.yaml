@@ -1,16 +1,13 @@
-version: '3'
-
 services:
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: arkheia-client
     container_name: arkheia-react-client
-    command: npm start
     volumes:
-      - ./frontend/:/usr/app
-      - /usr/app/node_modules
+      - ./frontend/:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - backend
     ports:
@@ -22,7 +19,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: arkheia-server
     container_name: arkheia-node-server
     command: npm start
     volumes:
@@ -47,6 +43,10 @@ services:
     container_name: arkheia-database
 
 networks:
+  proxynet:
+    name: proxy_network
+    external: true
+
   app-network:
     driver: bridge
 
