@@ -13,6 +13,8 @@ import {
  * @returns The simulations page
  */
 const Simulations = () => {
+
+  const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const parameter_search = location.state;
   
@@ -28,13 +30,13 @@ const Simulations = () => {
   useEffect(() => { // Fetch the simulations based on if they are part of a parameter search
     const fetchSimulations = async () => {
       if (parameter_search && parameter_search._id) {
-        const response = await fetch(`/parameter_searches/${parameter_search._id}/simulations`);
+        const response = await fetch(`${apiUrl}/parameter_searches/${parameter_search._id}/simulations`);
         const json = await response.json();
         if (response.ok) {
           setSimulations(json); 
         }
       } else {
-        const response = await fetch('/simulation_runs')
+        const response = await fetch(`${apiUrl}/simulation_runs`)
         const json = await response.json()
         if (response.ok) {
           setSimulations(json)

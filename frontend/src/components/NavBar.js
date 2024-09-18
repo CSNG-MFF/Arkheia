@@ -24,6 +24,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
  * @returns The navbar of the page
  */
 const NavBar = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const simulationInputRef = useRef(null);
   const parameterSearchInputRef = useRef(null);
 
@@ -152,7 +154,7 @@ const NavBar = () => {
         simulationIds,
         parameter_combinations: parameter_search.parameter_combinations
       };
-      const response = await fetch('/parameter_searches', {
+      const response = await fetch(`${apiUrl}/parameter_searches`, {
         method: 'POST',
         body: JSON.stringify(parameter_search_together),
         headers: {
@@ -324,7 +326,7 @@ const NavBar = () => {
         processed_files++;
         setUploadProgress((processed_files / total_files) * 100);
       }
-      const response = await fetch('/stimuli', {
+      const response = await fetch(`${apiUrl}/stimuli`, {
         method: 'POST',
         body: stimulus
       })
@@ -343,7 +345,7 @@ const NavBar = () => {
         processed_files++;
         setUploadProgress((processed_files / total_files) * 100);
       }
-      const response = await fetch('/exp_protocols', {
+      const response = await fetch(`${apiUrl}/exp_protocols`, {
         method: 'POST',
         body: JSON.stringify(experimental_protocol),
         headers: {
@@ -365,7 +367,7 @@ const NavBar = () => {
         processed_files++;
         setUploadProgress((processed_files / total_files) * 100);
       }
-      const response = await fetch('/records', {
+      const response = await fetch(`${apiUrl}/records`, {
         method: 'POST',
         body: JSON.stringify(record),
         headers: {
@@ -387,7 +389,7 @@ const NavBar = () => {
         processed_files++;
         setUploadProgress((processed_files / total_files) * 100);
       }
-      const response = await fetch('/results', {
+      const response = await fetch(`${apiUrl}/results`, {
         method: 'POST',
         body: result
       })
@@ -409,7 +411,7 @@ const NavBar = () => {
   
     
     // Save the data to the database
-    const response = await fetch('/simulation_runs', {
+    const response = await fetch(`${apiUrl}/simulation_runs`, {
       method: 'POST',
       body: JSON.stringify(simulation_together),
       headers: {

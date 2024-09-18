@@ -11,7 +11,7 @@ import '../styles/inspect_results.css'
  * @returns The inspect results page
  */
 const InspectResults = () => {
-  
+  const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const parameter_search = location.state;
   
@@ -62,7 +62,7 @@ const InspectResults = () => {
 
       const fetchData = async () => { // Fetch the needed data for the page
         if (parameter_search && parameter_search._id) {
-          const response = await fetch(`/parameter_searches/${parameter_search._id}/simulations`);
+          const response = await fetch(`${apiUrl}/parameter_searches/${parameter_search._id}/simulations`);
           const json = await response.json();
           if (response.ok) {
             setSimulations(json);
@@ -70,7 +70,7 @@ const InspectResults = () => {
             try {
               const all_results = []; // Array to store results from all simulations
               let avalaible_names = new Set();
-              const response = await fetch(`/parameter_searches/${parameter_search._id}/results`);
+              const response = await fetch(`${apiUrl}/parameter_searches/${parameter_search._id}/results`);
               const results_data = await response.json();
               if (response.ok) {
                 for (const results of results_data) {

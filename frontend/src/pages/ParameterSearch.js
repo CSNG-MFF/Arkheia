@@ -12,6 +12,8 @@ import {
  * @returns The parameter searches uploaded to the website
  */
 const ParameterSearch = () => {
+
+  const apiUrl = process.env.REACT_APP_API_URL;
   // Controls the parameter search
   const [parameterSearch, setParameterSearches] = useState(null);
     
@@ -24,7 +26,7 @@ const ParameterSearch = () => {
   // Fetches the parmaeter searches
   useEffect(() => {
     const fetchParameterSearches = async () => {
-      const response = await fetch('/parameter_searches')
+      const response = await fetch(`${apiUrl}/parameter_searches`)
       const json = await response.json()
       if (response.ok) {
         setParameterSearches(json)

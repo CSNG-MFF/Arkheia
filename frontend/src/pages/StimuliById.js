@@ -13,6 +13,7 @@ import StimuliByIdsTableBody from "../components/StimuliByIdsTableBody";
  * @returns The stimuli of a simulation by an id
  */
 const StimuliById = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const simulation = location.state;
   const [stimuli, setStimuli] = useState([]);
@@ -21,7 +22,7 @@ const StimuliById = () => {
     // Fetch stimuli for the simulation
     const fetchStimuli = async () => {
       try {
-        const response = await fetch(`/stimuli/` + simulation._id);
+        const response = await fetch(`${apiUrl}/stimuli/` + simulation._id);
         const stimuli_data = await response.json();
         if (response.ok) {
           setStimuli(stimuli_data);

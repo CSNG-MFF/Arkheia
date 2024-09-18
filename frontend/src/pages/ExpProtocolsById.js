@@ -14,6 +14,7 @@ import RecordByIdsTableBody from "../components/RecordByIdsTableBody";
  * @returns The experimental protocols and the recorders of a simulation
  */
 const ExpProtocolsById = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const simulation = location.state;
   const [expProtocol, setExpProtocol] = useState([]);
@@ -23,7 +24,7 @@ const ExpProtocolsById = () => {
     // Fetch experimental protocols connected with the simulation
     const fetchExpProtocols = async () => {
       try {
-        const response = await fetch(`/exp_protocols/` + simulation._id);
+        const response = await fetch(`${apiUrl}/exp_protocols/` + simulation._id);
         const exp_protocol_data = await response.json();
         if (response.ok) {
           setExpProtocol(exp_protocol_data);
@@ -39,7 +40,7 @@ const ExpProtocolsById = () => {
     // Fetch records for the simulation
     const fetchRecords = async () => {
       try {
-        const response = await fetch(`/records/` + simulation._id);
+        const response = await fetch(`${apiUrl}/records/` + simulation._id);
         const record = await response.json();
         if (response.ok) {
           setRecord(record);

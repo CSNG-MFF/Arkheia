@@ -1,5 +1,5 @@
 require('dotenv').config() // Require as here are defined MongoDB credentials
-
+const cors = require(`cors`);
 const express  = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
@@ -29,6 +29,7 @@ const upload = multer({ storage: storage });
 
 const app = express();
 
+app.use(cors());
 // The express middle end
 app.use(express.json({ limit: '50mb' }))
 

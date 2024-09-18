@@ -13,6 +13,7 @@ import ResultByIdsTableBody from "../components/ResultByIdsTableBody";
  * @returns The results of a simulation
  */
 const ResultsById = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const location = useLocation();
   const simulation = location.state;
   const [results, setResults] = useState([]);
@@ -20,7 +21,7 @@ const ResultsById = () => {
     // Fetch results for the simulation
     const fetchResults = async () => {
       try {
-        const response = await fetch(`/results/` + simulation._id);
+        const response = await fetch(`${apiUrl}/results/` + simulation._id);
         const results_data = await response.json();
         if (response.ok) {
           setResults(results_data);
