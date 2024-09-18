@@ -14,6 +14,7 @@ import '../styles/simulation_button.css'
  * @returns the detail of the parameter search
  */
 const ParameterSearchDetail = ({ parameter_search }) => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const history = useNavigate();
 
   // Controls the visibility of the alert for deletion
@@ -33,7 +34,7 @@ const ParameterSearchDetail = ({ parameter_search }) => {
 
   // The deletion of a parameter search
   const handleDelete = async () => {
-    const response = await fetch('/parameter_searches/' + parameter_search._id, {
+    const response = await fetch(`${apiUrl}/parameter_searches/` + parameter_search._id, {
       method: 'DELETE'
     })
     const json = await response.json()

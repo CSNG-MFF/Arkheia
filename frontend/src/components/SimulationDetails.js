@@ -14,6 +14,7 @@ import '../styles/simulation_button.css'
  * @returns The table body with the simulations
  */
 const SimulationDetail = ({ simulation }) => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const history = useNavigate();
   // Controls the visibility of the deletion alert
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
@@ -92,7 +93,7 @@ const SimulationDetail = ({ simulation }) => {
   // The handling of a simulation deletion
   const handleDelete = async () => {
 
-    const response = await fetch('/simulation_runs/' + simulation._id, {
+    const response = await fetch(`${apiUrl}/simulation_runs/` + simulation._id, {
       method: 'DELETE'
     })
     const json = await response.json()
@@ -112,7 +113,7 @@ const SimulationDetail = ({ simulation }) => {
   // Handles the change of name, updating it inside the database
   const handleNameChange = async () => {
     try {
-      const response = await fetch(`/simulation_runs/${simulation._id}`, {
+      const response = await fetch(`${apiUrl}/simulation_runs/${simulation._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
