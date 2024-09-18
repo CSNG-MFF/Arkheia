@@ -15,6 +15,7 @@ import '../styles/simulation_button.css'
  * @returns The table body with the results
  */
 const ResultByIdsTableBody = ({ result }) => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   // Controls the visibility of the parameter modal
   const [parameterModalOpen, setParameterModalOpen] = useState(false);
 
@@ -110,7 +111,7 @@ const ResultByIdsTableBody = ({ result }) => {
           onClick={toggleViewModal}
         >
           <img
-            src={`/results/${result._id}/image`} 
+            src={`${apiUrl}/results/${result._id}/image`} 
             alt="Result Figure"
             style={{ maxWidth: '70%', maxHeight: '50%', height: 'auto' }}
           />
@@ -123,7 +124,7 @@ const ResultByIdsTableBody = ({ result }) => {
         >
           <ModalBody>
             <img
-              src={`/results/${result._id}/image`} 
+              src={`${apiUrl}/results/${result._id}/image`} 
               alt="Result Figure"
               style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
             />

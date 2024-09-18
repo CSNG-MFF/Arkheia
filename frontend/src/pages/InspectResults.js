@@ -314,7 +314,7 @@ const InspectResults = () => {
                                     >
                                       <img
                                         key={result._id}
-                                        src={`/results/${result._id}/image`}
+                                        src={`${apiUrl}/results/${result._id}/image`}
                                         alt="Result Figure"
                                         style={{ width: `${imageScale * 800}px`}}
                                       />
@@ -327,7 +327,7 @@ const InspectResults = () => {
                                       >
                                     <ModalBody>
                                       <img
-                                        src={`/results/${result._id}/image`} 
+                                        src={`${apiUrl}/results/${result._id}/image`} 
                                         alt="Result Figure"
                                         style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
                                         />

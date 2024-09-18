@@ -14,6 +14,7 @@ import '../styles/simulation_button.css'
  * @returns The table with the stimuli
  */
 const StimuliByIdsTableBody = ({ stimuli }) => {
+  const apiUrl = process.env.REACT_APP_API_URL;
   // Controls the visibility of the long description popover
   const [longDescriptionPopOver, setLongDescriptionPopOver] = useState(false);
 
@@ -95,7 +96,7 @@ const StimuliByIdsTableBody = ({ stimuli }) => {
       </td>
       <td>
           <img
-            src={`/stimuli/${stimuli._id}/image`} 
+            src={`${apiUrl}/stimuli/${stimuli._id}/image`} 
             alt="Stimuli"
           />
       </td>
