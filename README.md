@@ -80,6 +80,34 @@ There are three ways to start the application:
      npm start
      ```
 
+## Deployment
+
+Before using Docker as a deployment, make sure to update the `.env` file in the server:
+
+```
+PORT=4000
+MONGODB_URI=mongodb://database/ArkheiaData
+MONGODB_TEST_URI=mongodb://database/ArkheiaTestDB
+```
+
+You must also update the `.env` file in the fronend:
+
+```
+REACT_APP_API_URL=http://example.com:4000
+```
+
+And update the `proxy` in the frontend's `package.json`:
+
+```json
+"proxy": "http://example.com:4000",
+```
+
+Then, you can use Docker Compose to start the application:
+
+```bash
+docker-compose up
+```
+
 ## Testing
 
 To run the tests, make sure the backend server is not running and that the database is still running. From the root directory, run:
