@@ -29,6 +29,15 @@ const NavBar = () => {
   const simulationInputRef = useRef(null);
   const parameterSearchInputRef = useRef(null);
 
+  // Controls the visibility of data upload buttons based on database write access
+  const [uploadsAllowed, setUploadsAllowed] = useState(false);
+  useEffect(() => {
+    fetch(`${apiUrl}/api/database-write-enabled`)
+      .then(response => response.json())
+      .then(data => setUploadsAllowed(data?.writeEnabled === true))
+      .catch(error => console.error("Error fetching update status:", error));
+  }, [apiUrl]);
+
   // Controls the visibility of the simulation upload alert
   const [simulationAlertVisible, setSimulationAlertVisible] = useState(false);
 
@@ -468,7 +477,7 @@ const NavBar = () => {
                   <NavLink style={{ whiteSpace: 'nowrap' }} href="/simulation_runs">Simulation runs</NavLink>
                 </NavItem>
               </Button>
-              <Button color="light">
+              <Button color="light" disabled={!uploadsAllowed}>
                 <NavItem>
                   <NavLink style={{ whiteSpace: 'nowrap' }}>
                   <input
@@ -491,7 +500,7 @@ const NavBar = () => {
                   <NavLink style={{ whiteSpace: 'nowrap' }} href="/parameter_search">Parameter searches</NavLink>
                 </NavItem>
               </Button>
-              <Button color="light">
+              <Button color="light" disabled={!uploadsAllowed}>
                 <NavItem>
                   <NavLink style={{ whiteSpace: 'nowrap' }}>
                   <input
