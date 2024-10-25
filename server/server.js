@@ -6,6 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const { GridFSBucket } = require('mongodb');
 
+const configRoutes = require('./routes/config');
 const aboutRoutes = require('./routes/about')
 const documentationRoutes = require('./routes/documentation')
 const simulationRunsRoutes = require('./routes/simulation_runs')
@@ -39,6 +40,9 @@ app.use((req, res, next) => {
     console.log(req.path, req.method)
     next();
 })
+
+// Config status
+app.use('/api', configRoutes);
 
 // Connection to the database
 mongoose.connect(process.env.MONGODB_URI)

@@ -10,10 +10,11 @@ const {
 } = require('../controllers/parameterSearchController')
  
 const router = express.Router()
+const checkDatabaseWriteEnabled = require('../middleware/checkDatabaseWriteEnabled');
 
 router.get('/', getParameterSearches) // Route to get all parameter searches
 
-router.post('/', createParameterSearch) // Route to create a parameter search
+router.post('/', checkDatabaseWriteEnabled, createParameterSearch) // Route to create a parameter search
 
 router.delete('/:id', deleteParameterSearch) // Route to delete a parameter search by ID
 

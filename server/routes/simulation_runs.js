@@ -8,10 +8,12 @@ const {
 } = require('../controllers/simulationRunsController')
  
 const router = express.Router()
+const checkDatabaseWriteEnabled = require('../middleware/checkDatabaseWriteEnabled');
+
 
 router.get('/', getSimulations) // Route to get all simulations
 
-router.post('/', createSimulation) // Route to create a simulation
+router.post('/', checkDatabaseWriteEnabled, createSimulation) // Route to create a simulation
 
 router.delete('/:id', deleteSimulation) // Route to delete a simulation
 
