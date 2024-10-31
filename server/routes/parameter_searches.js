@@ -16,7 +16,7 @@ router.get('/', getParameterSearches) // Route to get all parameter searches
 
 router.post('/', checkDatabaseWriteEnabled, createParameterSearch) // Route to create a parameter search
 
-router.delete('/:id', deleteParameterSearch) // Route to delete a parameter search by ID
+router.delete('/:id', checkDatabaseWriteEnabled, deleteParameterSearch) // Route to delete a parameter search by ID
 
 router.get('/:id', getParameterSearch) // Route to get a parameter search
 

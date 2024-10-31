@@ -7,6 +7,7 @@ import React, { useState } from 'react'
 import { Button, Alert  } from "reactstrap";
 
 import '../styles/simulation_button.css'
+import useUploadPermission from './useUploadPermission';
 
 /**
  * 
@@ -16,6 +17,9 @@ import '../styles/simulation_button.css'
 const ParameterSearchDetail = ({ parameter_search }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const history = useNavigate();
+
+  // Controls the visibility of data delete buttons based on database write access
+  const uploadsAllowed = useUploadPermission(apiUrl);
 
   // Controls the visibility of the alert for deletion
   const [alertDeleteVisible, setAlertDeleteVisible] = useState(false);
@@ -79,7 +83,7 @@ const ParameterSearchDetail = ({ parameter_search }) => {
         </Button>
       </td>
       <td style={{ textAlign: 'center', padding: 0 }} >
-        <Button className="icon-button" onClick={handleDelete}>
+        <Button className="icon-button" onClick={handleDelete} disabled={!uploadsAllowed}>
           <IoTrashSharp size={28} className="icon" />
         </Button>
       </td>

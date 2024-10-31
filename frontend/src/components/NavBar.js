@@ -18,6 +18,7 @@ import {
   } from 'reactstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
+import useUploadPermission from './useUploadPermission';
 
 /**
  * 
@@ -30,13 +31,7 @@ const NavBar = () => {
   const parameterSearchInputRef = useRef(null);
 
   // Controls the visibility of data upload buttons based on database write access
-  const [uploadsAllowed, setUploadsAllowed] = useState(false);
-  useEffect(() => {
-    fetch(`${apiUrl}/api/database-write-enabled`)
-      .then(response => response.json())
-      .then(data => setUploadsAllowed(data?.writeEnabled === true))
-      .catch(error => console.error("Error fetching update status:", error));
-  }, [apiUrl]);
+  const uploadsAllowed = useUploadPermission(apiUrl);
 
   // Controls the visibility of the simulation upload alert
   const [simulationAlertVisible, setSimulationAlertVisible] = useState(false);

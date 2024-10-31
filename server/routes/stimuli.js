@@ -11,12 +11,13 @@ const {
   } = require('../controllers/fileGridfsController');
 
 const router = express.Router();
+const checkDatabaseWriteEnabled = require('../middleware/checkDatabaseWriteEnabled');
 
 router.get('/', getStimuli); // Route to get all stimuli
 
-router.post('/', createStimulus); // Route to create a new stimulus
+router.post('/', checkDatabaseWriteEnabled, createStimulus); // Route to create a new stimulus
 
-router.delete('/:id', deleteStimulus); // Route to delete a stimulus by ID
+router.delete('/:id', checkDatabaseWriteEnabled, deleteStimulus); // Route to delete a stimulus by ID
 
 router.get('/:id', getStimuliForSimulation); // Route to get stimuli for the whole simulation
 
